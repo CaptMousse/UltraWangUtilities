@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.idiompedia.mapper.IdiomsMapper">
+
+    <insert id="idiomsAdd" parameterType="list">
+        insert into idioms (uuid, word, word_1, word_2, word_3, word_4, pinyin, pinyin_r, pinyin_simple, pinyin_1, pinyin_2, pinyin_3, pinyin_4, explanation, derivation, example) values
+        <foreach collection="list" separator="," item="wang.ultra.my_utilities.idiompedia.entity.IdiomEntity">
+            ('${IdiomEntity.uuid}', '${IdiomEntity.word}', '${IdiomEntity.word_1}', '${IdiomEntity.word_2}', '${IdiomEntity.word_3}', '${IdiomEntity.word_4}', '${IdiomEntity.pinyin}', '${IdiomEntity.pinyin_r}', '${IdiomEntity.pinyin_simple}', '${IdiomEntity.pinyin_1}', '${IdiomEntity.pinyin_2}', '${IdiomEntity.pinyin_3}', '${IdiomEntity.pinyin_4}', '${IdiomEntity.explanation}', '${IdiomEntity.derivation}', '${IdiomEntity.example}')
+        </foreach>
+    </insert>
+
+    <delete id="idiomsDelete">
+        delete from idioms where uuid = #{id}
+    </delete>
+
+    <sql id="idiomsSelectSql">
+        select * from idioms
+    </sql>
+
+    <sql id="idiomsSelectResultSql">
+        select word, pinyin, explanation, derivation, example from idioms
+    </sql>
+
+    <sql id="idiomsCountSelectSql">
+        select count(*) from idioms
+    </sql>
+
+    <select id="idiomsSearchByWord" resultType="map">
+        select * from idioms where word = #{word}
+    </select>
+
+    <select id="idiomsCountByWord" resultType="int" parameterType="wang.ultra.my_utilities.idiompedia.entity.IdiomEntity">
+        <include refid="idiomsCountSelectSql"></include>
+        <where>
+            <if test="word != null and word.trim() != ''">
+                <!-- or word like '%${word}%' -->
+                or word = '${word}'
+            </if>
+        </where>
+    </select>
+
+    <select id="idiomsSearchByPinyinFirst" resultType="map">
+        <include refid="idiomsSelectSql"></include>
+        <where>
+            <if test="pinyin_first != null and pinyin_first.trim() != ''">
+                <!-- or word like '%${word}%' -->
+                pinyin_first = '${pinyin_first}'
+            </if>
+            and length(word) = 12
+        </where>
+    </select>
+
+    <select id="idiomsSearchByFirst" resultType="map">
+        <include refid="idiomsSelectResultSql"></include>
+        <where>
+            <if test="key != null and key.trim() != ''">
+                or word_1 = '${key}'
+            </if>
+            <if test="key != null and key.trim() != ''">
+                or pinyin_1 = '${key}'
+            </if>
+            and length(word) = 12
+        </where>
+    </select>
+
+    <select id="idiomsSearchBySecond" resultType="map">
+        <include refid="idiomsSelectResultSql"></include>
+        <where>
+            <if test="key != null and key.trim() != ''">
+                or word_2 = '${key}'
+            </if>
+            <if test="key != null and key.trim() != ''">
+                or pinyin_2 = '${key}'
+            </if>
+            and length(word) = 12
+        </where>
+    </select>
+
+    <select id="idiomsSearchByThird" resultType="map">
+        <include refid="idiomsSelectResultSql"></include>
+        <where>
+            <if test="key != null and key.trim() != ''">
+                or word_3 = '${key}'
+            </if>
+            <if test="key != null and key.trim() != ''">
+                or pinyin_3 = '${key}'
+            </if>
+            and length(word) = 12
+        </where>
+    </select>
+
+    <select id="idiomsSearchByLast" resultType="map">
+        <include refid="idiomsSelectResultSql"></include>
+        <where>
+            <if test="key != null and key.trim() != ''">
+                or word_4 = '${key}'
+            </if>
+            <if test="key != null and key.trim() != ''">
+                or pinyin_4 = '${key}'
+            </if>
+            and length(word) = 12
+        </where>
+    </select>
+</mapper>

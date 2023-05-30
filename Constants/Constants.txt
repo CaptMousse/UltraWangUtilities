@@ -1,0 +1,56 @@
+#注意, 分割符是" = ", 等号前后有空格
+
+# DDNS时间间隔
+# DdnsIntervalTime = 3600000
+DdnsIntervalTime = 3600000
+# DDNS监控开关
+DdnsMonitorStatus = 1
+
+# 阿里云地域ID
+RegionID = cn-hangzhou
+# 阿里云AccessKey
+AccessKeyID = LTAI5tAPzbaceZdp5NdfGuTw
+# 阿里云Access密钥
+AccessKeySecret = 41wmFNOQjaWcYtL3a7DwOmlmpgtjcH
+# 域名
+Domain = ultra.wang
+# 二级域名
+Hostname = test
+# 解析方式
+RecordType = AAAA
+
+# Minecraft端口
+MinecraftPort = 25565
+
+# 网卡信息
+EthernetName = enp3s0
+
+# 日志文件目录
+LogFilePath = Logs
+# 日志文件名
+LogFileName = IPv6Logs.txt
+
+# 邮件发送主机
+MailHost = smtp.qq.com
+# 邮件发送协议
+MailTransportProtocol = smtp
+# 邮件SMTP端口
+MailSmtpPort = 587
+# 邮件发件人邮箱
+MailFrom = 1435644267@qq.com
+# 邮件发件人授权码
+MailFromAuthCode = cyaccluykuqsbacc
+# 邮件收件人
+MailTo = sefvdx@me.com
+
+# 监听状态
+# 0代表停止, 1代表开启
+HardwareMonitorStatus = 1
+# 监听频率(时间间隔)
+MonitorRate = 60000
+# 监听CPU使用率
+MonitorCpuUsage = 90
+# 监听CPU温度
+MonitorCpuTemperature = 80
+# 监听内存变动
+MonitorMemoryChange = 10

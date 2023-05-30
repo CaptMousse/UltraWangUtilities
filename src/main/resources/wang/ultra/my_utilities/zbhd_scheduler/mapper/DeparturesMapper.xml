@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.zbhd_scheduler.mapper.DeparturesMapper">
+
+    <select id="departuresSelectAll" resultType="map">
+        select * from DEPARTURES order by departure
+    </select>
+
+    <sql id="departuresSelectSql">
+        select p.NAME, p.CITY, d.flight_no, d.departure, d.arrival, d.schedule, d.aircraft from DEPARTURES d
+        left join AIRPORTS p on (d.airport_ICAO = p.ICAO)
+    </sql>
+
+    <select id="departuresSearch" resultType="map" parameterType="wang.ultra.my_utilities.zbhd_scheduler.entityVO.SearchVO">
+        <include refid="departuresSelectSql"></include>
+        <where>
+            <if test="flightNo != null and flightNo.trim() != ''">
+                or d.flight_no like '%${flightNo}%'
+            </if>
+            <if test="airportICAO != null and airportICAO.trim() != ''">
+                or d.airport_ICAO like '%${airportICAO}%'
+            </if>
+            <if test="IATA != null and IATA.trim() != ''">
+                or p.IATA like '%${IATA}%'
+            </if>
+            <if test="name != null and name.trim() != ''">
+                or p.name like '%${name}%'
+            </if>
+            <if test="city != null and city.trim() != ''">
+                or p.city like '%${city}%'
+            </if>
+            <!-- <if test="arrival != null and arrival.trim() != ''">
+                and arrival &gt;= '${arrival}'
+            </if> -->
+        </where>
+        order by departure
+    </select>
+
+    <select id="departuresToday" resultType="map" parameterType="wang.ultra.my_utilities.zbhd_scheduler.entityVO.ScheduleVO">
+        <include refid="departuresSelectSql"></include>
+        <where>
+            <if test="schedule != null and schedule.trim() != ''">
+                d.schedule like '%${schedule}%'
+            </if>
+        </where>
+        order by departure
+    </select>
+
+    <select id="departuresSearchCount" resultType="int" parameterType="wang.ultra.my_utilities.zbhd_scheduler.entity.Departures">
+        select count(*) from DEPARTURES
+        <where>
+            <if test="flightNo != null and flightNo.trim() != ''">
+                flight_no like '%${flightNo}%'
+            </if>
+        </where>
+    </select>
+</mapper>
