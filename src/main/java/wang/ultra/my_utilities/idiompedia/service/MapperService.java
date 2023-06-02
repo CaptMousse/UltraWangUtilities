@@ -7,10 +7,7 @@ import wang.ultra.my_utilities.idiompedia.mapper.IdiomsMapper;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service("mapperService")
 public class MapperService {
@@ -59,13 +56,13 @@ public class MapperService {
                                 // }
 
                                 IdiomEntity idiomEntity = new IdiomEntity();
-                                if (strArr[0] != "无") {
+                                if (!Objects.equals(strArr[0], "无")) {
                                     idiomEntity.setDerivation(strArr[0]);
                                 }
-                                if (strArr[1] != "无") {
+                                if (!Objects.equals(strArr[1], "无")) {
                                     idiomEntity.setExample(strArr[1]);
                                 }
-                                if (strArr[2] != "无") {
+                                if (!Objects.equals(strArr[2], "无")) {
                                     idiomEntity.setExplanation(strArr[2]);
                                 }
                                 idiomEntity.setPinyin(strArr[3]);
@@ -119,45 +116,30 @@ public class MapperService {
         }
     }
 
-    public List<Map<String, Object>> idiomsSearchByWord(String word) {
+    public Map<String, String> idiomsSearchByWord(String keyword) {
 
-        IdiomEntity idiomEntity = new IdiomEntity();
-        idiomEntity.setWord(word);
+        List<Map<String, Object>> wordList = idiomsMapper.idiomsSearchByWord(keyword);
 
-        List<Map<String, Object>> tempList = idiomsMapper.idiomsSearchByWord(word);
-        List<Map<String, Object>> resultList = new ArrayList<>();
+        Map<String, String> resultMap = new LinkedHashMap<>();
+        resultMap.put("word", String.valueOf(wordList.get(0).get("word")));
+        resultMap.put("pinyin", String.valueOf(wordList.get(0).get("pinyin")));
+        resultMap.put("explanation", String.valueOf(wordList.get(0).get("explanation")));
+        resultMap.put("derivation", String.valueOf(wordList.get(0).get("derivation")));
+        resultMap.put("example", String.valueOf(wordList.get(0).get("example")));
 
-        if (tempList.size() > 1) {
-            Map<String, Object> tempMap = tempList.get(0);
-            String id = String.valueOf(tempMap.get("uuid"));
-            idiomsMapper.idiomsDelete(id);
-
-            resultList = idiomsMapper.idiomsSearchByWord(word);
-        } else {
-            resultList = tempList;
-        }
-
-        return resultList;
+        return resultMap;
     }
 
     public List<Map<String, Object>> idiomsSearchBySort(int sort, String keyword) {
         List<Map<String, Object>> resultList = new ArrayList<>();
 
         switch (sort) {
-            case 1:
-            resultList = idiomsMapper.idiomsSearchByFirst(keyword);
-                break;
-            case 2:
-            resultList = idiomsMapper.idiomsSearchBySecond(keyword);
-                break;
-            case 3:
-            resultList = idiomsMapper.idiomsSearchByThird(keyword);
-                break;
-            case 4:
-            resultList = idiomsMapper.idiomsSearchByLast(keyword);
-                break;
-            default:
-                break;
+            case 1 -> resultList = idiomsMapper.idiomsSearchByFirst(keyword);
+            case 2 -> resultList = idiomsMapper.idiomsSearchBySecond(keyword);
+            case 3 -> resultList = idiomsMapper.idiomsSearchByThird(keyword);
+            case 4 -> resultList = idiomsMapper.idiomsSearchByLast(keyword);
+            default -> {
+            }
         }
 
         return resultList;

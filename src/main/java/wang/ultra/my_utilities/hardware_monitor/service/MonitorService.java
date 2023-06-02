@@ -25,6 +25,13 @@ public class MonitorService {
 
         LOG.info("HardwareMonitorService Started!");
         while (monitorStatus.equals("1")) {
+            try {
+                Thread.sleep(ConstantFromFile.getMonitorRate());
+//                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             System.out.println("\nMonitor Hardware time = " + DateConverter.getTime());
 
             // 监听CPU使用率
@@ -40,12 +47,7 @@ public class MonitorService {
             memoryAvailablePrevious = monitorMemory(monitorMemoryChange, memoryAvailablePrevious);
 
 
-            try {
-                Thread.sleep(ConstantFromFile.getMonitorRate());
-//                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+
 
             monitorStatus = ConstantFromFile.getHardwareMonitorStatus();
 

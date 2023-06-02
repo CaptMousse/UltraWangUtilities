@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wang.ultra.my_utilities.idiompedia.entity.IdiomEntity;
 import wang.ultra.my_utilities.idiompedia.service.MapperService;
 
 import java.util.List;
@@ -21,12 +22,12 @@ public class IdiomsController {
 
     @GetMapping("/insert")
     public String insert() {
-        Long timeStart = System.currentTimeMillis();
+        long timeStart = System.currentTimeMillis();
         System.out.println("timeStart = " + timeStart);
         mapperService.csvFile2Mapper("WabbyWabbo", "idiom.csv");
-        Long timeStop = System.currentTimeMillis();
+        long timeStop = System.currentTimeMillis();
         System.out.println("timeStop = " + timeStop);
-        Long timeTotal = timeStop - timeStart;
+        long timeTotal = timeStop - timeStart;
 
         String total;
         String timeTotalStr = String.valueOf(timeTotal);
@@ -43,8 +44,8 @@ public class IdiomsController {
     }
 
     @GetMapping("/selectByWord")
-    public String selectByWord(String word) {
-        return mapperService.idiomsSearchByWord(word).toString();
+    public Map<String, String> selectByWord(String word) {
+        return mapperService.idiomsSearchByWord(word);
     }
 
     @GetMapping("/selectBySort")

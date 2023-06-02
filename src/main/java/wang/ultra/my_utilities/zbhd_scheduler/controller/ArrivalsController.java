@@ -43,9 +43,7 @@ public class ArrivalsController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Map<String, Object> map : arrivalsList) {
-            returnList.add(map);
-        }
+        returnList.addAll(arrivalsList);
         return returnList;
     }
 
@@ -70,9 +68,7 @@ public class ArrivalsController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Map<String, Object> map : arrivalsSearchList) {
-            returnList.add(map);
-        }
+        returnList.addAll(arrivalsSearchList);
 
         return returnList;
     }
@@ -99,9 +95,7 @@ public class ArrivalsController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Map<String, Object> map : arrivalsTodayList) {
-            returnList.add(map);
-        }
+        returnList.addAll(arrivalsTodayList);
 
         return returnList;
     }
