@@ -14,16 +14,16 @@ import static wang.ultra.my_utilities.common.utils.FileIOUtils.createFile;
 public class DdnsMonitorService {
     private static final Logger LOG = LoggerFactory.getLogger(DdnsMonitorService.class);
 
-    private static Integer statusSesult = -1;
+    private static Integer statusResult = -1;
 
     private static String nextUpdateTime = null;
 
     public static Integer getStatusResult() {
-        return statusSesult;
+        return statusResult;
     }
 
-    public static void setStatusResult(Integer statusSesult) {
-        DdnsMonitorService.statusSesult = statusSesult;
+    public static void setStatusResult(Integer statusResult) {
+        DdnsMonitorService.statusResult = statusResult;
     }
 
     public static String getNextUpdateTime() {
@@ -48,7 +48,7 @@ public class DdnsMonitorService {
             String currentHostIP = GetMyIPv6.getIPv6();
 
             if (currentHostIP.equals("-1")) {
-                statusSesult = Integer.parseInt(currentHostIP);
+                statusResult = Integer.parseInt(currentHostIP);
                 System.out.println("==---->> IPv6 address may not exist!");
                 return;
             }
@@ -56,13 +56,13 @@ public class DdnsMonitorService {
             System.out.println("==---->> recordsHostIP = " + recordsHostIP);
             System.out.println("==---->> currentHostIP = " + currentHostIP);
             if (!currentHostIP.equals(recordsHostIP)) {
-                statusSesult = 1; // 需要更新
+                statusResult = 1; // 需要更新
                 return;
             }
-            statusSesult = 0;     // 无需更新
+            statusResult = 0;     // 无需更新
             return;
         }
-        statusSesult = -1;        // 状态出错
+        statusResult = -1;        // 状态出错
     }
 
 
@@ -73,7 +73,7 @@ public class DdnsMonitorService {
      */
     public static Integer update() {
 
-        if (statusSesult == 1) {
+        if (statusResult == 1) {
             UpdateDomainRecordRequest updateDomainRecordRequest = new UpdateDomainRecordRequest();
             updateDomainRecordRequest.setRecordId(DDNSUtils.getDomainRecords().get(0).getRecordId());
             updateDomainRecordRequest.setValue(GetMyIPv6.getIPv6());
@@ -90,11 +90,11 @@ public class DdnsMonitorService {
             String text = DateConverter.getTime() + " = " + updateDomainRecordRequest.getValue();
             createFile("Logs", "IPv6Logs.txt", 1, text);
 
-            statusSesult = 0;
+            statusResult = 0;
 
             return 1;
         }
-        if (statusSesult == 0) {
+        if (statusResult == 0) {
             return 0;
         }
         return -1;
@@ -108,7 +108,7 @@ public class DdnsMonitorService {
         LOG.info("DdnsMonitorService Started!");
         while (ddnsMonitorStatus.equals("1")) {
             getStatus();
-            if (statusSesult == 1) {
+            if (statusResult == 1) {
                 // 如果需要更新
                 update();
             }

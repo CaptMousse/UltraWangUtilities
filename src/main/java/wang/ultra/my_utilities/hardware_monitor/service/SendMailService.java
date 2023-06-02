@@ -11,7 +11,7 @@ public class SendMailService {
 
     public void sendCpuUsageMail(String cpuUsage) {
         String mailTo = ConstantFromFile.getMailTo();
-        String mailSubject = "【UltraWang监控报警】在" + DateConverter.getSimpleTime() + "CPU温度报警";
+        String mailSubject = "【UltraWang监控报警】在" + DateConverter.getSimpleTime() + "CPU使用率报警";
         String mailContent = "<h1 style=\"text-align: center;\">你家服务器的CPU都快累死了也不管嘛?</h1>" +
                 "<h3 style=\"text-align: center;\">当前CPU使用率: " + cpuUsage + "</h3>";
         sendMailCore(mailTo, mailSubject, mailContent);

@@ -15,7 +15,7 @@ AccessKeySecret = 41wmFNOQjaWcYtL3a7DwOmlmpgtjcH
 # 域名
 Domain = ultra.wang
 # 二级域名
-Hostname = test
+Hostname = mctest
 # 解析方式
 RecordType = AAAA
 

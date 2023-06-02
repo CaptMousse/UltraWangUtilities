@@ -101,4 +101,23 @@
             and length(word) = 12
         </where>
     </select>
+
+    <select id="idiomsSearchByQuestionMark" resultType="map" parameterType="wang.ultra.my_utilities.idiompedia.entity.IdiomEntity">
+        select word from idioms
+        <where>
+            <if test="word_1 != null and word_1.trim() != ''">
+                and word_1 = '${word_1}'
+            </if>
+            <if test="word_2 != null and word_2.trim() != ''">
+                and word_2 = '${word_2}'
+            </if>
+            <if test="word_3 != null and word_3.trim() != ''">
+                and word_3 = '${word_3}'
+            </if>
+            <if test="word_4 != null and word_4.trim() != ''">
+                and word_4 = '${word_4}'
+            </if>
+            and length(word) = 12
+        </where>
+    </select>
 </mapper>

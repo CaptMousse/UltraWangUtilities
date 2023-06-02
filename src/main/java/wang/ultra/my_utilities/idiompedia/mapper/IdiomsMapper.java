@@ -22,4 +22,6 @@ public interface IdiomsMapper {
     List<Map<String, Object>> idiomsSearchBySecond(String key);
     List<Map<String, Object>> idiomsSearchByThird(String key);
     List<Map<String, Object>> idiomsSearchByLast(String key);
+
+    List<Map<String, Object>> idiomsSearchByQuestionMark(IdiomEntity idiomEntity);
 }

@@ -1,6 +1,5 @@
 package wang.ultra.my_utilities.aliyun_ddns_update.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,7 @@ public class DDNSController {
      * @return -1 - 更新出错, 0 - 无需更新, 1 - 更新成功
      */
     @GetMapping("/update")
-    public Integer updateDDNS(HttpServletResponse response) {
+    public Integer updateDDNS() {
         return DdnsMonitorService.update();
     }
 
@@ -48,7 +47,7 @@ public class DDNSController {
         // 获取上次更新时间
         list.add(LogIOService.getPreviousUpdateList(1).get(0));
 
-        System.out.println("getStatus time = " + DateConverter.getTime());
+//        System.out.println("getStatus time = " + DateConverter.getTime());
 
         return list;
     }

@@ -2,15 +2,13 @@ package wang.ultra.my_utilities.idiompedia.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wang.ultra.my_utilities.common.utils.StringUtils;
 import wang.ultra.my_utilities.idiompedia.entity.IdiomEntity;
 import wang.ultra.my_utilities.idiompedia.mapper.IdiomsMapper;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service("mapperService")
 public class MapperService {
@@ -59,13 +57,13 @@ public class MapperService {
                                 // }
 
                                 IdiomEntity idiomEntity = new IdiomEntity();
-                                if (strArr[0] != "无") {
+                                if (!Objects.equals(strArr[0], "无")) {
                                     idiomEntity.setDerivation(strArr[0]);
                                 }
-                                if (strArr[1] != "无") {
+                                if (!Objects.equals(strArr[1], "无")) {
                                     idiomEntity.setExample(strArr[1]);
                                 }
-                                if (strArr[2] != "无") {
+                                if (!Objects.equals(strArr[2], "无")) {
                                     idiomEntity.setExplanation(strArr[2]);
                                 }
                                 idiomEntity.setPinyin(strArr[3]);
@@ -119,47 +117,76 @@ public class MapperService {
         }
     }
 
-    public List<Map<String, Object>> idiomsSearchByWord(String word) {
+    public Map<String, String> idiomsSearchByWord(String keyword) {
 
-        IdiomEntity idiomEntity = new IdiomEntity();
-        idiomEntity.setWord(word);
+        System.out.println("keyword = " + keyword);
 
-        List<Map<String, Object>> tempList = idiomsMapper.idiomsSearchByWord(word);
-        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<Map<String, Object>> wordList = idiomsMapper.idiomsSearchByWord(keyword);
 
-        if (tempList.size() > 1) {
-            Map<String, Object> tempMap = tempList.get(0);
-            String id = String.valueOf(tempMap.get("uuid"));
-            idiomsMapper.idiomsDelete(id);
-
-            resultList = idiomsMapper.idiomsSearchByWord(word);
-        } else {
-            resultList = tempList;
+        if (wordList.isEmpty()) {
+            return null;
         }
 
-        return resultList;
+        System.out.println("wordList = " + wordList);
+
+        Map<String, String> resultMap = new LinkedHashMap<>();
+        resultMap.put("word", String.valueOf(wordList.get(0).get("word")));
+        resultMap.put("pinyin", String.valueOf(wordList.get(0).get("pinyin")));
+        resultMap.put("explanation", String.valueOf(wordList.get(0).get("explanation")));
+        resultMap.put("derivation", String.valueOf(wordList.get(0).get("derivation")));
+        resultMap.put("example", String.valueOf(wordList.get(0).get("example")));
+
+        return resultMap;
     }
 
     public List<Map<String, Object>> idiomsSearchBySort(int sort, String keyword) {
         List<Map<String, Object>> resultList = new ArrayList<>();
 
         switch (sort) {
-            case 1:
-            resultList = idiomsMapper.idiomsSearchByFirst(keyword);
-                break;
-            case 2:
-            resultList = idiomsMapper.idiomsSearchBySecond(keyword);
-                break;
-            case 3:
-            resultList = idiomsMapper.idiomsSearchByThird(keyword);
-                break;
-            case 4:
-            resultList = idiomsMapper.idiomsSearchByLast(keyword);
-                break;
-            default:
-                break;
+            case 1 -> resultList = idiomsMapper.idiomsSearchByFirst(keyword);
+            case 2 -> resultList = idiomsMapper.idiomsSearchBySecond(keyword);
+            case 3 -> resultList = idiomsMapper.idiomsSearchByThird(keyword);
+            case 4 -> resultList = idiomsMapper.idiomsSearchByLast(keyword);
+            default -> {
+            }
         }
 
         return resultList;
+    }
+
+    public List<Map<String, Object>> idiomsSearchByQuestionMark(String keyword) {
+
+        String key1 = StringUtils.isChinese(String.valueOf(keyword.charAt(0)));
+        String key2 = StringUtils.isChinese(String.valueOf(keyword.charAt(1)));
+        String key3 = StringUtils.isChinese(String.valueOf(keyword.charAt(2)));
+        String key4 = StringUtils.isChinese(String.valueOf(keyword.charAt(3)));
+
+        boolean flag = false;
+        IdiomEntity idiomEntity = new IdiomEntity();
+
+        if (key1 != null) {
+            idiomEntity.setWord_1(key1);
+            flag = true;
+        }
+        if (key2 != null) {
+            idiomEntity.setWord_2(key2);
+            flag = true;
+        }
+        if (key3 != null) {
+            idiomEntity.setWord_3(key3);
+            flag = true;
+        }
+        if (key4 != null) {
+            idiomEntity.setWord_4(key4);
+            flag = true;
+        }
+
+        if (flag) {
+            return idiomsMapper.idiomsSearchByQuestionMark(idiomEntity);
+        } else {
+            List<Map<String, Object>> returnList = new ArrayList<>();
+            return returnList;
+        }
+
     }
 }

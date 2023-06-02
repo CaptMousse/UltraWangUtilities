@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wang.ultra.my_utilities.idiompedia.service.MapperService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,12 +23,12 @@ public class IdiomsController {
 
     @GetMapping("/insert")
     public String insert() {
-        Long timeStart = System.currentTimeMillis();
+        long timeStart = System.currentTimeMillis();
         System.out.println("timeStart = " + timeStart);
         mapperService.csvFile2Mapper("WabbyWabbo", "idiom.csv");
-        Long timeStop = System.currentTimeMillis();
+        long timeStop = System.currentTimeMillis();
         System.out.println("timeStop = " + timeStop);
-        Long timeTotal = timeStop - timeStart;
+        long timeTotal = timeStop - timeStart;
 
         String total;
         String timeTotalStr = String.valueOf(timeTotal);
@@ -43,13 +45,28 @@ public class IdiomsController {
     }
 
     @GetMapping("/selectByWord")
-    public String selectByWord(String word) {
-        return mapperService.idiomsSearchByWord(word).toString();
+    public Map<String, String> selectByWord(String word) {
+        Map<String, String> resultMap = mapperService.idiomsSearchByWord(word);
+
+        if (resultMap == null) {
+            return new HashMap<>();
+        }
+
+        return resultMap;
     }
 
     @GetMapping("/selectBySort")
     public List<Map<String, Object>> selectBySort(String sort, String word) {
         return mapperService.idiomsSearchBySort(Integer.parseInt(sort), word);
+    }
+
+    @GetMapping("/selectByQuestionMark")
+    public List<Map<String, Object>> selectBySort(String word) {
+
+        if (word.length() > 4) {
+            return new ArrayList<>();
+        }
+        return mapperService.idiomsSearchByQuestionMark(word);
     }
 
 }
