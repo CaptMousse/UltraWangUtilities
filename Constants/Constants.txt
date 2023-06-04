@@ -15,7 +15,7 @@ AccessKeySecret = 41wmFNOQjaWcYtL3a7DwOmlmpgtjcH
 # 域名
 Domain = ultra.wang
 # 二级域名
-Hostname = mctest
+Hostname = test
 # 解析方式
 RecordType = AAAA
 
@@ -47,7 +47,7 @@ MailTo = sefvdx@me.com
 # 0代表停止, 1代表开启
 HardwareMonitorStatus = 1
 # 监听频率(时间间隔)
-MonitorRate = 60000
+MonitorRate = 1000
 # 监听CPU使用率
 MonitorCpuUsage = 90
 # 监听CPU温度

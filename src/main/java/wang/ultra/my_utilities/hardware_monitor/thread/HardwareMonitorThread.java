@@ -1,7 +1,7 @@
-package wang.ultra.my_utilities.common.thread;
+package wang.ultra.my_utilities.hardware_monitor.thread;
 
 
-import wang.ultra.my_utilities.common.thread.runnable.HardwareMonitorRunnable;
+import wang.ultra.my_utilities.hardware_monitor.thread.runnable.HardwareMonitorRunnable;
 
 public class HardwareMonitorThread {
 

@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.thread.runnable;
+package wang.ultra.my_utilities.aliyun_ddns_update.thread.runnable;
 
 
 import org.slf4j.Logger;
