@@ -2,6 +2,7 @@ package wang.ultra.my_utilities.idiompedia.mapper;
 
 
 
+import org.apache.ibatis.annotations.Param;
 import wang.ultra.my_utilities.idiompedia.entity.IdiomEntity;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface IdiomsMapper {
     void idiomsAdd(List<IdiomEntity> i);
 
     void idiomsDelete(String id);
+
+    void idiomsAmountCount(@Param("amount") long amount, @Param("id") String id);
     
     List<Map<String, Object>> idiomsSearchByWord(String word);
 

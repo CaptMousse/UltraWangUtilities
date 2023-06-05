@@ -75,6 +75,12 @@ public class ConstantFromFile {
     // 监控内存变化
     private static Double MonitorMemoryChange;
 
+    // 限流峰值
+    private static Long LimitingPeak;
+
+    // 限流QPS
+    private static Long LimitingQPS;
+
 
     private static Map<String, String> constMap = new HashMap<>();
 
@@ -84,6 +90,7 @@ public class ConstantFromFile {
      * @return
      */
     public static Integer setConstFromMap() {
+        LOG.info("Constants Now Loading...");
         String filePath = System.getProperty("user.dir") + File.separator + "Constants";
         String fileName = "Constants.txt";
         ConstantFromFile.constMap = FileIOUtils.readFile(filePath, fileName);
@@ -119,10 +126,13 @@ public class ConstantFromFile {
             ConstantFromFile.MonitorCpuUsage = Double.valueOf(constMap.get("MonitorCpuUsage"));
             ConstantFromFile.MonitorCpuTemperature = Double.valueOf(constMap.get("MonitorCpuTemperature"));
             ConstantFromFile.MonitorMemoryChange = Double.valueOf(constMap.get("MonitorMemoryChange"));
-            LOG.info("constMap load success!");
+
+            ConstantFromFile.LimitingPeak = Long.valueOf(constMap.get("LimitingPeak"));
+            ConstantFromFile.LimitingQPS = Long.valueOf(constMap.get("LimitingQPS"));
+            LOG.info("Constants Load Success!");
             return 1;
         }
-        LOG.error("constMap load failed!");
+        LOG.error("Constants Load Failure!");
         return -1;
     }
 
@@ -317,4 +327,22 @@ public class ConstantFromFile {
     public static void setMonitorMemoryChange(Double monitorMemoryChange) {
         MonitorMemoryChange = monitorMemoryChange;
     }
+
+    public static Long getLimitingPeak() {
+        return LimitingPeak;
+    }
+
+    public static void setLimitingPeak(Long limitingPeak) {
+        LimitingPeak = limitingPeak;
+    }
+
+    public static Long getLimitingQPS() {
+        return LimitingQPS;
+    }
+
+    public static void setLimitingQPS(Long limitingQPS) {
+        LimitingQPS = limitingQPS;
+    }
+
+
 }

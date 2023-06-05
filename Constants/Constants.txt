@@ -47,10 +47,15 @@ MailTo = sefvdx@me.com
 # 0代表停止, 1代表开启
 HardwareMonitorStatus = 1
 # 监听频率(时间间隔)
-MonitorRate = 1000
+MonitorRate = 60000
 # 监听CPU使用率
 MonitorCpuUsage = 90
 # 监听CPU温度
 MonitorCpuTemperature = 80
 # 监听内存变动
 MonitorMemoryChange = 10
+
+# 限流峰值
+LimitingPeak = 10
+# 限流QPS
+LimitingQPS = 1

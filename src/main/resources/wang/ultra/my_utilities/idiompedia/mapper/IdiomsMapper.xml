@@ -13,6 +13,12 @@
         delete from idioms where uuid = #{id}
     </delete>
 
+    <update id="idiomsAmountCount">
+        update idioms set amount = #{amount} where uuid = #{id}
+    </update>
+
+
+
     <sql id="idiomsSelectSql">
         select * from idioms
     </sql>

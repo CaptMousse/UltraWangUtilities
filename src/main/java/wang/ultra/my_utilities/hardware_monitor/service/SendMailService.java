@@ -27,12 +27,12 @@ public class SendMailService {
 
     public void sendMemoryMail(Map<String, String> memoryMap) {
         String memoryChange = memoryMap.get("memoryChange");
-        String memoryAvailableNow = memoryMap.get("memoryAvailableNow");
+        String memoryUsage = memoryMap.get("memoryUsage");
         String mailTo = ConstantFromFile.getMailTo();
         String mailSubject = "【UltraWang监控报警】在" + DateConverter.getSimpleTime() + "内存监控报警";
-        String mailContent = "<h1 style=\"text-align: center;\">内存变化过快!</h1>" +
+        String mailContent = "<h1 style=\"text-align: center;\">内存变化稍微有那么亿点点快了!</h1>" +
                 "<h3 style=\"text-align: center;\">当前内存变动: " + memoryChange + "</h3>" +
-                "<h3 style=\"text-align: center;\">当前内存使用率: " + memoryAvailableNow + "</h3>";
+                "<h3 style=\"text-align: center;\">当前内存使用率: " + memoryUsage + "</h3>";
 
         sendMailCore(mailTo, mailSubject, mailContent);
     }

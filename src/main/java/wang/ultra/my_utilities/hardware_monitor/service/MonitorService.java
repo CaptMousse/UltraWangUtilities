@@ -89,27 +89,24 @@ public class MonitorService {
     /**
      * 比对内存现值和前值
      *
-     * @param monitorMemoryChange
-     * @param memoryAvailablePrevious
-     * @return
      */
-    private Double monitorMemory(Double monitorMemoryChange, Double memoryAvailablePrevious) {
-        Double memoryAvailableNow = hardwareUsageService.getMemoryUsage();
+    private Double monitorMemory(Double monitorMemoryChange, Double memoryUsagePrevious) {
+        Double memoryUsage = hardwareUsageService.getMemoryUsage();
 
-        double memoryChange = memoryAvailableNow - memoryAvailablePrevious;
-        String memoryAvailableNowStr = String.format("%.2f", memoryAvailableNow) + "%";
+        double memoryChange = memoryUsage - memoryUsagePrevious;
+        String memoryUsageStr = String.format("%.2f", memoryUsage) + "%";
         String memoryChangeStr = String.format("%.2f", memoryChange) + "%";
-        System.out.println("memoryAvailableNow = " + memoryAvailableNowStr);
+        System.out.println("memoryUsage = " + memoryUsageStr);
 
         if (Math.abs(memoryChange) >= monitorMemoryChange) {
             Map<String, String> memoryMap = new HashMap<>();
             memoryMap.put("memoryChange", memoryChangeStr);
-            memoryMap.put("memoryAvailableNow", memoryAvailableNowStr);
+            memoryMap.put("memoryUsage", memoryUsageStr);
             // 发送邮件
             sendMailService.sendMemoryMail(memoryMap);
 
         }
-        memoryAvailablePrevious = memoryAvailableNow;
-        return memoryAvailablePrevious;
+        memoryUsagePrevious = memoryUsage;
+        return memoryUsagePrevious;
     }
 }

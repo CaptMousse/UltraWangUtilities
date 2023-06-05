@@ -20,6 +20,7 @@ public class IdiomEntity {
     private String explanation;
     private String derivation;
     private String example;
+    private long amount;
 
     // uuid, word, pinyin, pinyin_r, pinyin_simple, pinyin_first, pinyin_last,
     // explanation, derivation, example

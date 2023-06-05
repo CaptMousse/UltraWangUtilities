@@ -119,15 +119,13 @@ public class MapperService {
 
     public Map<String, String> idiomsSearchByWord(String keyword) {
 
-        System.out.println("keyword = " + keyword);
-
         List<Map<String, Object>> wordList = idiomsMapper.idiomsSearchByWord(keyword);
 
         if (wordList.isEmpty()) {
             return null;
         }
 
-        System.out.println("wordList = " + wordList);
+
 
         Map<String, String> resultMap = new LinkedHashMap<>();
         resultMap.put("word", String.valueOf(wordList.get(0).get("word")));
@@ -135,6 +133,17 @@ public class MapperService {
         resultMap.put("explanation", String.valueOf(wordList.get(0).get("explanation")));
         resultMap.put("derivation", String.valueOf(wordList.get(0).get("derivation")));
         resultMap.put("example", String.valueOf(wordList.get(0).get("example")));
+
+        long amount = Long.parseLong(String.valueOf(wordList.get(0).get("amount"))) + 1;
+        resultMap.put("amount", String.valueOf(amount));
+
+
+
+        String id = String.valueOf(wordList.get(0).get("uuid"));
+
+
+        idiomsMapper.idiomsAmountCount(amount, id);
+
 
         return resultMap;
     }
