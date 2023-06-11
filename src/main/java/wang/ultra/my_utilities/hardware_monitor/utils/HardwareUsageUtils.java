@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.utils;
+package wang.ultra.my_utilities.hardware_monitor.utils;
 
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;

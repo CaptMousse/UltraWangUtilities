@@ -3,23 +3,29 @@ server:
 
 spring: 
     datasource:
-        1:
+        zbhdcheduler:
             username: phpmyadmin
             password: SEFvdx521`
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://192.168.1.3:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
 #           url: jdbc:mysql://127.0.0.1:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
-        2:
+        idiompedia:
             username: phpmyadmin
             password: SEFvdx521`
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://192.168.1.3:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
 #           url: jdbc:mysql://127.0.0.1:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            driver-class-name: com.mysql.cj.jdbc.Driver
+        monitor:
+            username: phpmyadmin
+            password: SEFvdx521`
+            jdbc-url: jdbc:mysql://192.168.1.3:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
     level:
         wang.ultra.my_utilities.zbhd_scheduler.mapper: trace
         wang.ultra.my_utilities.idiompedia.mapper: trace
+        wang.ultra.my_utilities.common.monitor.mapper: trace
 
     # mybatis:
     # mapper-locations: classpath:wang.ultra.utilities.zbhd_scheduler.mapper/*Mapper.xml

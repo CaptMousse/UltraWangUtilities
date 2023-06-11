@@ -10,8 +10,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-@Service("mapperService")
-public class MapperService {
+@Service("idiomsService")
+public class IdiomsService {
 
     @Autowired
     IdiomsMapper idiomsMapper;
@@ -137,12 +137,8 @@ public class MapperService {
         long amount = Long.parseLong(String.valueOf(wordList.get(0).get("amount"))) + 1;
         resultMap.put("amount", String.valueOf(amount));
 
-
-
-        String id = String.valueOf(wordList.get(0).get("uuid"));
-
-
-        idiomsMapper.idiomsAmountCount(amount, id);
+        // 记录访问量
+        idiomsMapper.idiomsAmountCount(amount, String.valueOf(wordList.get(0).get("uuid")));
 
 
         return resultMap;
@@ -193,9 +189,25 @@ public class MapperService {
         if (flag) {
             return idiomsMapper.idiomsSearchByQuestionMark(idiomEntity);
         } else {
-            List<Map<String, Object>> returnList = new ArrayList<>();
-            return returnList;
+            return new ArrayList<>();
         }
 
+    }
+
+    public Map<String, String> idiomSearchByRandom() {
+        Map<String, Object> resultMap = idiomsMapper.idiomSearchByRandom().get(0);
+
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("word", String.valueOf(resultMap.get("word")));
+        returnMap.put("pinyin", String.valueOf(resultMap.get("pinyin")));
+        returnMap.put("explanation", String.valueOf(resultMap.get("explanation")));
+        returnMap.put("derivation", String.valueOf(resultMap.get("derivation")));
+        returnMap.put("example", String.valueOf(resultMap.get("example")));
+
+        long amount = Long.parseLong(String.valueOf(resultMap.get("amount"))) + 1;
+
+        idiomsMapper.idiomsAmountCount(amount, String.valueOf(resultMap.get("uuid")));
+
+        return returnMap;
     }
 }

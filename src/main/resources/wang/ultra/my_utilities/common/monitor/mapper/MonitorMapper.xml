@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.common.monitor.mapper.MonitorMapper">
+
+    <insert id="addMonitorInfo" parameterType="list">
+        insert into monitor_info (id, record_time, dev, type) values
+        <foreach collection="list" separator="," item="MonitorEntity">
+            ('${MonitorEntity.id}', '${MonitorEntity.record_time}', '${MonitorEntity.dev}', '${MonitorEntity.type}')
+        </foreach>
+    </insert>
+
+    <insert id="addHardwareCpuUsage" parameterType="list">
+        insert into hardware_cpu_usage (id, value) values
+        <foreach collection="list" separator="," item="MonitorEntity">
+            ('${MonitorEntity.id}', '${MonitorEntity.cpuUsage}')
+        </foreach>
+    </insert>
+    <insert id="addHardwareCpuTemperature" parameterType="list">
+        insert into hardware_cpu_temperature (id, value) values
+        <foreach collection="list" separator="," item="MonitorEntity">
+            ('${MonitorEntity.id}', '${MonitorEntity.cpuTemperature}')
+        </foreach>
+    </insert>
+    <insert id="addHardwareMemoryUsage" parameterType="list">
+        insert into hardware_memory_usage (id, value) values
+        <foreach collection="list" separator="," item="MonitorEntity">
+            ('${MonitorEntity.id}', '${MonitorEntity.memoryUsage}')
+        </foreach>
+    </insert>
+    <insert id="addDdnsIpv6" parameterType="list">
+        insert into ddns_ipv6 (id, value) values
+        <foreach collection="list" separator="," item="MonitorEntity">
+            ('${MonitorEntity.id}', '${MonitorEntity.ddnsIpv6}')
+        </foreach>
+    </insert>
+
+    <select id="showHardwareMonitorInHour" resultType="map" >
+        SELECT SUBSTRING(mi.record_time, 9) time, cu.value cpuUsage, ct.value cpuTemperature, mu.value memoryUsage FROM monitor_info mi
+        LEFT JOIN hardware_cpu_usage cu ON (mi.id = cu.id)
+        LEFT JOIN hardware_cpu_temperature ct ON (mi.id = ct.id)
+        LEFT JOIN hardware_memory_usage mu ON (mi.id = mu.id)
+
+        ORDER BY mi.record_time
+        LIMIT 60;
+    </select>
+
+</mapper>

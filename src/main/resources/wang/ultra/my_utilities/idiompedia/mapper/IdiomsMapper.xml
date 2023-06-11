@@ -126,4 +126,8 @@
             and length(word) = 12
         </where>
     </select>
+
+    <select id="idiomSearchByRandom" resultType="map" >
+        select * from idioms where length(word) = 12 order by rand limit 1
+    </select>
 </mapper>

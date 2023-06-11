@@ -3,101 +3,61 @@ package wang.ultra.my_utilities.hardware_monitor.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
+import wang.ultra.my_utilities.common.monitor.entity.MonitorEntity;
+import wang.ultra.my_utilities.common.monitor.service.HardwareMonitorService;
+import wang.ultra.my_utilities.common.utils.SpringUtil;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MonitorService {
+
     private static final Logger LOG = LoggerFactory.getLogger(MonitorService.class);
 
     HardwareUsageService hardwareUsageService = new HardwareUsageService();
 
     SendMailService sendMailService = new SendMailService();
 
-    public void loop() {
+    Double memoryUsagePrevious = hardwareUsageService.getMemoryUsage();
 
-        // 获取监听状态 0 - 停止, 1 - 运行
-        String monitorStatus = ConstantFromFile.getHardwareMonitorStatus();
+    Double monitorCpuUsage = ConstantFromFile.getMonitorCpuUsage();
+    Double monitorCpuTemperature = ConstantFromFile.getMonitorCpuTemperature();
+    Double monitorMemoryChange = ConstantFromFile.getMonitorMemoryChange();
 
-        // 获取内存前值
-        Double memoryAvailablePrevious = hardwareUsageService.getMemoryUsage();
+    public void monitor() {
 
-        LOG.info("HardwareMonitorService Started!");
-        while (monitorStatus.equals("1")) {
-            try {
-                Thread.sleep(ConstantFromFile.getMonitorRate());
-//                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            System.out.println("\nMonitor Hardware time = " + DateConverter.getTime());
-
-            // 监听CPU使用率
-            Double monitorCpuUsage = ConstantFromFile.getMonitorCpuUsage();
-            monitorCpuUsage(monitorCpuUsage);
-
-            // 监听CPU温度
-            Double monitorCpuTemperature = ConstantFromFile.getMonitorCpuTemperature();
-            monitorCpuTemperature(monitorCpuTemperature);
-
-            // 监听内存变动
-            Double monitorMemoryChange = ConstantFromFile.getMonitorMemoryChange();
-            memoryAvailablePrevious = monitorMemory(monitorMemoryChange, memoryAvailablePrevious);
-
-
-
-
-            monitorStatus = ConstantFromFile.getHardwareMonitorStatus();
-
-        }
-
-        System.out.println("Monitor Status = " + monitorStatus);
-    }
-
-    /**
-     * 监听CPU用量
-     * @param monitorCpuUsage
-     */
-    private void monitorCpuUsage(Double monitorCpuUsage) {
+        // CPU用量
         Double cpuUsage = hardwareUsageService.getCpuUsage();
         String cpuUsageStr = String.format("%.2f", cpuUsage) + "%";
-        System.out.println("cpuUsage = " + cpuUsageStr);
 
+        // CPU温度
+        Double cpuTemperature = hardwareUsageService.getCpuTemperature();
+        String cpuTemperatureStr = String.format("%.2f", cpuTemperature) + "°C";
+
+        // 内存用量
+        Double memoryUsage = hardwareUsageService.getMemoryUsage();
+        String memoryUsageStr = String.format("%.2f", memoryUsage) + "%";
+        double memoryChange = memoryUsage - memoryUsagePrevious;
+        String memoryChangeStr = String.format("%.2f", memoryChange) + "%";
+        memoryUsagePrevious = memoryUsage;
+
+        System.out.println("硬件监控时间 = " + DateConverter.getTime());
+        System.out.println("CPU用量 = " + cpuUsageStr);
+        System.out.println("CPU温度 = " + cpuTemperatureStr);
+        System.out.println("内存变化 = " + memoryChangeStr);
+        System.out.println("内存用量 = " + memoryUsageStr);
+        System.out.println("\n");
+
+
+        // 硬件监控发邮件报警
         if (cpuUsage >= monitorCpuUsage) {
             sendMailService.sendCpuUsageMail(cpuUsageStr);
         }
-    }
-
-    /**
-     * 监听CPU温度
-     *
-     * @param monitorCpuTemperature
-     */
-    private void monitorCpuTemperature(Double monitorCpuTemperature) {
-        Double cpuTemperature = hardwareUsageService.getCpuTemperature();
-        String cpuTemperatureStr = String.format("%.2f", hardwareUsageService.getCpuTemperature()) + "°C";
-        System.out.println("cpuTemperature = " + cpuTemperatureStr);
         if (cpuTemperature >= monitorCpuTemperature) {
             sendMailService.sendCpuTemperatureMail(cpuTemperatureStr);
+
         }
-    }
-
-
-
-    /**
-     * 比对内存现值和前值
-     *
-     */
-    private Double monitorMemory(Double monitorMemoryChange, Double memoryUsagePrevious) {
-        Double memoryUsage = hardwareUsageService.getMemoryUsage();
-
-        double memoryChange = memoryUsage - memoryUsagePrevious;
-        String memoryUsageStr = String.format("%.2f", memoryUsage) + "%";
-        String memoryChangeStr = String.format("%.2f", memoryChange) + "%";
-        System.out.println("memoryUsage = " + memoryUsageStr);
-
         if (Math.abs(memoryChange) >= monitorMemoryChange) {
             Map<String, String> memoryMap = new HashMap<>();
             memoryMap.put("memoryChange", memoryChangeStr);
@@ -106,7 +66,16 @@ public class MonitorService {
             sendMailService.sendMemoryMail(memoryMap);
 
         }
-        memoryUsagePrevious = memoryUsage;
-        return memoryUsagePrevious;
+
+
+
+        // 硬件监控持久化到数据库
+        MonitorEntity entity = new MonitorEntity();
+        entity.setCpuUsage(cpuUsageStr);
+        entity.setCpuTemperature(cpuTemperatureStr);
+        entity.setMemoryUsage(memoryUsageStr);
+        HardwareMonitorService hardwareMonitorService = SpringUtil.getBean(HardwareMonitorService.class);
+        hardwareMonitorService.hardwareMonitorRecord(entity);
     }
+
 }

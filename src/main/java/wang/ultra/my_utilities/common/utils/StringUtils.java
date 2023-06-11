@@ -1,9 +1,11 @@
 package wang.ultra.my_utilities.common.utils;
 
+import java.util.UUID;
+
 public class StringUtils {
 
     /**
-     * 判断是否是汉字, 建议传一个字符进来
+     * 判断是否是汉字, 是汉字就传回去, 不是就是null
      * @param string
      * @return
      */
@@ -16,5 +18,9 @@ public class StringUtils {
             }
         }
         return string;
+    }
+
+    public static String getMyUUID() {
+        return String.valueOf(UUID.randomUUID()).replaceAll("-", "");
     }
 }

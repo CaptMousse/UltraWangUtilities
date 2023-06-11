@@ -1,8 +1,8 @@
 #注意, 分割符是" = ", 等号前后有空格
 
-# DDNS时间间隔
+# DDNS监听频率(时间间隔, 单位小时)
 # DdnsIntervalTime = 3600000
-DdnsIntervalTime = 3600000
+DdnsIntervalTime = 1
 # DDNS监控开关
 DdnsMonitorStatus = 1
 
@@ -14,7 +14,7 @@ AccessKeyID = LTAI5tAPzbaceZdp5NdfGuTw
 AccessKeySecret = 41wmFNOQjaWcYtL3a7DwOmlmpgtjcH
 # 域名
 Domain = ultra.wang
-# 二级域名
+# 二级域名 (也是开发环境的判定条件, dev即代表开发环境)
 Hostname = test
 # 解析方式
 RecordType = AAAA
@@ -46,8 +46,8 @@ MailTo = sefvdx@me.com
 # 监听状态
 # 0代表停止, 1代表开启
 HardwareMonitorStatus = 1
-# 监听频率(时间间隔)
-MonitorRate = 60000
+# 监听频率(时间间隔, 单位分钟)
+MonitorRate = 1
 # 监听CPU使用率
 MonitorCpuUsage = 90
 # 监听CPU温度

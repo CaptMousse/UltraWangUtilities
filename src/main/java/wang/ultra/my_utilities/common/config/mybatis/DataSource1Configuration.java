@@ -16,21 +16,21 @@ import javax.sql.DataSource;
         sqlSessionFactoryRef = "sqlSessionFactory1",
         sqlSessionTemplateRef = "sqlSessionTemplate1")
 public class DataSource1Configuration {
-     private final DataSource dataSource;
+    private final DataSource dataSource1;
 
-     public DataSource1Configuration(@Qualifier("dataSource1") DataSource dataSource1) {
-        this.dataSource = dataSource1;
+    public DataSource1Configuration(@Qualifier("dataSource1") DataSource dataSource1) {
+        this.dataSource1 = dataSource1;
     }
 
     @Bean
     public SqlSessionFactory sqlSessionFactory1() throws Exception {
-         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-         sqlSessionFactoryBean.setDataSource(dataSource);
-         return sqlSessionFactoryBean.getObject();
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource1);
+        return sqlSessionFactoryBean.getObject();
     }
 
     @Bean
     public SqlSessionTemplate sqlSessionTemplate1() throws Exception {
-         return new SqlSessionTemplate(sqlSessionFactory1());
+        return new SqlSessionTemplate(sqlSessionFactory1());
     }
 }

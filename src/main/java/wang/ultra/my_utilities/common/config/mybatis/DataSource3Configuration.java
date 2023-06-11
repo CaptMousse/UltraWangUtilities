@@ -12,25 +12,25 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(
-        basePackages = "wang.ultra.my_utilities.idiompedia.mapper",
-        sqlSessionFactoryRef = "sqlSessionFactory2",
-        sqlSessionTemplateRef = "sqlSessionTemplate2")
-public class DataSource2Configuration {
-    private final DataSource dataSource;
+        basePackages = "wang.ultra.my_utilities.common.monitor.mapper",
+        sqlSessionFactoryRef = "sqlSessionFactory3",
+        sqlSessionTemplateRef = "sqlSessionTemplate3")
+public class DataSource3Configuration {
+    private final DataSource dataSource3;
 
-    public DataSource2Configuration(@Qualifier("dataSource2") DataSource dataSource2) {
-        this.dataSource = dataSource2;
+    public DataSource3Configuration(@Qualifier("dataSource3") DataSource dataSource3) {
+        this.dataSource3 = dataSource3;
     }
 
     @Bean
-    public SqlSessionFactory sqlSessionFactory2() throws Exception {
+    public SqlSessionFactory sqlSessionFactory3() throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(dataSource);
+        sqlSessionFactoryBean.setDataSource(dataSource3);
         return sqlSessionFactoryBean.getObject();
     }
 
     @Bean
-    public SqlSessionTemplate sqlSessionTemplate2() throws Exception {
-        return new SqlSessionTemplate(sqlSessionFactory2());
+    public SqlSessionTemplate sqlSessionTemplate3() throws Exception {
+        return new SqlSessionTemplate(sqlSessionFactory3());
     }
 }

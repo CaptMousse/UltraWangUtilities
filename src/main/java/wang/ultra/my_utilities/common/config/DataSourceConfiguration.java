@@ -10,14 +10,20 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfiguration {
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.1")
+    @ConfigurationProperties(prefix = "spring.datasource.zbhdcheduler")
     public DataSource dataSource1() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.2")
+    @ConfigurationProperties(prefix = "spring.datasource.idiompedia")
     public DataSource dataSource2() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.monitor")
+    public DataSource dataSource3() {
         return DataSourceBuilder.create().build();
     }
 }

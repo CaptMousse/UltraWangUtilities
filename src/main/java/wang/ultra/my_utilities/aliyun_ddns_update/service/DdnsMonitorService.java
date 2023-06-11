@@ -40,27 +40,29 @@ public class DdnsMonitorService {
     public static void getStatus() {
 
         DDNSUtils.setDomainRecords();
-        System.out.println("\n==---->> Describing Time = " + DateConverter.getTime());
+        System.out.println("\n==---->> IPv6地址比对时间 = " + DateConverter.getTime());
 
         if (DDNSUtils.getDomainRecords().size() != 0) {
             DescribeDomainRecordsResponse.Record record = DDNSUtils.getDomainRecords().get(0);
             String recordsHostIP = record.getValue();
+            System.out.println("==---->> IPv6地址记录值 = " + recordsHostIP);
             String currentHostIP = GetMyIPv6.getIPv6();
-
-            if (currentHostIP.equals("-1")) {
-                statusResult = Integer.parseInt(currentHostIP);
-                System.out.println("==---->> IPv6 address may not exist!");
-                return;
-            }
-
-            System.out.println("==---->> recordsHostIP = " + recordsHostIP);
-            System.out.println("==---->> currentHostIP = " + currentHostIP);
+            System.out.println("==---->> IPv6地址当前值 = " + currentHostIP);
             if (!currentHostIP.equals(recordsHostIP)) {
                 statusResult = 1; // 需要更新
                 return;
             }
+
+            if (currentHostIP.equals("-1")) {
+                statusResult = Integer.parseInt(currentHostIP);
+                System.out.println("==---->> IPv6地址可能不存在");
+                return;
+            }
+
             statusResult = 0;     // 无需更新
             return;
+        } else {
+            System.out.println("==---->> IPv6地址更新失败");
         }
         statusResult = -1;        // 状态出错
     }
@@ -101,12 +103,8 @@ public class DdnsMonitorService {
     }
 
     // 监听
-    public static void loop()  {
-        // 获取监听状态 0 - 停止, 1 - 运行
-        String ddnsMonitorStatus = ConstantFromFile.getDdnsMonitorStatus();
+    public void monitor()  {
 
-        LOG.info("DdnsMonitorService Started!");
-        while (ddnsMonitorStatus.equals("1")) {
             getStatus();
             if (statusResult == 1) {
                 // 如果需要更新
@@ -115,13 +113,7 @@ public class DdnsMonitorService {
             // 记录下次更新时间
             nextUpdateTime = DateConverter.getTime(System.currentTimeMillis() + ConstantFromFile.getDdnsIntervalTime());
 
-            try {
-                Thread.sleep(ConstantFromFile.getDdnsIntervalTime());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
-            ddnsMonitorStatus = ConstantFromFile.getDdnsMonitorStatus();
-        }
+
     }
 }

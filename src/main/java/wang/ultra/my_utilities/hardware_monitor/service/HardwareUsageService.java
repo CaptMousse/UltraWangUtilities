@@ -2,7 +2,7 @@ package wang.ultra.my_utilities.hardware_monitor.service;
 
 
 
-import wang.ultra.my_utilities.common.utils.HardwareUsageUtils;
+import wang.ultra.my_utilities.hardware_monitor.utils.HardwareUsageUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
