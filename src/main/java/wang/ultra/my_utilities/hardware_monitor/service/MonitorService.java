@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.monitor.entity.MonitorEntity;
 import wang.ultra.my_utilities.common.monitor.service.HardwareMonitorService;
-import wang.ultra.my_utilities.common.utils.SpringUtil;
 import wang.ultra.my_utilities.common.utils.DateConverter;
+import wang.ultra.my_utilities.common.utils.SpringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +41,6 @@ public class MonitorService {
         double memoryChange = memoryUsage - memoryUsagePrevious;
         String memoryChangeStr = String.format("%.2f", memoryChange) + "%";
         memoryUsagePrevious = memoryUsage;
-
-        System.out.println("硬件监控时间 = " + DateConverter.getTime());
-        System.out.println("CPU用量 = " + cpuUsageStr);
-        System.out.println("CPU温度 = " + cpuTemperatureStr);
-        System.out.println("内存变化 = " + memoryChangeStr);
-        System.out.println("内存用量 = " + memoryUsageStr);
-        System.out.println("\n");
-
 
         // 硬件监控发邮件报警
         if (cpuUsage >= monitorCpuUsage) {

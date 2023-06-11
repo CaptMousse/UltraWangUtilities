@@ -28,7 +28,6 @@ public class HardUsageController {
     @GetMapping("/hardwareUsage")
     public List<String> hardwareUsage() {
         HardwareUsageService hardwareUsageService = new HardwareUsageService();
-        System.out.println("Request hardwareUsage time = " + DateConverter.getTime());
         return hardwareUsageService.getAllUsage();
     }
 
