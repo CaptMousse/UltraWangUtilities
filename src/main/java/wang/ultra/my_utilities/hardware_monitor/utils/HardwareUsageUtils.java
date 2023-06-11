@@ -75,29 +75,11 @@ public class HardwareUsageUtils {
         File[] disks = File.listRoots();
         double diskUsage = (disks[0].getTotalSpace() - disks[0].getUsableSpace()) * 1.0 / disks[0].getTotalSpace();
 
-        List<String> list = new ArrayList<>();
+//        List<String> list = new ArrayList<>();
 //        list.add(formatByte(disks[0].getTotalSpace()));     // 硬盘总空间
 //        list.add(formatByte(disks[0].getUsableSpace()));    // 可用空间
 //        list.add(String.format("%.2f", diskUsage * 100));   // 可用百分比
 
         return diskUsage * 100;
     }
-
-    public static void main(String[] args) {
-        HardwareUsageUtils hardwareUsageUtils = new HardwareUsageUtils();
-
-        Double cpuUsage = hardwareUsageUtils.getCpuUsage();
-        Double cpuTemperature = hardwareUsageUtils.getCPUTemperature();
-        Double memoryUsage = hardwareUsageUtils.getMemoryUsage();
-        Double diskUsage = hardwareUsageUtils.getDiskUsage();
-
-        System.out.println("CPU Usage = " + cpuUsage);
-        System.out.println("CPU Temperature = " + cpuTemperature);
-        System.out.println("Memory Usage = " + memoryUsage);
-        System.out.println("Disk Usage = " + diskUsage);
-
-    }
-
-
-
 }

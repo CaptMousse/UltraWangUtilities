@@ -25,13 +25,7 @@ public class HardwareUsageService {
         System.out.println("Memory Usage = " + memoryUsage);
         System.out.println("Disk Usage = " + diskUsage);
 
-        List<String> usageList = new ArrayList<>();
-        usageList.add(String.format("%.2f", cpuUsage));
-        usageList.add(String.format("%.2f", cpuTemperature));
-        usageList.add(String.format("%.2f", memoryUsage));
-        usageList.add(String.format("%.2f", diskUsage));
-
-        return usageList;
+        return new ArrayList<>();
     }
 
     public Double getCpuUsage() {
