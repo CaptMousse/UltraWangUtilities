@@ -39,9 +39,10 @@
         LEFT JOIN hardware_cpu_usage cu ON (mi.id = cu.id)
         LEFT JOIN hardware_cpu_temperature ct ON (mi.id = ct.id)
         LEFT JOIN hardware_memory_usage mu ON (mi.id = mu.id)
-
-        ORDER BY mi.record_time
-        LIMIT 60;
+        WHERE 1 = 1
+        AND mi.dev = 1
+        AND mi.record_time > #{previousTime}
+        ORDER BY mi.record_time DESC
     </select>
 
 </mapper>

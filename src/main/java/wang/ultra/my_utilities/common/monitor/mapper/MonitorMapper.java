@@ -1,5 +1,6 @@
 package wang.ultra.my_utilities.common.monitor.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import wang.ultra.my_utilities.common.monitor.entity.MonitorEntity;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface MonitorMapper {
 
     void recoderDdnsIpv6(List<MonitorEntity> entityList);
 
-    List<Map<String, Object>> showHardwareMonitorInHour();
+    List<Map<String, Object>> showHardwareMonitorInHour(@Param("previousTime") String previousTime);
 }

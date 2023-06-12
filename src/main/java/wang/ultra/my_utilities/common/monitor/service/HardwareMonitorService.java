@@ -43,6 +43,7 @@ public class HardwareMonitorService {
 
 
     public List<Map<String, String>> showHardwareMonitorInHour() {
-        return ListConverter.mapValueIsString(monitorMapper.showHardwareMonitorInHour());
+        String previousTime = String.valueOf(Long.parseLong(DateConverter.getNoSymbolTime()) - 10000);
+        return ListConverter.mapValueIsString(monitorMapper.showHardwareMonitorInHour(previousTime));
     }
 }
