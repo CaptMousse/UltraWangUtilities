@@ -10,7 +10,10 @@ public class DateConverter {
     public static String getTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
-
+    public static String getTime(Long time) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.format(new Date(time));
+    }
     /**
      *
      * @return 例如20230610193932
@@ -18,9 +21,8 @@ public class DateConverter {
     public static String getNoSymbolTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
-
-    public static String getTime(Long time) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static String getNoSymbolTime(Long time) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
         return format.format(new Date(time));
     }
 

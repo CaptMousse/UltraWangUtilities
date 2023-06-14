@@ -42,7 +42,7 @@
         WHERE 1 = 1
         AND mi.dev = 1
         AND mi.record_time > #{previousTime}
-        ORDER BY mi.record_time DESC
+        ORDER BY mi.record_time
     </select>
 
 </mapper>
