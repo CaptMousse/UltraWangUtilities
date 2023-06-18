@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.config.mybatis;
+package wang.ultra.my_utilities.common.config.datasources;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
