@@ -10,9 +10,9 @@ public class StringUtils {
      * @return
      */
     public static String isChinese(String string) {
-        int n = 0;
+        int n;
         for (int i = 0; i < string.length(); i++) {
-            n = (int) string.charAt(i);
+            n = string.charAt(i);
             if (!(19968 <= n && n < 40869)) {
                 return null;
             }
@@ -22,5 +22,9 @@ public class StringUtils {
 
     public static String getMyUUID() {
         return String.valueOf(UUID.randomUUID()).replaceAll("-", "");
+    }
+
+    public static String getFileType (String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
     }
 }

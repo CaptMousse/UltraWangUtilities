@@ -15,7 +15,7 @@ public class UtilitiesApplication {
 
 		// 读取配置文件
 		ConstantFromFile.setConstFromMap();
-
+		// 定时任务启动
 		CommonScheduler commonScheduler = new CommonScheduler();
 		commonScheduler.hardwareMonitorSchedule();
 	}

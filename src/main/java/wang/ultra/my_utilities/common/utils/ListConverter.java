@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ListConverter {
 
-    public static List<Map<String, String>> mapValueIsString(List<Map<String, Object>> resultList) {
+    public static List<Map<String, String>> mapValueToString(List<Map<String, Object>> resultList) {
         List<Map<String, String>> returnList = new ArrayList<>();
         for (Map<String, Object> map : resultList) {
             Map<String, String> returnMap = new HashMap<>();

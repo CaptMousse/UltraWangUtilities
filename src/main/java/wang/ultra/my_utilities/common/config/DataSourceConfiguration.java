@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfiguration {
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.zbhdcheduler")
+    @ConfigurationProperties(prefix = "spring.datasource.zbhdscheduler")
     public DataSource dataSource1() {
         return DataSourceBuilder.create().build();
     }
@@ -24,6 +24,12 @@ public class DataSourceConfiguration {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.monitor")
     public DataSource dataSource3() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.filetransfer")
+    public DataSource dataSource4() {
         return DataSourceBuilder.create().build();
     }
 }

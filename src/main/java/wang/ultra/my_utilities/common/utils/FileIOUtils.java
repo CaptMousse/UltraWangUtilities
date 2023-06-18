@@ -1,5 +1,8 @@
 package wang.ultra.my_utilities.common.utils;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -153,20 +156,75 @@ public class FileIOUtils {
         System.out.println("previousUpdateTime = " + previousUpdateTime);
     }
 
-    private static void printResult(String text, Integer result) {
-        String createResultN = "创建失败";
-        String createResult0 = "创建成功";
-        String createResult1 = "已存在";
-        String createResult11 = "已存在, 但追加成功";
-        String createResult12 = "已存在, 但覆盖成功";
-        String print = text + " ";
-        switch (result) {
-            case -1 -> print += createResultN;
-            case 0 -> print += createResult0;
-            case 1 -> print += createResult1;
-            case 11 -> print += createResult11;
-            case 12 -> print += createResult12;
+    public void downloadFile(String showName, String realName, HttpServletResponse response) {
+
+        String filePath = System.getProperty("user.dir") + File.separator + "FileFolder" + File.separator + realName;
+        File file = new File(filePath);
+
+        InputStream in = null;
+        try {
+//            response.setContentType("multipart/form-data");
+            response.setContentType("application/x-msdownload");
+            response.setContentLength((int) file.length());
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String(showName.getBytes(), StandardCharsets.ISO_8859_1));
+
+            System.out.println("文件开始下载...");
+            System.out.println("文件名: " + file.getName());
+
+            in = new FileInputStream(file);
+
+            int b = 0;
+            byte[] buffer = new byte[1024];
+            while (b != -1) {
+                b = in.read(buffer);
+                if (b != -1) {
+                    response.getOutputStream().write(buffer, 0, b);
+                }
+            }
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                response.getOutputStream().flush();
+                System.out.println("文件下载完成! ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(print);
+    }
+
+    public void uploadFile(MultipartFile multipartFile, String fileName) {
+        String filePath = System.getProperty("user.dir") + File.separator + "WabbyWabbo" + File.separator + fileName;
+
+        System.out.println("文件开始上传...");
+        System.out.println("文件名: " + fileName);
+
+        InputStream inputStream = null;
+        FileOutputStream fileOutputStream = null;
+        try {
+            inputStream = multipartFile.getInputStream();
+            fileOutputStream = new FileOutputStream(filePath);
+
+            int length;
+            byte[] bytes = new byte[1024];
+            while ((length = inputStream.read(bytes)) != -1) {
+                fileOutputStream.write(bytes, 0, length);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+                System.out.println("文件上传完成! ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

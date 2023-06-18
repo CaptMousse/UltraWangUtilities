@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.common.download.mapper.FileTransferMapper">
+
+    <insert id="fileAdd" parameterType="list">
+        insert into file_info (id, real_name, show_name, create_time, creator, status) values
+        <foreach collection="list" separator="," item="FileTransferEntity">
+            (
+            '${FileTransferEntity.id}',
+            '${FileTransferEntity.real_name}',
+            '${FileTransferEntity.show_name}',
+            '${FileTransferEntity.create_time}',
+            '${FileTransferEntity.creator}',
+            '${FileTransferEntity.status}'
+            )
+        </foreach>
+    </insert>
+
+    <update id="fileAmountCount">
+        update file_info set amount = #{amount} where id = #{id}
+    </update>
+
+    <select id="fileSelectByShowName" resultType="map">
+        SELECT id, real_name, amount FROM file_info
+        WHERE  1 = 1
+        AND show_name = #{showName}
+        AND status = 1
+        ORDER BY create_time
+    </select>
+
+
+
+</mapper>

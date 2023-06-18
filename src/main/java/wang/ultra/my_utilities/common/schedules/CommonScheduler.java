@@ -15,9 +15,9 @@ public class CommonScheduler {
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 
         Long ddnsMonitorPeriod = ConstantFromFile.getDdnsIntervalTime();
-        Long hardrwareMonitorPeriod = ConstantFromFile.getMonitorRate();
-
         ses.scheduleAtFixedRate(new DdnsMonitorRunnable(), 0, ddnsMonitorPeriod, TimeUnit.HOURS);
+
+        Long hardrwareMonitorPeriod = ConstantFromFile.getMonitorRate();
         ses.scheduleAtFixedRate(new HardwareMonitorRunnable(), 0, hardrwareMonitorPeriod, TimeUnit.MINUTES);
     }
 }

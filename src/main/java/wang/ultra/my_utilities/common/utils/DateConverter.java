@@ -21,6 +21,9 @@ public class DateConverter {
     public static String getNoSymbolTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
+    public static String getNoSymbolHourMinutes() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmm"));
+    }
     public static String getNoSymbolTime(Long time) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
         return format.format(new Date(time));

@@ -6,10 +6,14 @@ import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.monitor.entity.MonitorEntity;
 import wang.ultra.my_utilities.common.monitor.mapper.MonitorMapper;
 import wang.ultra.my_utilities.common.utils.DateConverter;
-import wang.ultra.my_utilities.common.utils.ListConverter;
 import wang.ultra.my_utilities.common.utils.StringUtils;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("hardwareMonitorService")
 public class HardwareMonitorService {
@@ -17,17 +21,42 @@ public class HardwareMonitorService {
     @Autowired
     MonitorMapper monitorMapper;
 
+    List<Map<String, String>> daoList = new ArrayList<>();
+
     public void hardwareMonitorRecord(MonitorEntity entity) {
-        getBasicInfo(entity);
-        entity.setType(1);
+//        getBasicInfo(entity);
+//        entity.setType(1);
 
-        List<MonitorEntity> entityList = new ArrayList<>();
-        entityList.add(entity);
 
-        monitorMapper.addMonitorInfo(entityList);
-        monitorMapper.addHardwareCpuUsage(entityList);
-        monitorMapper.addHardwareCpuTemperature(entityList);
-        monitorMapper.addHardwareMemoryUsage(entityList);
+        if (daoList.size() >= 60) {
+            daoList.remove(0);
+        }
+
+        String cpuUsageHalfUp = roundHalfUp(entity.getCpuUsage());
+
+        Map<String, String> entityMap = new HashMap<>();
+        entityMap.put("time", DateConverter.getNoSymbolHourMinutes());
+        entityMap.put("cpuUsage", cpuUsageHalfUp);
+        entityMap.put("cpuTemperature", entity.getCpuTemperature());
+        entityMap.put("memoryUsage", entity.getMemoryUsage());
+        daoList.add(entityMap);
+
+        System.out.println("daoList.size() = " + daoList.size());
+
+
+
+//        List<MonitorEntity> entityList = new ArrayList<>();
+//        entityList.add(entity);
+//
+//        monitorMapper.addMonitorInfo(entityList);
+//        monitorMapper.addHardwareCpuUsage(entityList);
+//        monitorMapper.addHardwareCpuTemperature(entityList);
+//        monitorMapper.addHardwareMemoryUsage(entityList);
+    }
+
+    private String roundHalfUp(String num) {
+        BigDecimal bd = new BigDecimal(num).setScale(2, RoundingMode.HALF_UP);
+        return bd.toString();
     }
 
     private void getBasicInfo(MonitorEntity entity) {
@@ -43,8 +72,9 @@ public class HardwareMonitorService {
 
 
     public List<Map<String, String>> showHardwareMonitorInHour() {
-        String previousTime = DateConverter.getNoSymbolTime(System.currentTimeMillis() - 3600000);
-        return ListConverter.mapValueIsString(monitorMapper.showHardwareMonitorInHour(previousTime));
+//        String previousTime = DateConverter.getNoSymbolTime(System.currentTimeMillis() - 3600000);
+//        return ListConverter.mapValueIsString(monitorMapper.showHardwareMonitorInHour(previousTime));
+        return daoList;
     }
 
 }

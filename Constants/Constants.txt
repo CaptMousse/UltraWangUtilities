@@ -45,7 +45,7 @@ MailTo = sefvdx@me.com
 
 # 监听状态
 # 0代表停止, 1代表开启
-HardwareMonitorStatus = 1
+HardwareMonitorStatus = 0
 # 监听频率(时间间隔, 单位分钟)
 MonitorRate = 1
 # 监听CPU使用率
@@ -59,3 +59,6 @@ MonitorMemoryChange = 10
 LimitingPeak = 10
 # 限流QPS
 LimitingQPS = 1
+
+# 文件上传下载文件夹
+FileFolder = FileFolder
