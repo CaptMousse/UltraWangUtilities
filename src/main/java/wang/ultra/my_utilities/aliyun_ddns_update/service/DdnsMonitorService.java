@@ -8,6 +8,7 @@ import wang.ultra.my_utilities.aliyun_ddns_update.utils.DDNSUtils;
 import wang.ultra.my_utilities.aliyun_ddns_update.utils.GetMyIPv6;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.DateConverter;
+import wang.ultra.my_utilities.common.utils.FileIOUtils;
 
 import static wang.ultra.my_utilities.common.utils.FileIOUtils.createFile;
 
@@ -38,10 +39,8 @@ public class DdnsMonitorService {
      * 获取更新状态
      */
     public static void getStatus() {
-
         DDNSUtils.setDomainRecords();
         System.out.println("\n==---->> IPv6地址比对时间 = " + DateConverter.getTime());
-
         if (DDNSUtils.getDomainRecords().size() != 0) {
             DescribeDomainRecordsResponse.Record record = DDNSUtils.getDomainRecords().get(0);
             String recordsHostIP = record.getValue();
@@ -52,13 +51,11 @@ public class DdnsMonitorService {
                 statusResult = 1; // 需要更新
                 return;
             }
-
             if (currentHostIP.equals("-1")) {
                 statusResult = Integer.parseInt(currentHostIP);
                 System.out.println("==---->> IPv6地址可能不存在");
                 return;
             }
-
             statusResult = 0;     // 无需更新
             return;
         } else {
@@ -84,16 +81,15 @@ public class DdnsMonitorService {
 
             DDNSUtils ddnsUtils = new DDNSUtils();
             ddnsUtils.updateDomainRecord(updateDomainRecordRequest, DDNSUtils.getClient());
-            System.out.println("==---->> Domain Record is up to date.");
+            System.out.println("==---->> IPv6地址更新成功!");
 
             // 记录日志
 //            String subPath = "Logs";
 //            String fileName = "IPv6Logs.txt";
             String text = DateConverter.getTime() + " = " + updateDomainRecordRequest.getValue();
-            createFile("Logs", "IPv6Logs.txt", 1, text);
+            FileIOUtils.createFile("Logs", "IPv6Logs.txt", 1, text);
 
             statusResult = 0;
-
             return 1;
         }
         if (statusResult == 0) {

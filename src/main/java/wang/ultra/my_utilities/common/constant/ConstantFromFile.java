@@ -90,7 +90,7 @@ public class ConstantFromFile {
      * @return
      */
     public static Integer setConstFromMap() {
-        LOG.info("Constants Now Loading...");
+        LOG.info("配置文件正在加载...");
         String filePath = System.getProperty("user.dir") + File.separator + "Constants";
         String fileName = "Constants.txt";
         ConstantFromFile.constMap = FileIOUtils.readFile(filePath, fileName);
@@ -129,10 +129,10 @@ public class ConstantFromFile {
 
             ConstantFromFile.LimitingPeak = Long.valueOf(constMap.get("LimitingPeak"));
             ConstantFromFile.LimitingQPS = Long.valueOf(constMap.get("LimitingQPS"));
-            LOG.info("Constants Load Success!");
+            LOG.info("配置文件加载成功!");
             return 1;
         }
-        LOG.error("Constants Load Failure!");
+        LOG.error("配置文件加载失败!");
         return -1;
     }
 
