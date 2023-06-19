@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.idiompedia.service.IdiomsService;
 
 import java.util.ArrayList;
@@ -45,14 +46,14 @@ public class IdiomsController {
     }
 
     @GetMapping("/selectByWord")
-    public Map<String, String> selectByWord(String word) {
+    public AjaxUtils selectByWord(String word) {
         Map<String, String> resultMap = idiomsService.idiomsSearchByWord(word);
 
         if (resultMap == null) {
-            return new HashMap<>();
+            return AjaxUtils.failed("请输入成语!");
         }
 
-        return resultMap;
+        return AjaxUtils.success(resultMap);
     }
 
     @GetMapping("/selectBySort")
@@ -61,12 +62,13 @@ public class IdiomsController {
     }
 
     @GetMapping("/selectByQuestionMark")
-    public List<Map<String, Object>> selectByQuestionMark(String word) {
+    public AjaxUtils selectByQuestionMark(String word) {
 
         if (word.length() > 4) {
-            return new ArrayList<>();
+            return AjaxUtils.failed("仅限四字成语");
         }
-        return idiomsService.idiomsSearchByQuestionMark(word);
+        List<Map<String, Object>> returnList = idiomsService.idiomsSearchByQuestionMark(word);
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("/selectByRandom")

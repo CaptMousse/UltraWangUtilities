@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.zbhd_scheduler.entity.Arrivals;
 import wang.ultra.my_utilities.zbhd_scheduler.entityVO.SearchVO;
 import wang.ultra.my_utilities.zbhd_scheduler.service.ArrivalsService;
@@ -81,7 +82,7 @@ public class ArrivalsController {
     }
 
     @GetMapping("arrivalsToday")
-    public List<Object> arrivalsToday(int pageNum, int pageSize) {
+    public AjaxUtils arrivalsToday(int pageNum, int pageSize) {
         List<Map<String,Object>> arrivalsTodayList = arrivalsService.arrivalsToday();
 
         PageHelper.startPage(pageNum, pageSize);
@@ -97,6 +98,6 @@ public class ArrivalsController {
 
         returnList.addAll(arrivalsTodayList);
 
-        return returnList;
+        return AjaxUtils.success(returnList);
     }
 }

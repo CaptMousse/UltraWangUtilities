@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.config;
+package wang.ultra.my_utilities.common.config.datasources;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
