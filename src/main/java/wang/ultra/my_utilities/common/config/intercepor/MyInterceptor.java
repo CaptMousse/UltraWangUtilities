@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.intercepor;
+package wang.ultra.my_utilities.common.config.intercepor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -7,6 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
+import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 @Component
 public class MyInterceptor implements HandlerInterceptor {
@@ -15,26 +16,21 @@ public class MyInterceptor implements HandlerInterceptor {
     // 原始方法调用前执行的内容
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        System.out.println("preHandle...");
-        return true;
-    }
 
-    @Override
-    // 原始方法调用后执行的内容
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-            ModelAndView modelAndView) throws Exception {
-                
         String requestServerName = request.getServerName();
         String myServerName = ConstantFromFile.getHostname() + "." + ConstantFromFile.getDomain();
-        if (!requestServerName.equals(myServerName)) {
-            return;
-        }
-    }
 
-    @Override
-    // 原始方法调用完成后执行的内容
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-            throws Exception {
-        System.out.println("afterCompletion...");
+        // 判断是否使用IPv6网络
+        if (!requestServerName.equals(myServerName)) {
+//            String returnStr = AjaxUtils.failedJsonString("当前访问仅限IPv6地址! ");
+//            response.setHeader("Access-Control-Allow-Origin", "*");
+//            response.setHeader("Content-Type", "application/json; charset=utf-8");
+//            response.getWriter().write(returnStr);
+            String jsAlert = "<script>alert('当前访问仅限IPv6地址! ')</script>";
+            response.setContentType("text/html; charset=utf-8");
+            response.getWriter().write(jsAlert);
+            return false;
+        }
+        return true;
     }
 }
