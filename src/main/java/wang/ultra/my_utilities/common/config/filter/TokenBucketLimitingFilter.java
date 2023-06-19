@@ -1,15 +1,12 @@
-package wang.ultra.my_utilities.common.filter;
+package wang.ultra.my_utilities.common.config.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
+import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @WebFilter(filterName = "tokenBucketLimitingFilter", urlPatterns = {"/*"})
 public class TokenBucketLimitingFilter implements Filter {
@@ -47,11 +44,7 @@ public class TokenBucketLimitingFilter implements Filter {
         if (tokenBucketResult) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            Map<String, Object> returnMap = new LinkedHashMap<>();
-            returnMap.put("err", HttpStatus.TOO_MANY_REQUESTS.value());
-            returnMap.put("msg", "当前访问过多, 请稍后再试!");
-            ObjectMapper objectMapper = new ObjectMapper();
-            String returnStr = objectMapper.writeValueAsString(returnMap);
+            String returnStr = AjaxUtils.failedJsonString("当前访问过多, 请稍后再试! ");
 
             HttpServletResponse response = (HttpServletResponse) servletResponse;
             response.setHeader("Access-Control-Allow-Origin", "*");
