@@ -4,7 +4,7 @@
 # DdnsIntervalTime = 3600000
 DdnsIntervalTime = 1
 # DDNS监控开关
-DdnsMonitorStatus = 1
+DdnsMonitorStatus = 0
 
 # 阿里云地域ID
 RegionID = cn-hangzhou
