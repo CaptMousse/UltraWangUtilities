@@ -81,6 +81,8 @@ public class ConstantFromFile {
     // 限流QPS
     private static Long LimitingQPS;
 
+    // 文件上传下载文件夹
+    private static String FileFolder;
 
     private static Map<String, String> constMap = new HashMap<>();
 
@@ -129,6 +131,8 @@ public class ConstantFromFile {
 
             ConstantFromFile.LimitingPeak = Long.valueOf(constMap.get("LimitingPeak"));
             ConstantFromFile.LimitingQPS = Long.valueOf(constMap.get("LimitingQPS"));
+
+            ConstantFromFile.FileFolder = constMap.get("FileFolder");
             LOG.info("配置文件加载成功!");
             return 1;
         }
@@ -140,209 +144,132 @@ public class ConstantFromFile {
         return DdnsIntervalTime;
     }
 
-    public static void setDdnsIntervalTime(Long ddnsIntervalTime) {
-        DdnsIntervalTime = ddnsIntervalTime;
-    }
 
     public static String getDdnsMonitorStatus() {
         return DdnsMonitorStatus;
     }
 
-    public static void setDdnsMonitorStatus(String ddnsMonitorStatus) {
-        DdnsMonitorStatus = ddnsMonitorStatus;
-    }
 
     public static String getRegionID() {
         return RegionID;
     }
 
-    public static void setRegionID(String regionID) {
-        RegionID = regionID;
-    }
 
     public static String getAccessKeyID() {
         return AccessKeyID;
     }
 
-    public static void setAccessKeyID(String accessKeyID) {
-        AccessKeyID = accessKeyID;
-    }
 
     public static String getAccessKeySecret() {
         return AccessKeySecret;
     }
 
-    public static void setAccessKeySecret(String accessKeySecret) {
-        AccessKeySecret = accessKeySecret;
-    }
 
     public static String getDomain() {
         return Domain;
     }
 
-    public static void setDomain(String domain) {
-        Domain = domain;
-    }
 
     public static String getHostname() {
         return Hostname;
     }
 
-    public static void setHostname(String hostname) {
-        Hostname = hostname;
-    }
 
     public static String getRecordType() {
         return RecordType;
     }
 
-    public static void setRecordType(String recordType) {
-        RecordType = recordType;
-    }
 
     public static String getMinecraftPort() {
         return MinecraftPort;
     }
 
-    public static void setMinecraftPort(String minecraftPort) {
-        MinecraftPort = minecraftPort;
-    }
 
     public static Map<String, String> getConstMap() {
         return constMap;
     }
 
-    public static void setConstMap(Map<String, String> constMap) {
-        ConstantFromFile.constMap = constMap;
-    }
 
     public static String getEthernetName() {
         return EthernetName;
     }
 
-    public static void setEthernetName(String ethernetName) {
-        EthernetName = ethernetName;
-    }
 
     public static String getLogFilePath() {
         return LogFilePath;
     }
 
-    public static void setLogFilePath(String logFilePath) {
-        LogFilePath = logFilePath;
-    }
 
     public static String getLogFileName() {
         return LogFileName;
     }
 
-    public static void setLogFileName(String logFileName) {
-        LogFileName = logFileName;
-    }
 
     public static String getMailHost() {
         return MailHost;
     }
 
-    public static void setMailHost(String mailHost) {
-        MailHost = mailHost;
-    }
 
     public static String getMailTransportProtocol() {
         return MailTransportProtocol;
     }
 
-    public static void setMailTransportProtocol(String mailTransportProtocol) {
-        MailTransportProtocol = mailTransportProtocol;
-    }
 
     public static String getMailSmtpPort() {
         return MailSmtpPort;
     }
 
-    public static void setMailSmtpPort(String mailSmtpPort) {
-        MailSmtpPort = mailSmtpPort;
-    }
 
     public static String getMailFrom() {
         return MailFrom;
     }
 
-    public static void setMailFrom(String mailFrom) {
-        MailFrom = mailFrom;
-    }
 
     public static String getMailFromAuthCode() {
         return MailFromAuthCode;
     }
 
-    public static void setMailFromAuthCode(String mailFromAuthCode) {
-        MailFromAuthCode = mailFromAuthCode;
-    }
 
     public static String getMailTo() {
         return MailTo;
     }
 
-    public static void setMailTo(String mailTo) {
-        MailTo = mailTo;
-    }
 
     public static String getHardwareMonitorStatus() {
         return HardwareMonitorStatus;
     }
 
-    public static void setHardwareMonitorStatus(String hardwareMonitorStatus) {
-        HardwareMonitorStatus = hardwareMonitorStatus;
-    }
 
     public static Long getMonitorRate() {
         return MonitorRate;
     }
 
-    public static void setMonitorRate(Long monitorRate) {
-        MonitorRate = monitorRate;
-    }
 
     public static Double getMonitorCpuUsage() {
         return MonitorCpuUsage;
     }
 
-    public static void setMonitorCpuUsage(Double monitorCpuUsage) {
-        MonitorCpuUsage = monitorCpuUsage;
-    }
 
     public static Double getMonitorCpuTemperature() {
         return MonitorCpuTemperature;
     }
 
-    public static void setMonitorCpuTemperature(Double monitorCpuTemperature) {
-        MonitorCpuTemperature = monitorCpuTemperature;
-    }
 
     public static Double getMonitorMemoryChange() {
         return MonitorMemoryChange;
     }
 
-    public static void setMonitorMemoryChange(Double monitorMemoryChange) {
-        MonitorMemoryChange = monitorMemoryChange;
-    }
 
     public static Long getLimitingPeak() {
         return LimitingPeak;
     }
 
-    public static void setLimitingPeak(Long limitingPeak) {
-        LimitingPeak = limitingPeak;
-    }
 
     public static Long getLimitingQPS() {
         return LimitingQPS;
     }
 
-    public static void setLimitingQPS(Long limitingQPS) {
-        LimitingQPS = limitingQPS;
+    public static String getFileFolder() {
+        return FileFolder;
     }
-
-
 }

@@ -2,10 +2,13 @@ package wang.ultra.my_utilities.common.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
+import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FileIOUtils {
@@ -38,10 +41,11 @@ public class FileIOUtils {
 
     /**
      * 写文件(追加或覆盖)
+     *
      * @param subPath  文件目录
-     * @param fileName  文件名
-     * @param method    0 追加, 1 覆盖
-     * @return  -1 失败, 0 新建成功, 11 已存在并追加, 12 已存在并覆盖
+     * @param fileName 文件名
+     * @param method   0 追加, 1 覆盖
+     * @return -1 失败, 0 新建成功, 11 已存在并追加, 12 已存在并覆盖
      */
     public static Integer createFile(String subPath, String fileName, Integer method, String text) {
 
@@ -83,9 +87,10 @@ public class FileIOUtils {
 
     /**
      * 读文件, 用" = " 分隔, 放进map
-     * @param dirPath   文件路径
-     * @param fileName  文件名
-     * @return  Map<String, String>
+     *
+     * @param dirPath  文件路径
+     * @param fileName 文件名
+     * @return Map<String, String>
      */
     public static Map<String, String> readFile(String dirPath, String fileName) {
 
@@ -150,23 +155,35 @@ public class FileIOUtils {
         Map<String, String> readFileMap = readFile(subPath, fileName);
         System.out.println("readFileString = \n" + readFileMap);
         String previousUpdateTime = null;
-        for (Map.Entry<String, String>entryMap : readFileMap.entrySet()) {
+        for (Map.Entry<String, String> entryMap : readFileMap.entrySet()) {
             previousUpdateTime = entryMap.getKey();
         }
         System.out.println("previousUpdateTime = " + previousUpdateTime);
     }
 
-    public void downloadFile(String showName, String realName, HttpServletResponse response) {
+    public void downloadFile(String subFileFolder, String showName, String realName, HttpServletResponse response) {
 
-        String filePath = System.getProperty("user.dir") + File.separator + "FileFolder" + File.separator + realName;
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String filePath = folder + realName;
         File file = new File(filePath);
 
         InputStream in = null;
         try {
-//            response.setContentType("multipart/form-data");
-            response.setContentType("application/x-msdownload");
+            String type = StringUtils.getFileType(realName);
+            List<String> imageTypeList = new ArrayList<>();
+            imageTypeList.add("jpg");
+            imageTypeList.add("jpeg");
+            imageTypeList.add("gif");
+            imageTypeList.add("png");
+
+            if (imageTypeList.contains(type)) {
+                response.setContentType("image/jpeg");
+            } else {
+                response.setContentType("application/x-msdownload");
+            }
+
             response.setContentLength((int) file.length());
-            response.addHeader("Content-Disposition", "attachment;filename=" + new String(showName.getBytes(), StandardCharsets.ISO_8859_1));
+//            response.addHeader("Content-Disposition", "attachment;filename=" + new String(showName.getBytes(), StandardCharsets.ISO_8859_1));
 
             System.out.println("文件开始下载...");
             System.out.println("文件名: " + file.getName());
@@ -195,8 +212,9 @@ public class FileIOUtils {
         }
     }
 
-    public void uploadFile(MultipartFile multipartFile, String fileName) {
-        String filePath = System.getProperty("user.dir") + File.separator + "WabbyWabbo" + File.separator + fileName;
+    public void uploadFile(String subFileFolder, String fileName, MultipartFile multipartFile) {
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String filePath = folder + fileName;
 
         System.out.println("文件开始上传...");
         System.out.println("文件名: " + fileName);
@@ -227,4 +245,6 @@ public class FileIOUtils {
             }
         }
     }
+
+
 }

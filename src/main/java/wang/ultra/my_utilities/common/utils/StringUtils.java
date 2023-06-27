@@ -6,6 +6,7 @@ public class StringUtils {
 
     /**
      * 判断是否是汉字, 是汉字就传回去, 不是就是null
+     *
      * @param string
      * @return
      */
@@ -24,7 +25,12 @@ public class StringUtils {
         return String.valueOf(UUID.randomUUID()).replaceAll("-", "");
     }
 
-    public static String getFileType (String fileName) {
-        return fileName.substring(fileName.lastIndexOf("."));
+    /**
+     *
+     * @param fileName
+     * @return  只返回后缀名, 要自己加"."
+     */
+    public static String getFileType(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
     }
 }

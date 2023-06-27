@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.download.service;
+package wang.ultra.my_utilities.blog.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,25 +11,29 @@ import wang.ultra.my_utilities.common.utils.FileIOUtils;
 import wang.ultra.my_utilities.common.utils.ListConverter;
 import wang.ultra.my_utilities.common.utils.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Service("fileTransferService")
-public class FileTransferService {
+@Service("imageUploadService")
+public class ImageUploadService {
+
     @Autowired
     FileTransferMapper fileTransferMapper;
 
-    public void fileAdd(MultipartFile file, String fileName) {
+    private final String subFileFolder = "blog" + File.separator + "images";
+
+    public String imageAdd(MultipartFile image, String imageName) {
 
         FileTransferEntity entity = new FileTransferEntity();
         String uuid = StringUtils.getMyUUID();
-        String realName = uuid + "." + StringUtils.getFileType(fileName);
+        String realName = uuid + "." + StringUtils.getFileType(imageName);
         entity.setId(uuid);
         entity.setReal_name(realName);
-        entity.setShow_name(fileName);
+        entity.setShow_name(imageName);
         entity.setCreate_time(DateConverter.getNoSymbolTime());
-        entity.setCreator("default");
+        entity.setCreator("tiny");
         entity.setStatus(1);
         List<FileTransferEntity> entityList = new ArrayList<>();
         entityList.add(entity);
@@ -37,11 +41,14 @@ public class FileTransferService {
         fileTransferMapper.fileAdd(entityList);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
-        fileIOUtils.uploadFile("transferFiles", realName, file);
+        fileIOUtils.uploadFile(subFileFolder, realName, image);
+
+        return realName;
     }
 
-    public void fileSelectByShowName(String showName, HttpServletResponse response) {
-        List<Map<String, Object>> resultList = fileTransferMapper.fileSelectByShowName(showName);
+    public void imageShow(String imageName, HttpServletResponse response) {
+
+        List<Map<String, Object>> resultList = fileTransferMapper.fileSelectByRealName(imageName);
         Map<String, String> resultMap = ListConverter.mapValueToString(resultList).get(0);
         String id = resultMap.get("id");
         String realName = resultMap.get("real_name");
@@ -51,11 +58,7 @@ public class FileTransferService {
         fileTransferMapper.fileAmountCount(amount, id);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
-        fileIOUtils.downloadFile("transferFiles", showName, realName, response);
+        fileIOUtils.downloadFile(subFileFolder, imageName, realName, response);
+
     }
-
-
-
-
-
 }

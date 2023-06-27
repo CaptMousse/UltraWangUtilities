@@ -28,6 +28,12 @@
         ORDER BY create_time
     </select>
 
-
+    <select id="fileSelectByRealName" resultType="map">
+        SELECT id, real_name, amount FROM file_info
+        WHERE  1 = 1
+        AND real_name = #{realName}
+        AND status = 1
+        ORDER BY create_time
+    </select>
 
 </mapper>

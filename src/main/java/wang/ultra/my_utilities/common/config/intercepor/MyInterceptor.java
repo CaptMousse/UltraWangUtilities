@@ -21,16 +21,15 @@ public class MyInterceptor implements HandlerInterceptor {
         String myServerName = ConstantFromFile.getHostname() + "." + ConstantFromFile.getDomain();
 
         // 判断是否使用IPv6网络
-        if (!requestServerName.equals(myServerName)) {
+//        if (!requestServerName.equals(myServerName)) {
 //            String returnStr = AjaxUtils.failedJsonString("当前访问仅限IPv6地址! ");
 //            response.setHeader("Access-Control-Allow-Origin", "*");
 //            response.setHeader("Content-Type", "application/json; charset=utf-8");
 //            response.getWriter().write(returnStr);
-            String jsAlert = "<script>alert('当前访问仅限IPv6地址! ')</script>";
-            response.setContentType("text/html; charset=utf-8");
-            response.getWriter().write(jsAlert);
-            return false;
-        }
+//            response.setContentType("text/html; charset=utf-8");
+//            response.getWriter().write(AjaxUtils.failedJsonString("当前访问仅限IPv6地址! "));
+//            return false; // 测试环境注掉
+//        }
         return true;
     }
 }
