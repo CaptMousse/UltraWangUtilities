@@ -33,4 +33,13 @@ public class StringUtils {
     public static String getFileType(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
     }
+
+    /**
+     * 是否为空
+     * @param cs
+     * @return
+     */
+    public static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
 }
