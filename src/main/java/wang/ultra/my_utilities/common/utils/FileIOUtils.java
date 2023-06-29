@@ -86,7 +86,8 @@ public class FileIOUtils {
     }
 
     /**
-     * 读文件, 用" = " 分隔, 放进map
+     * 读文件到Map, 用" = " 分隔, 放进map
+     * 例如配置文件
      *
      * @param dirPath  文件路径
      * @param fileName 文件名
@@ -134,6 +135,51 @@ public class FileIOUtils {
             }
         }
         return stringMap;
+    }
+
+    /**
+     * 读取文件到字符串
+     * @param dirPath
+     * @param fileName
+     * @return
+     */
+    public static String readFileToString(String dirPath, String fileName) {
+        File file = new File(dirPath, fileName);
+        String strText;
+        StringBuffer stringBuffer = new StringBuffer();
+        if (file.exists() && file.isFile()) {
+            InputStreamReader inputStreamReader = null;
+            BufferedReader bufferedReader = null;
+
+            try {
+                inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                bufferedReader = new BufferedReader(inputStreamReader);
+                while ((strText = bufferedReader.readLine()) != null) {
+//                    System.out.println("strText = " + strText);
+                    if (!"".equals(strText)) {                          // 略过空行
+                        stringBuffer.append(strText);
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                if (inputStreamReader != null) {
+                    try {
+                        inputStreamReader.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if (bufferedReader != null) {
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return stringBuffer.toString();
     }
 
     public static void main(String[] args) {
