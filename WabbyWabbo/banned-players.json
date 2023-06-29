@@ -1,0 +1,90 @@
+[
+  {
+    "uuid": "fccb67bd-a9a7-4ea2-b2ef-2e90588d2c1e",
+    "name": "sunweichen",
+    "created": "2022-11-22 10:19:32 +0800",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "???"
+  },
+  {
+    "uuid": "13b10da3-c812-4d05-a6fb-9dfe58c61816",
+    "name": "Marc_Knight",
+    "created": "2023-06-28 18:54:05 +0800",
+    "source": "MicrosoftPro12",
+    "expires": "forever",
+    "reason": "Banned by an operator."
+  },
+  {
+    "uuid": "d0ed0993-3ec4-4e39-8358-6369189d2de2",
+    "name": "Fixxss",
+    "created": "2023-02-02 22:48:09 +0800",
+    "source": "CaptMousse",
+    "expires": "forever",
+    "reason": "stealing"
+  },
+  {
+    "uuid": "4500e32d-b072-4dc8-9e76-fb23d8577899",
+    "name": "EEZZK",
+    "created": "2021-12-19 14:04:01 +0800",
+    "source": "CaptMousse",
+    "expires": "forever",
+    "reason": "stealing"
+  },
+  {
+    "uuid": "4afd4e0f-41e2-4887-ba28-5aa48e2aff6f",
+    "name": "zysda",
+    "created": "2022-08-29 11:30:23 +0800",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "fz"
+  },
+  {
+    "uuid": "99abc0bc-6b8c-4f4f-aa8f-02c05696a950",
+    "name": "kika_java",
+    "created": "2022-08-29 11:21:16 +0800",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "fz"
+  },
+  {
+    "uuid": "920ff136-a55e-4423-b29f-d2b7d60e6f02",
+    "name": "iiyoum",
+    "created": "2023-01-18 15:18:17 +0800",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "fz"
+  },
+  {
+    "uuid": "884a0d8c-27fa-4824-b3ef-94f50ea94b5f",
+    "name": "list",
+    "created": "2023-01-18 15:20:30 +0800",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "Banned by an operator."
+  },
+  {
+    "uuid": "3e3fd631-b454-45ca-96a0-6067f8540c71",
+    "name": "DirectorJohnson",
+    "created": "2022-08-07 19:43:17 +0800",
+    "source": "CaptMousse",
+    "expires": "forever",
+    "reason": "Banned by an operator."
+  },
+  {
+    "uuid": "a0de128f-1a79-4bbb-aa9c-6f0606e26f23",
+    "name": "Dima788",
+    "created": "2022-08-07 19:44:03 +0800",
+    "source": "CaptMousse",
+    "expires": "forever",
+    "reason": "Banned by an operator."
+  },
+  {
+    "uuid": "25959a15-6e4a-4e34-9f6c-f4408f9838d9",
+    "name": "linvei",
+    "created": "2022-08-29 11:30:13 +0800",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "fz"
+  }
+]

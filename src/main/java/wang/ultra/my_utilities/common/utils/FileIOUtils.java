@@ -2,6 +2,10 @@ package wang.ultra.my_utilities.common.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 
 import java.io.*;
@@ -179,12 +183,14 @@ public class FileIOUtils {
                 }
             }
         }
-        return stringBuffer.toString();
+        String returnString = stringBuffer.toString();
+        returnString.replaceAll(" ", "");
+        return returnString;
     }
 
     public static void main(String[] args) {
-        String subPath = "Logs";
-        String fileName = "Logs.txt";
+        String subPath = "WabbyWabbo";
+        String fileName = "banned-players.json";
 //        String text = DateConverter.getTime() + " = " + GetMyIPv6.getIPv6();
 
         // 创建文件夹
@@ -198,13 +204,22 @@ public class FileIOUtils {
 //        printResult(fileName, createFileResult);
 
         // 读文件
-        Map<String, String> readFileMap = readFile(subPath, fileName);
-        System.out.println("readFileString = \n" + readFileMap);
-        String previousUpdateTime = null;
-        for (Map.Entry<String, String> entryMap : readFileMap.entrySet()) {
-            previousUpdateTime = entryMap.getKey();
+        String resultString = readFileToString(subPath, fileName);
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, String>> tempList = new ArrayList<>();
+        try {
+            tempList = objectMapper.readValue(resultString, List.class);
+            System.out.println("tempList = " + tempList);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        System.out.println("previousUpdateTime = " + previousUpdateTime);
+
+        for (Map<String, String> map : tempList) {
+            System.out.println("\nuuid = " + map.get("uuid"));
+            System.out.println("name = " + map.get("name"));
+        }
+
     }
 
     public void downloadFile(String subFileFolder, String showName, String realName, HttpServletResponse response) {

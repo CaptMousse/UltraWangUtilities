@@ -13,5 +13,5 @@ public class JsonConverter {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }
+    }    
 }
