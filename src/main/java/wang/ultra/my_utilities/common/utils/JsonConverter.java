@@ -3,6 +3,9 @@ package wang.ultra.my_utilities.common.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JsonConverter {
@@ -13,5 +16,17 @@ public class JsonConverter {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-    }    
+    }
+
+    public static Map<String, String> JsonStringToMap(String jsonString) {
+        Map<String, String> tempMap = new HashMap<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            tempMap = objectMapper.readValue(jsonString, Map.class);
+        } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return tempMap;
+    }
 }

@@ -21,6 +21,10 @@ RecordType = AAAA
 
 # Minecraft端口
 MinecraftPort = 25565
+# Minecraft资料文件夹
+MinecraftDataFolder = WabbyWabbo
+# Minecraft黑名单文件名
+MinecraftBlackListFileName = BannedPlayers.json
 
 # 网卡信息
 EthernetName = enp3s0

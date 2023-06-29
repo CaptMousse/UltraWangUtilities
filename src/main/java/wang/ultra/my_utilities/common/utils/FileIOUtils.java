@@ -183,9 +183,7 @@ public class FileIOUtils {
                 }
             }
         }
-        String returnString = stringBuffer.toString();
-        returnString.replaceAll(" ", "");
-        return returnString;
+        return stringBuffer.toString();
     }
 
     public static void main(String[] args) {
