@@ -22,7 +22,7 @@ public class ImageUploadService {
     @Autowired
     FileTransferMapper fileTransferMapper;
 
-    private final String subFileFolder = "blog" + File.separator + "images";
+    private final String subFileFolder = "Blog" + File.separator + "images";
 
     public String imageAdd(MultipartFile image, String imageName) {
 
