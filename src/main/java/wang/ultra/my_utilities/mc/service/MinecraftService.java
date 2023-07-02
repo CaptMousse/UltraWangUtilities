@@ -22,6 +22,8 @@ import java.util.Map;
 public class MinecraftService {
 
     public List<Map<String, String>> stringToJsonMap() {
+
+        // 读取黑名单
         String subPath = "WabbyWabbo";
         String fileName = ConstantFromFile.getMinecraftBlackListFileName();
 
