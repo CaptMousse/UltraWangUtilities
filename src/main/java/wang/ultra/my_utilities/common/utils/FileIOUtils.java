@@ -97,7 +97,7 @@ public class FileIOUtils {
      * @param fileName 文件名
      * @return Map<String, String>
      */
-    public static Map<String, String> readFile(String dirPath, String fileName) {
+    public static Map<String, String> readConfigFileToMap(String dirPath, String fileName) {
 
         File file = new File(dirPath, fileName);
         String strText;
@@ -143,14 +143,20 @@ public class FileIOUtils {
 
     /**
      * 读取文件到字符串
-     * @param dirPath
+     * @param subFileFolder
      * @param fileName
      * @return
      */
-    public static String readFileToString(String dirPath, String fileName) {
-        File file = new File(dirPath, fileName);
+    public static String readFileToString(String subFileFolder, String fileName) {
+
+        String filePath = System.getProperty("user.dir") +  File.separator + subFileFolder + File.separator + fileName;
+        File file = new File(filePath);
+
+        System.out.println("filePath = " + file.getPath());
+        System.out.println("fileName = " + file.getName());
+
         String strText;
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         if (file.exists() && file.isFile()) {
             InputStreamReader inputStreamReader = null;
             BufferedReader bufferedReader = null;
@@ -202,33 +208,39 @@ public class FileIOUtils {
 //        printResult(fileName, createFileResult);
 
         // 读文件
-        String resultString = readFileToString(subPath, fileName);
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Map<String, String>> tempList = new ArrayList<>();
-        try {
-            tempList = objectMapper.readValue(resultString, List.class);
-            System.out.println("tempList = " + tempList);
-        } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        for (Map<String, String> map : tempList) {
-            System.out.println("\nuuid = " + map.get("uuid"));
-            System.out.println("name = " + map.get("name"));
-        }
+//        String resultString = readFileToString(subPath, fileName);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        List<Map<String, String>> tempList = new ArrayList<>();
+//        try {
+//            tempList = objectMapper.readValue(resultString, List.class);
+//            System.out.println("tempList = " + tempList);
+//        } catch (JsonProcessingException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//        for (Map<String, String> map : tempList) {
+//            System.out.println("\nuuid = " + map.get("uuid"));
+//            System.out.println("name = " + map.get("name"));
+//        }
 
     }
 
-    public void downloadFile(String subFileFolder, String showName, String realName, HttpServletResponse response) {
+    /**
+     * 下载文件或者打开图片
+     * @param subFileFolder
+     * @param fileName
+     * @param response
+     */
+    public void downloadFile(String subFileFolder, String fileName, HttpServletResponse response) {
 
         String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
-        String filePath = folder + realName;
+        String filePath = folder + fileName;
         File file = new File(filePath);
 
         InputStream in = null;
         try {
-            String type = StringUtils.getFileType(realName);
+            String type = StringUtils.getFileType(fileName);
             List<String> imageTypeList = new ArrayList<>();
             imageTypeList.add("jpg");
             imageTypeList.add("jpeg");
