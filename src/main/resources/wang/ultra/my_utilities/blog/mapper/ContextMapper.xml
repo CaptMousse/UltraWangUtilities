@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.blog.mapper.ContextMapper">
+
+    <insert id="contextAdd" parameterType="list">
+        insert into context_files (uuid, title, user, create_time, update_time, status) values
+        <foreach collection="list" separator="," item="ContextEntity">
+            ('${ContextEntity.uuid}', '${ContextEntity.title}','${ContextEntity.user}','${ContextEntity.create_time}','${ContextEntity.update_time}','${ContextEntity.status}')
+        </foreach>
+    </insert>
+
+    <delete id="contextDelete">
+        delete from context_files where uuid = #{uuid}
+    </delete>
+
+    <update id="contextAmountCount">
+        update context_files set amount = #{amount} where uuid = #{uuid}
+    </update>
+
+    <update id="contextTitleUpdate">
+        update context_files set title = #{title}, update_time = #{update_time} where uuid = #{id}
+    </update>
+
+    <update id="contextUpdate">
+        update context_files set update_time = #{update_time} where uuid = #{id}
+    </update>
+
+
+
+    <sql id="contextSelectSql">
+        select * from context_files
+    </sql>
+
+
+    <sql id="contextCountSelectSql">
+        select count(*) from context_files
+    </sql>
+
+    <select id="contextSearchByUser" resultType="map">
+        select uuid, title, update_time from context_files where status = 0 and user = #{username}
+    </select>
+
+    <select id="contextSearchByUuid" resultType="map">
+        select title, update_time from context_files where status = 0 and uuid = #{uuid}
+    </select>
+
+</mapper>
