@@ -58,7 +58,7 @@ public class ImageUploadService {
         fileTransferMapper.fileAmountCount(amount, id);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
-        fileIOUtils.downloadFile(subFileFolder, imageName, realName, response);
+        fileIOUtils.downloadFile(subFileFolder, realName, response);
 
     }
 }

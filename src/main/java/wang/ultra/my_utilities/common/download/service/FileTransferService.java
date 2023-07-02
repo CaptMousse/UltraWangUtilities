@@ -51,7 +51,7 @@ public class FileTransferService {
         fileTransferMapper.fileAmountCount(amount, id);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
-        fileIOUtils.downloadFile("transferFiles", showName, realName, response);
+        fileIOUtils.downloadFile("transferFiles", realName, response);
     }
 
 
