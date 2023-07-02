@@ -101,7 +101,7 @@ public class ConstantFromFile {
         LOG.info("配置文件正在加载...");
         String filePath = System.getProperty("user.dir") + File.separator + "Constants";
         String fileName = "Constants.txt";
-        ConstantFromFile.constMap = FileIOUtils.readFile(filePath, fileName);
+        ConstantFromFile.constMap = FileIOUtils.readConfigFileToMap(filePath, fileName);
 
         System.out.println("constMap = " + ConstantFromFile.constMap);
 
