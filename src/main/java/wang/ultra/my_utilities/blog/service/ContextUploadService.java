@@ -4,15 +4,13 @@ import java.io.File;
 
 import org.springframework.stereotype.Service;
 
-import com.github.pagehelper.util.StringUtil;
-
 import wang.ultra.my_utilities.common.utils.FileIOUtils;
 import wang.ultra.my_utilities.common.utils.StringUtils;
 
 @Service("contextUploadService")
 public class ContextUploadService {
 
-    private final String subFileFolder = "Blog" + File.separator + "images";
+    private final String subFileFolder = "Blog" + File.separator + "contexts";
 
     public void contextUpload(String context) {
 
@@ -20,6 +18,6 @@ public class ContextUploadService {
         String fileName = StringUtils.getMyUUID() + ".html";
 
         
-        int flag = FileIOUtils.createFile(subFileFolder, fileName, 0, context);
+        int flag = FileIOUtils.createFile(subFileFolder, fileName, 1, context);
     }
 }
