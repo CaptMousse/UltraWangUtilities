@@ -2,15 +2,16 @@ package wang.ultra.my_utilities.common.config.intercepor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
-import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
+/**
+ * 主要用作防止IPv6下载
+ */
 @Component
-public class MyInterceptor implements HandlerInterceptor {
+public class FileTransferInterceptor implements HandlerInterceptor {
 
     @Override
     // 原始方法调用前执行的内容
