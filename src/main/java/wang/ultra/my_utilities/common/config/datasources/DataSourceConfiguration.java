@@ -32,4 +32,9 @@ public class DataSourceConfiguration {
     public DataSource dataSource4() {
         return DataSourceBuilder.create().build();
     }
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.blog")
+    public DataSource dataSource5() {
+        return DataSourceBuilder.create().build();
+    }
 }
