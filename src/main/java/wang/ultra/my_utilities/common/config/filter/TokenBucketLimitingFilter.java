@@ -2,6 +2,7 @@ package wang.ultra.my_utilities.common.config.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
@@ -41,13 +42,16 @@ public class TokenBucketLimitingFilter implements Filter {
 
         boolean tokenBucketResult = tokenBucketCore();
 
+        // 携带Cookie跨域问题
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
         if (tokenBucketResult) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String returnStr = AjaxUtils.failedJsonString("当前访问过多, 请稍后再试! ");
-
-            HttpServletResponse response = (HttpServletResponse) servletResponse;
-            response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Content-Type", "application/json; charset=utf-8");
             response.getWriter().write(returnStr);
         }
