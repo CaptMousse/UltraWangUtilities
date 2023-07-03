@@ -1,6 +1,5 @@
 package wang.ultra.my_utilities.hardware_monitor.service;
 
-
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.SendMailUtils;
@@ -16,6 +15,7 @@ public class SendMailService {
                 "<h3 style=\"text-align: center;\">当前CPU使用率: " + cpuUsage + "</h3>";
         sendMailCore(mailTo, mailSubject, mailContent);
     }
+
     public void sendCpuTemperatureMail(String cpuTemperature) {
         String mailTo = ConstantFromFile.getMailTo();
         String mailSubject = "【UltraWang监控报警】在" + DateConverter.getSimpleTime() + "CPU温度报警";
@@ -42,24 +42,22 @@ public class SendMailService {
         return sendMailUtils.sendMail(mailTo, mailSubject, mailContent);
     }
 
-
-
-    public String sendTestMail(SendMailService sendMailService) {
-
+    public String sendTestMail() {
         HardwareUsageService hardwareUsageService = new HardwareUsageService();
         String cpuTemperature = String.format("%.2f", hardwareUsageService.getCpuTemperature());
         String memoryUsage = String.format("%.2f", hardwareUsageService.getMemoryUsage());
 
-        String mailTo = "sefvdx@me.com";
+        String mailTo = ConstantFromFile.getMailTo();
         String mailSubject = "【UltraWang监控提醒】在" + DateConverter.getSimpleTime() + "发送测试邮件";
-        String mailContent = "<h1 style=\"text-align: center;\">歪比巴卜</h1>" +
+        String mailContent = "<h1></h1>" + "<h1 style=\"text-align: center;\">山外青山楼外楼</h1>" +
+                "<h1 style=\"text-align: center;\">唱跳Rap打篮球</h1>" +
                 "<h3 style=\"text-align: center;\">当前CPU温度: " + cpuTemperature + "°C</h3>" +
                 "<h3 style=\"text-align: center;\">当前内存使用率: " + memoryUsage + "%</h3>";
-        return sendMailService.sendMailCore(mailTo, mailSubject, mailContent);
+        return sendMailCore(mailTo, mailSubject, mailContent);
     }
 
-//    public static void main(String[] args) {
-//        SendMailService sendMailService = new SendMailService();
-//        sendMailService.sendTestMail(sendMailService);
-//    }
+    // public static void main(String[] args) {
+    // SendMailService sendMailService = new SendMailService();
+    // sendMailService.sendTestMail(sendMailService);
+    // }
 }
