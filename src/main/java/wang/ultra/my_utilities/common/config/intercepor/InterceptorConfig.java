@@ -20,7 +20,7 @@ public class InterceptorConfig implements WebMvcConfigurer{
     FileTransferInterceptor fileTransferInterceptor;
 
     @Autowired
-    BlogCookieInterceptor blogCookieInterceptor;
+    BlogLoginInterceptor blogLoginInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
@@ -32,12 +32,14 @@ public class InterceptorConfig implements WebMvcConfigurer{
         fileTransferInterceptorRegistration.addPathPatterns(fileTransferAddPathList);
         fileTransferInterceptorRegistration.excludePathPatterns(fileTransferExcludePathList);
 
-        //博客Cookie拦截器
-//        List<String> blogCookieAddPathList = new ArrayList<>();
-//        blogCookieAddPathList.add("/blog/**");
-//        List<String> blogCookieExcludePathList = new ArrayList<>();
-//        InterceptorRegistration blogCookieInterceptorRegistration = interceptorRegistry.addInterceptor(blogCookieInterceptor);
-//        blogCookieInterceptorRegistration.addPathPatterns(blogCookieAddPathList);
-//        blogCookieInterceptorRegistration.excludePathPatterns(blogCookieExcludePathList);
+        // 博客登录拦截器
+        List<String> blogLoginAddPathList = new ArrayList<>();
+//        blogLoginAddPathList.add("/blog/**");
+        List<String> blogLoginExcludePathList = new ArrayList<>();
+        blogLoginExcludePathList.add("/blog/login");
+        blogLoginExcludePathList.add("/blog/logout");
+        InterceptorRegistration blogCookieInterceptorRegistration = interceptorRegistry.addInterceptor(blogLoginInterceptor);
+        blogCookieInterceptorRegistration.addPathPatterns(blogLoginAddPathList);
+        blogCookieInterceptorRegistration.excludePathPatterns(blogLoginExcludePathList);
     }
 }
