@@ -39,24 +39,9 @@ public class BlogController {
     @GetMapping("/contextList")
     public AjaxUtils getContextList(HttpServletRequest request) {
 
-//        String cookieUsername = null;
-//
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies != null) {
-//            for (Cookie cookie : cookies) {
-//                if (cookie.getName().equals("username")) {
-//                    cookieUsername = cookie.getValue();
-//                }
-//            }
-//        }
-//
-//        if (cookieUsername == null) {
-//            return AjaxUtils.success("Cookie失效, 请重新登录! ");
-//        }
-
+        // 根据用户名获取文章列表
         List<Map<String, String>> contextList = blogContextService.contextListSelectByUsername("default");
         return AjaxUtils.success(contextList);
-//        return AjaxUtils.success("done");
     }
 
     @GetMapping("/contextRead")

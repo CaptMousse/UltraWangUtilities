@@ -29,10 +29,9 @@ public class StringUtils {
 
     /**
      * 获取MD5
-     * 
+     *
      * @param str
      * @return
-     * @throws NoSuchAlgorithmException
      */
     public static String makeMD5(String str) {
         if (str == null) {
@@ -45,10 +44,15 @@ public class StringUtils {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        messageDigest.update(str.getBytes());
-        byte[] b = messageDigest.digest();
+        if (messageDigest != null) {
+            messageDigest.update(str.getBytes());
+        }
+        byte[] b = new byte[0];
+        if (messageDigest != null) {
+            b = messageDigest.digest();
+        }
 
-        char[] digit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        char[] digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         char[] c = new char[2];
         StringBuilder stringBuilder = new StringBuilder();
         for (byte value : b) {
@@ -56,27 +60,11 @@ public class StringUtils {
             c[1] = digit[(value & 0xF)];
             stringBuilder.append(c);
         }
-        return stringBuilder.toString();
-    }
 
-    // MD5备用方法
-    private static String bytesHEX(byte[] b) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (byte value : b) {
-            stringBuilder.append(byteHEX(value));
-        }
         return stringBuilder.toString();
-    }
-    private static String byteHEX(byte b) {
-        char[] digit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-        char[] c = new char[2];
-        c[0] = digit[(b >>> 4 & 0xF)];
-        c[1] = digit[(b & 0xF)];
-        return new String(c);
     }
 
     /**
-     *
      * @param fileName
      * @return 只返回后缀名, 要自己加"."
      */
@@ -86,7 +74,7 @@ public class StringUtils {
 
     /**
      * 是否为空
-     * 
+     *
      * @param obj
      * @return
      */
