@@ -2,6 +2,8 @@ package wang.ultra.my_utilities.blog.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
+
+import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 @RestController
@@ -26,6 +28,7 @@ public class LoginController {
     private void setSessionAttribute(HttpSession session, String username) {
         if (session != null) {
             session.setAttribute("username", username);
+            session.setMaxInactiveInterval(ConstantFromFile.getSessionInactiveInterval());
 //            session.setAttribute("id", "1234567890");
         }
     }

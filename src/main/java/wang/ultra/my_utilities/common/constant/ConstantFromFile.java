@@ -90,6 +90,9 @@ public class ConstantFromFile {
     // 文件上传下载文件夹
     private static String FileFolder;
 
+    // 用户登陆过期时间(秒)
+    private static Integer SessionInactiveInterval;
+
     private static Map<String, String> constMap = new HashMap<>();
 
     /**
@@ -141,6 +144,9 @@ public class ConstantFromFile {
             ConstantFromFile.LimitingQPS = Long.valueOf(constMap.get("LimitingQPS"));
 
             ConstantFromFile.FileFolder = constMap.get("FileFolder");
+
+            ConstantFromFile.SessionInactiveInterval = Integer.parseInt(constMap.get("SessionInactiveInterval"));
+
             LOG.info("配置文件加载成功!");
             return 1;
         }
@@ -287,5 +293,9 @@ public class ConstantFromFile {
 
     public static String getFileFolder() {
         return FileFolder;
+    }
+
+    public static Integer getSessionInactiveInterval() {
+        return SessionInactiveInterval;
     }
 }

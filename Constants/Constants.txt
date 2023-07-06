@@ -69,3 +69,6 @@ LimitingQPS = 1
 
 # 文件上传下载文件夹
 FileFolder = FileFolder
+
+# 用户登陆过期时间(秒)
+SessionInactiveInterval = 3600
