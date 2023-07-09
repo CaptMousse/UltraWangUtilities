@@ -1,6 +1,5 @@
 package wang.ultra.my_utilities.blog.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/blog")
+@RequestMapping("/blog/context")
 public class BlogController {
     @Autowired
     ImageUploadService imageUploadService;

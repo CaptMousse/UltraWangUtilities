@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.monitor.entity.MonitorEntity;
 import wang.ultra.my_utilities.common.monitor.service.HardwareMonitorService;
-import wang.ultra.my_utilities.common.utils.SpringUtil;
+import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,14 +58,12 @@ public class MonitorService {
 
         }
 
-
-        System.out.println("DAODAODAO");
         // 硬件监控持久化到数据库
         MonitorEntity entity = new MonitorEntity();
         entity.setCpuUsage(cpuUsage.toString());
         entity.setCpuTemperature(cpuTemperature.toString());
         entity.setMemoryUsage(memoryUsage.toString());
-        HardwareMonitorService hardwareMonitorService = SpringUtil.getBean(HardwareMonitorService.class);
+        HardwareMonitorService hardwareMonitorService = SpringBeanUtils.getBean(HardwareMonitorService.class);
         hardwareMonitorService.hardwareMonitorRecord(entity);
     }
 

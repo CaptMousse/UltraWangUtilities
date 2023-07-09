@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * 把对象交由SpringBean管理
  */
 @Component
-public class SpringUtil implements ApplicationContextAware {
+public class SpringBeanUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 

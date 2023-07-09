@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import wang.ultra.my_utilities.aliyun_ddns_update.service.DdnsMonitorService;
 import wang.ultra.my_utilities.aliyun_ddns_update.service.LogIOService;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
+import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 
 import java.util.ArrayList;
@@ -22,8 +23,9 @@ public class DDNSController {
      * @return -1 - 更新出错, 0 - 无需更新, 1 - 更新成功
      */
     @GetMapping("/update")
-    public Integer updateDDNS() {
-        return DdnsMonitorService.update();
+    public AjaxUtils updateDDNS() {
+        DdnsMonitorService.setNextUpdateTime(DateConverter.getTime(System.currentTimeMillis() + ConstantFromFile.getDdnsIntervalTime() * 3600 * 1000));
+        return AjaxUtils.success(DdnsMonitorService.update());
     }
 
     /**
@@ -32,7 +34,7 @@ public class DDNSController {
      * @return
      */
     @GetMapping("/getStatus")
-    public List<String> getStatus() {
+    public AjaxUtils getStatus() {
 
         DdnsMonitorService.getStatus();
 
@@ -49,7 +51,7 @@ public class DDNSController {
 
 //        System.out.println("getStatus time = " + DateConverter.getTime());
 
-        return list;
+        return AjaxUtils.success(list);
     }
 
     /**
@@ -58,15 +60,15 @@ public class DDNSController {
      * @return -1 = 失败, 1 = 成功
      */
     @GetMapping("/initConstFile")
-    public Integer initConstFile() {
+    public AjaxUtils initConstFile() {
 
         Integer result = ConstantFromFile.setConstFromMap();
 
-        DdnsMonitorService.setNextUpdateTime(DateConverter.getTime(System.currentTimeMillis() + ConstantFromFile.getDdnsIntervalTime()));
+        DdnsMonitorService.setNextUpdateTime(DateConverter.getTime(System.currentTimeMillis() + ConstantFromFile.getDdnsIntervalTime() * 3600 * 1000));
 
         System.out.println("initConstFile time = " + DateConverter.getTime());
 
-        return result;
+        return AjaxUtils.success(result);
     }
 
 }

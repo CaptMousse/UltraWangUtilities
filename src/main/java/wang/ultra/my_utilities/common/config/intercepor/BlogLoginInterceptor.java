@@ -15,14 +15,13 @@ public class BlogLoginInterceptor implements HandlerInterceptor {
 
     @Override
     // 原始方法调用前执行的内容
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
 
         HttpSession session = request.getSession();
         if (session == null || StringUtils.isEmpty(session.getAttribute("username"))) {
-            System.out.println("未登录!");
-            System.out.println("request.getServletPath() = " + request.getServletPath());
+            System.out.println("当前请求状态: 未登录");
+            System.out.println("当前请求路径: " + request.getServletPath());
             return false;
         }
 
