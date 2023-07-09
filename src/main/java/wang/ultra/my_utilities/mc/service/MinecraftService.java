@@ -24,7 +24,7 @@ public class MinecraftService {
     public List<Map<String, String>> stringToJsonMap() {
 
         // 读取黑名单
-        String subPath = "WabbyWabbo";
+        String subPath = ConstantFromFile.getMinecraftDataFolder();
         String fileName = ConstantFromFile.getMinecraftBlackListFileName();
 
         String resultString = FileIOUtils.readFileToString(subPath, fileName);
@@ -55,7 +55,9 @@ public class MinecraftService {
                 stringBuilder.append(strRead);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return null;
+//            throw new RuntimeException(e);
+
         }
         return JsonConverter.JsonStringToMap(stringBuilder.toString()).get("id");
     }

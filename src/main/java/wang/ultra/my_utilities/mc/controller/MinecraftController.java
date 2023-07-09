@@ -28,7 +28,9 @@ public class MinecraftController {
 
         if (resultMap.isEmpty()) {
             String uuid = minecraftService.getBannedPlayerUUID(name);
-            resultMap = minecraftService.bannedPlayersSearchByUUID(uuid);
+            if (uuid != null) {
+                resultMap = minecraftService.bannedPlayersSearchByUUID(uuid);
+            }
         }
 
         if (!resultMap.isEmpty()) {
