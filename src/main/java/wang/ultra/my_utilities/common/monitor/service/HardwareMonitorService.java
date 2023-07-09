@@ -40,18 +40,6 @@ public class HardwareMonitorService {
         entityMap.put("cpuTemperature", entity.getCpuTemperature());
         entityMap.put("memoryUsage", entity.getMemoryUsage());
         daoList.add(entityMap);
-
-        System.out.println("daoList.size() = " + daoList.size());
-
-
-
-//        List<MonitorEntity> entityList = new ArrayList<>();
-//        entityList.add(entity);
-//
-//        monitorMapper.addMonitorInfo(entityList);
-//        monitorMapper.addHardwareCpuUsage(entityList);
-//        monitorMapper.addHardwareCpuTemperature(entityList);
-//        monitorMapper.addHardwareMemoryUsage(entityList);
     }
 
     private String roundHalfUp(String num) {

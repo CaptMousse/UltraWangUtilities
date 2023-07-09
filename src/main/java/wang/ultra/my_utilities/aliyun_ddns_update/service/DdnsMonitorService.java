@@ -132,7 +132,5 @@ public class DdnsMonitorService {
             }
             // 记录下次更新时间
             nextUpdateTime = DateConverter.getTime(System.currentTimeMillis() + ConstantFromFile.getDdnsIntervalTime() * 3600 * 1000);
-
-        System.out.println("nextUpdateTime = " + nextUpdateTime);
     }
 }
