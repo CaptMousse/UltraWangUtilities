@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>wang.ultra</groupId>
 	<artifactId>MyUtilities</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>MyUtilities</name>
 	<description>Utilities of Ultra Wang Website</description>
 	<properties>
