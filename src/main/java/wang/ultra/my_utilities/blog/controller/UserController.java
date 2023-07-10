@@ -1,11 +1,14 @@
 package wang.ultra.my_utilities.blog.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import wang.ultra.my_utilities.blog.entity.UserLoginEntity;
+import wang.ultra.my_utilities.blog.entity.UserLoginRecordEntity;
 import wang.ultra.my_utilities.blog.service.UserLoginInfoService;
+import wang.ultra.my_utilities.blog.service.UserLoginRecordService;
 import wang.ultra.my_utilities.blog.utils.UserLoginDecryptUtils;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
@@ -20,62 +23,64 @@ public class UserController {
 
     @Autowired
     UserLoginInfoService userLoginInfoService;
+    @Autowired
+    UserLoginRecordService userLoginRecordService;
 
     @PostMapping("/login")
-    public AjaxUtils login(String loginInfo, HttpSession session) {
+    public AjaxUtils login(String loginInfo, HttpSession session, HttpServletRequest request) {
 
         Map<String, String> loginInfoMap = UserLoginDecryptUtils.decryptUserInfoToMap(loginInfo);
         String username = loginInfoMap.get("username");
         String password = loginInfoMap.get("password");
 
-        int result = loginCheck(username, password);
 
-        switch (result) {
-            case -2 -> {
-                return AjaxUtils.failed("用户状态异常! ");
-            }
-            case -1 -> {
-                return AjaxUtils.failed("用户名或密码错误! ");
-            }
-            case 0 -> {
-                setSessionAttribute(session, username);
-                return AjaxUtils.success("用户登陆成功! ");
-            }
-            default -> {
-                return AjaxUtils.success("用户登陆失败! ");
-            }
-        }
-    }
-
-    /**
-     * 验证用户名密码正确与否
-     * @param username
-     * @param password
-     * @return  -1 用户名密码错误, -2状态错误
-     */
-    private int loginCheck(String username, String password) {
 
         Map<String, String> userMap = userLoginInfoService.userLoginSearchByUsername(username);
         if (userMap == null) {
-            return -1;
+            return AjaxUtils.failed("用户名或密码错误! ");
         }
         if (!userMap.get("status").equals("0")) {
-            return -2;
+            return AjaxUtils.failed("用户状态异常! ");
         }
         String salt = userMap.get("salt");
         String saltPasswordMD5 = StringUtils.makeMD5(password + salt);
         if (saltPasswordMD5.equals(userMap.get("password"))) {
-            return 0;
-        }
+            if (session != null) {
+                // 登陆成功核心代码坐标
+                session.setAttribute("username", username);
+                session.setMaxInactiveInterval(ConstantFromFile.getSessionInactiveInterval());
 
-        return -1;
+                userLoginRecordService.loginRecordAdd(new UserLoginRecordEntity(username, "用户登入", getCustomerIP(request)));
+
+
+                return AjaxUtils.success("用户登陆成功! ");
+            } else {
+                return AjaxUtils.failed("用户登陆失败! ");
+            }
+        }
+        return AjaxUtils.failed("用户名或密码错误! ");
     }
 
-    private void setSessionAttribute(HttpSession session, String username) {
-        if (session != null) {
-            session.setAttribute("username", username);
-            session.setMaxInactiveInterval(ConstantFromFile.getSessionInactiveInterval());
-//            session.setAttribute("id", "1234567890");
+    /**
+     * 获取客户端IP
+     * @param request
+     * @return
+     */
+    private String getCustomerIP(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip.contains(",")) {
+            return ip.split(",")[0];
+        } else {
+            return ip;
         }
     }
 
@@ -94,18 +99,15 @@ public class UserController {
 
     @GetMapping("/logout")
     public AjaxUtils logout(HttpSession session) {
-        removeSessionAttribute(session);
-        return AjaxUtils.success("登出成功!");
-    }
-
-    private void removeSessionAttribute(HttpSession session) {
         if (session != null) {
+            String username = (String) session.getAttribute("username");
             session.removeAttribute("username");
-//            session.removeAttribute("id");
-        }
-    }
 
-    public AjaxUtils getSessionList(){
-        return AjaxUtils.success();
+            userLoginRecordService.loginRecordAdd(new UserLoginRecordEntity(username, "用户登出"));
+
+            return AjaxUtils.success("用户登出成功! ");
+        } else {
+            return AjaxUtils.failed("用户登出失败! ");
+        }
     }
 }
