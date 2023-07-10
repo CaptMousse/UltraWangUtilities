@@ -62,7 +62,7 @@ public class MonitorService {
         MonitorEntity entity = new MonitorEntity();
         entity.setCpuUsage(cpuUsage.toString());
         entity.setCpuTemperature(cpuTemperature.toString());
-        entity.setMemoryUsage(memoryUsage.toString());
+        entity.setMemoryUsage(memoryUsageStr);
         HardwareMonitorService hardwareMonitorService = SpringBeanUtils.getBean(HardwareMonitorService.class);
         hardwareMonitorService.hardwareMonitorRecord(entity);
     }
