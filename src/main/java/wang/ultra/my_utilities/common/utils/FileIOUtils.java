@@ -152,9 +152,6 @@ public class FileIOUtils {
         String filePath = System.getProperty("user.dir") +  File.separator + subFileFolder + File.separator + fileName;
         File file = new File(filePath);
 
-        System.out.println("filePath = " + file.getPath());
-        System.out.println("fileName = " + file.getName());
-
         String strText;
         StringBuilder stringBuffer = new StringBuilder();
         if (file.exists() && file.isFile()) {

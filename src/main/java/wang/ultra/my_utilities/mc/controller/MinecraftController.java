@@ -21,8 +21,6 @@ public class MinecraftController {
 
     @GetMapping("bannedPlayerSearchByName")
     public AjaxUtils bannedPlayerSearchByName(String name) {
-        System.out.println("name = " + name);
-
         Map<String, String> resultMap = minecraftService.bannedPlayersSearchByName(name);
         Map<String, String> returnMap = new HashMap<>();
 
