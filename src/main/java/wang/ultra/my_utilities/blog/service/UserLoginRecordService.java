@@ -7,6 +7,7 @@ import wang.ultra.my_utilities.blog.entity.UserLoginRecordEntity;
 import wang.ultra.my_utilities.blog.mapper.UserLoginRecordMapper;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.ListConverter;
+import wang.ultra.my_utilities.common.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class UserLoginRecordService {
     UserLoginRecordMapper userLoginRecordMapper;
 
     public void loginRecordAdd(UserLoginRecordEntity entity) {
-
+        entity.setUuid(StringUtils.getMyUUID());
         String time = DateConverter.getTime();
         entity.setRecord_time(time);
         entity.setRecord_type(1);
@@ -31,7 +32,7 @@ public class UserLoginRecordService {
     }
 
     public void logoutRecordAdd(UserLoginRecordEntity entity) {
-
+        entity.setUuid(StringUtils.getMyUUID());
         entity.setRecord_time(DateConverter.getTime());
         entity.setRecord_type(2);
 

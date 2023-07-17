@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserLoginRecordEntity {
-
+    private String uuid;
     private String username;
     private String record_time;
     private int record_type;

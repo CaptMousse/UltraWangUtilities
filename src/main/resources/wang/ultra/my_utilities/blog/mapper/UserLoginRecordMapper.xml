@@ -3,9 +3,9 @@
 <mapper namespace="wang.ultra.my_utilities.blog.mapper.UserLoginRecordMapper">
 
     <insert id="userLoginRecordAdd" parameterType="list">
-        insert into user_login_record (username, record_time, record_type, record_context, login_ip) values
+        insert into user_login_record (uuid, username, record_time, record_type, record_context, login_ip) values
         <foreach collection="list" separator="," item="UserLoginRecordEntity">
-            ('${UserLoginRecordEntity.username}', '${UserLoginRecordEntity.record_time}','${UserLoginRecordEntity.record_type}','${UserLoginRecordEntity.record_context}','${UserLoginRecordEntity.login_ip}')
+            ('${UserLoginRecordEntity.uuid}', '${UserLoginRecordEntity.username}', '${UserLoginRecordEntity.record_time}','${UserLoginRecordEntity.record_type}','${UserLoginRecordEntity.record_context}','${UserLoginRecordEntity.login_ip}')
         </foreach>
     </insert>
 

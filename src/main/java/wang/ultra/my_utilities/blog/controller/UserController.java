@@ -103,7 +103,7 @@ public class UserController {
             String username = (String) session.getAttribute("username");
             session.removeAttribute("username");
 
-            userLoginRecordService.loginRecordAdd(new UserLoginRecordEntity(username, "用户登出"));
+            userLoginRecordService.logoutRecordAdd(new UserLoginRecordEntity(username, "用户登出"));
 
             return AjaxUtils.success("用户登出成功! ");
         } else {
