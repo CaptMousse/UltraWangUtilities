@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+    <style>
+        .modal-data {
+            max-width: 600px;
+            width: 80%;
+            margin: 200px auto;
+            background-color: #fff;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 15px;
+        }
+    </style>
+    <script src="/js/baseFunction.js"></script>
+    <script src="/js/cookieUtils.js"></script>
+    <script>
+        function setCookie() {
+            docCookies.setItem('username', 'default');
+        }
+
+        function getCookie() {
+            var username = docCookies.getItem('username');
+            console.log("username = " + username);
+
+
+        }
+
+        function init() {
+            var contextList = ajax("get", "blog/context/contextList", false);
+
+            var parentDiv = document.getElementById('targetNode').parentNode;
+            var contextFieldset = document.getElementsByClassName('contextFieldset');
+
+            for (let i = 0; i < contextList.length; i++) {
+                var context = contextList[i];
+
+                var contextFieldsetNum = contextFieldset.length + 1;
+                var createNewFieldset = document.createElement('fieldset');
+                parentDiv.appendChild(createNewFieldset);
+                parentDiv.children[contextFieldsetNum].className = 'contextFieldset';
+                parentDiv.children[contextFieldsetNum].innerHTML = "<p onclick='contextShow(\"" + context.uuid + "\")'>标题: " + context.title + "</p>";
+                
+                // var createNewBr = document.createElement('br');
+                // parentDiv.appendChild(createNewBr);
+                
+            }
+        }
+        
+        function contextShow(uuid) {
+            var resultContext = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
+            contextModal(resultContext);
+        }
+
+        function contextModal(resultContext) {
+            showModal();
+            document.getElementById('modalLegend').innerText = resultContext.title;
+            document.getElementById('modalDiv').innerHTML = resultContext.context;
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <div>
+        <fieldset>
+            <legend>操作</legend>
+            <input type="button" onclick="setCookie()" value="setCookie">
+            <input type="button" onclick="getCookie()" value="getCookie">
+        </fieldset>
+
+        <br>
+
+        <div id="divBody">
+            <div id="targetNode"></div>
+        </div>
+    </div>
+
+    <div id="modal-background" style="visibility: hidden;">
+        <div class="modal-data">
+            <fieldset class="fieldset">
+                <legend id="modalLegend"></legend>
+                <div id="modalDiv">
+
+                </div>
+            </fieldset>
+            <p style="text-align: center"><a onclick="showModal()">[关闭]</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

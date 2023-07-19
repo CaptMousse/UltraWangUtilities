@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZBHD_Scheduler Arrivals</title>
+    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+    <style>
+        .modal-data {
+            width: 300px;
+            margin: 200px auto;
+            background-color: #fff;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 15px;
+        }
+    </style>
+    <script src="/js/baseFunction.js"></script>
+    <script>
+
+        var mainController = "zbhd_scheduler/arrivals/";
+
+        function arrivalsSumbit() {
+            var flightNo = document.getElementById("flightNo").value;
+            var airportICAO = document.getElementById("airportICAO").value;
+            var departure = document.getElementById("departure").value;
+            var arrival = document.getElementById("arrival").value;
+            var aircraft = document.getElementById("aircraft").value;
+
+            var schedule = "";
+            var scheduleCheckBox = document.getElementsByName("schedule");
+            for (let i = 0; i < scheduleCheckBox.length; i++) {
+                if (scheduleCheckBox[i].checked) {
+                    schedule += scheduleCheckBox[i].value;
+                } else {
+                    schedule += "0";
+                }
+            }
+
+            if (flightNo == "") {
+                alert("航班号不能为空!");
+                return;
+            }
+            if (JSON.parse(ajax("GET", mainController + "arrivalsSearchByFlightNo?flightNo=" + flightNo, false)) != "0") {
+                alert("航班号重复!");
+                return;
+            }
+
+            if (departure == "") {
+                alert("起飞时间不能为空!");
+                return;
+            }
+            if (departure.length != 4 || parseInt(departure) < 0 || parseInt(departure.substring(2)) > 59 || parseInt(departure.substring(0, 2)) > 23) {
+                alert("起飞时间输入错误!");
+                return;
+            }
+            if (arrival == "") {
+                alert("降落时间不能为空!");
+                return;
+            }
+            if (arrival.length != 4 || parseInt(arrival) < 0 || parseInt(arrival.substring(2)) > 59 || parseInt(arrival.substring(0, 2)) > 23) {
+                alert("降落时间输入错误!");
+                return;
+            }
+            if (airportICAO == "") {
+                alert("起飞机场选择错误!");
+                return;
+            }
+            if (schedule == "0000000") {
+                alert("班期选择错误!");
+                return;
+            }
+
+            var params = "flightNo=" + flightNo + "&airportICAO=" + airportICAO + "&departure=" + departure + "&arrival=" + arrival + "&schedule=" + schedule + "&aircraft=" + aircraft;
+            var result = ajax("POST", mainController + "arrivalsAdd?" + params, false);
+
+            var resultMsg;
+            if (result == "1") {
+                resultMsg = "添加成功!";
+            } else {
+                resultMsg = "添加失败!";
+            }
+
+            document.getElementById("submitMsg").innerText = resultMsg;
+        }
+
+        function scheduleSelectReverse() {
+            var scheduleCheckBox = document.getElementsByName("schedule");
+            for (let i = 0; i < scheduleCheckBox.length; i++) {
+                if (scheduleCheckBox[i].checked) {
+                    scheduleCheckBox[i].checked = false;
+                } else {
+                    scheduleCheckBox[i].checked = true;
+                }
+            }
+        }
+
+        function scheduleSelectAll() {
+            var scheduleCheckBox = document.getElementsByName("schedule");
+            for (let i = 0; i < scheduleCheckBox.length; i++) {
+                scheduleCheckBox[i].checked = true;
+            }
+        }
+
+        function submitMsgClear() {
+            document.getElementById("submitMsg").innerText = "";
+        }
+
+        function airportsSearch() {
+            var searchValue = document.getElementById("airportName").value;
+            if (searchValue == "") {
+                alert("请输入起飞机场");
+                return;
+            }
+            showModal();
+            removeTableTr("modalTableTr");
+
+            var jsonResult = JSON.parse(ajax("GET", "zbhd_scheduler/airports/airportsSearchByCity?search=" + searchValue, false));
+
+            var tbody = document.getElementById('tableThAirports').parentNode;
+            var tableTr = document.getElementsByClassName('modalTableTr');
+            if (jsonResult[0] == null) {
+                var tableTrNum = tableTr.length + 1;
+                tbody.appendChild(document.createElement('tr'));
+                tbody.children[tableTrNum].className = 'modalTableTr';
+                tbody.children[tableTrNum].innerHTML = "<td colspan='2'>暂无数据</td>";
+            } else {
+                for (let i = 0; i < jsonResult.length; i++) {
+                    var airport = jsonResult[i];
+                    var tableTrNum = tableTr.length + 1;
+                    tbody.appendChild(document.createElement('tr'));
+                    tbody.children[tableTrNum].className = 'modalTableTr';
+                    tbody.children[tableTrNum].innerHTML = "<td>" + airport.name + "</td><td><input type='button' onclick='airportICAOValue(\"" + airport.name + "\", \"" + airport.icao + "\")' value='选择'></td>";
+                }
+            }
+        }
+
+        function airportICAOValue(name, icao) {
+            document.getElementById("airportName").value = name;
+            document.getElementById("airportICAO").value = icao;
+            showModal();
+        }
+
+
+
+        function init() {
+            arrivalsToday();
+        }
+
+        function arrivalsToday() {
+            removeTableTr();
+
+            var jsonResult = JSON.parse(ajax("GET", mainController + "arrivalsToday?pageNum=0&pageSize=0", false));
+
+            var tbody = document.getElementById('tableTh').parentNode;
+            var tableTr = document.getElementsByClassName('tableTr');
+
+
+            if (jsonResult[0].pageTotal == "0") {
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement('tr');
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = 'tableTr';
+                tbody.children[tableTrNum].innerHTML = "<td colspan='7'>今日暂无航班</td>";
+            } else {
+                for (let i = 1; i < jsonResult.length; i++) {
+                    var arrivals = jsonResult[i];
+                    var pvgFlightCheck = "";
+                    if (arrivals.CITY == "上海") {
+                        if (parseInt(arrivals.arrival) < 1200) {
+                            pvgFlightCheck = "(早)"
+                        }
+                        if (parseInt(arrivals.arrival) > 1200) {
+                            pvgFlightCheck = "(晚)"
+                        }
+                    }
+                    departure = arrivals.departure.substring(0, 2) + ":" + arrivals.departure.substring(2);
+                    var arrival = arrivals.arrival.substring(0, 2) + ":" + arrivals.arrival.substring(2);
+                    var schedule = arrivals.schedule;
+                    if (schedule == "1234567") {
+                        schedule = "每日一班";
+                    } else {
+                        schedule = arrivals.schedule.replaceAll("0", "");
+                    }
+                    var tableTrNum = tableTr.length + 1;
+                    var createNewTr = document.createElement('tr');
+                    tbody.appendChild(createNewTr);
+                    tbody.children[tableTrNum].className = 'tableTr';
+                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>" + arrivals.CITY + "-邯郸" + pvgFlightCheck + "</td><td>" + arrivals.flight_no + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + arrivals.aircraft + "</td>";
+                }
+            }
+        }
+
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="divBody">
+        <fieldset class="fieldset">
+            <legend>进港信息添加</legend>
+            <table>
+                <tr>
+                    <td><label for="flightNo">航班号: </label></td>
+                    <td><input type="text" id="flightNo" onchange="submitMsgClear()" /></td>
+                    <td><label for="aircraft">机型: </label></td>
+                    <td><input type="text" id="aircraft" onchange="submitMsgClear()" /></td>
+                </tr>
+                <tr>
+                    <td><label for="departure">起飞时间: </label></td>
+                    <td><input type="text" id="departure" onchange="submitMsgClear()" /></td>
+                    <td><label for="arrival">降落时间: </label></td>
+                    <td><input type="text" id="arrival" onchange="submitMsgClear()" /></td>
+                </tr>
+                <tr>
+                    <td><label for="airportName">起飞机场: </label></td>
+                    <td><input type="search" id="airportName" placeholder="输入城市名并查询..."
+                            onchange="submitMsgClear()" /><input type="hidden" id="airportICAO" /></td>
+                    <td><input type="button" onclick="airportsSearch()" value="查询"></td>
+                </tr>
+                <tr>
+                    <td>班期:</td>
+                    <td colspan="3">
+                        <label><input type="checkbox" name="schedule" value="1">一</label>
+                        <label><input type="checkbox" name="schedule" value="2">二</label>
+                        <label><input type="checkbox" name="schedule" value="3">三</label>
+                        <label><input type="checkbox" name="schedule" value="4">四</label>
+                        <label><input type="checkbox" name="schedule" value="5">五</label>
+                        <label><input type="checkbox" name="schedule" value="6">六</label>
+                        <label><input type="checkbox" name="schedule" value="7">日</label>
+                        <input type="button" onclick="scheduleSelectReverse()" value="反选">
+                        <input type="button" id="scheduleSelectAllButton" onclick="scheduleSelectAll()" value="全选">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" id="airportSubmit" onclick="arrivalsSumbit()" value="提交">
+                        <span id="submitMsg"></span>
+                    </td>
+                </tr>
+            </table>
+            <div id="modal-background">
+                <div class="modal-data">
+                    <fieldset class="fieldset">
+                        <legend>选择机场</legend>
+                        <table id="table" style="margin: 0 auto;" border="1">
+                            <tr id="tableThAirports">
+                                <th>机场名称</th>
+                                <th>操作</th>
+                            </tr>
+                        </table>
+                    </fieldset>
+                    <p style="text-align: center"><a onclick="showModal()">[关闭]</a></p>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="fieldset">
+            <legend>今日进港航班</legend>
+            <table id="table" style="margin: 0 auto;" border="1">
+                <tr id="tableTh">
+                    <th>序号</th>
+                    <th>航线名称</th>
+                    <th>航班号</th>
+                    <th>起飞时间</th>
+                    <th>降落时间</th>
+                    <th>班期</th>
+                    <th>机型</th>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+
+</body>
+
+</html>

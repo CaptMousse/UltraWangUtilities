@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRCode Creator</title>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/jquery.qrcode.min.js"></script>
+    <script>
+
+        // UTF16转UTF8, 防止中文出错
+        function utf16to8(str) {
+            var out, i, len, c;
+            out = "";
+            len = str.length;
+            for (i = 0; i < len; i++) {
+                c = str.charCodeAt(i);
+                if ((c >= 0x0001) && (c <= 0x007F)) {
+                    out += str.charAt(i);
+                } else if (c > 0x07FF) {
+                    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                    out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                } else {
+                    out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                }
+            }
+            return out;
+
+        }
+
+        // 粘贴并生成
+        function paste() {
+            setTimeout(
+                (async () => {
+                    // 从剪贴板获得数据
+                    try {
+                        var text = await navigator.clipboard.readText();
+                        if (text) {
+                            document.getElementById("input").value = text;
+                            create();
+                        } else {
+                            document.getElementById("output").innerText = "剪贴板不存在文字内容";
+                        }
+                    } catch (error) {
+                        document.getElementById("output").innerText = "剪贴板被拒绝读取";
+                    }
+
+                })()
+                , 100)
+
+        }
+
+        function create() {
+            // 清空
+            document.getElementById("output").innerHTML = "";
+
+            var inputData = document.getElementById("input").value;
+            inputData = utf16to8(inputData);
+
+            $("#output").qrcode({
+                render: "canvas",
+                width: 360,
+                height: 360,
+                background: "#fff",
+                foreground: "#444",
+                correctLevel: 2,    // 容错率, 1(7%), 0(15%), 3(25%), 2(30%)
+                text: inputData
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <fieldset>
+        <legend>QRCode Creator</legend>
+        <p></p>
+        <textarea id="input" rows="3" style="width: 80%;">https://ultra.wang</textarea>
+        <br>
+        <button onclick="create()">生成二维码</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="paste()">粘贴并生成</button>
+        <p></p>
+        <div id="output"></div>
+    </fieldset>
+</body>
+
+</html>

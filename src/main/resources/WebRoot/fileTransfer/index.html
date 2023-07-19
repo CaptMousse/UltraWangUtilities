@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/js/baseFunction.js"></script>
+    <script>
+        function init() {
+            document.getElementById('btnField').disabled = true;
+        }
+
+        function checkFileName(file) {
+            if (file.length > 0) {
+                document.getElementById('textField').value = file[0].name;
+                document.getElementById('btnField').disabled = false;
+            }
+        }
+
+        function uploadFile() {
+            var files = document.getElementById('fileField').files;
+            var fileName = document.getElementById('textField').value;
+            // console.log("file[0].name = " + files[0].name);
+            if (files.length > 0) {
+                var formData = new FormData();
+                formData.append('file', files[0]);
+                formData.append('fileName', fileName);
+                ajax("POST", "fileTransfer/upload", false, formData);
+            }
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <fieldset>
+        <legend>文件上传</legend>
+        <div>
+            <input type="text" name="fileName" id="textField" class="txt">
+            <input type="file" name="file" class="file" id="fileField" onchange="checkFileName(files)">
+            <input type="button" id="btnField" class="btn" value="上传" onclick="uploadFile()"/>
+        </div>
+    </fieldset>
+</body>
+
+</html>

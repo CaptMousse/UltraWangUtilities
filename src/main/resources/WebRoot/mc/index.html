@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/> -->
+  <title>A Farmer's World</title>
+  <style>
+    .dashboard {
+      display: inline-block;
+      margin: auto;
+      width: 160px;
+      height: 160px;
+    }
+
+    .italic {
+      font-style: italic;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+  <script src="/js/baseFunction.js"></script>
+  <script src="/js/jquery-3.6.0.min.js"></script>
+  <script src="/js/echarts.min.js"></script>
+  <script>
+    // 初始化
+    function init() {
+      footerShow();
+      dashboardRefresh();
+      initStatus();
+    }
+
+    function initStatus() {
+      document.getElementById("manualUpdateDDNSDiv").style.display = "none";
+      document.getElementById("manualUpdateDDNS").disabled = true;
+
+      var json = ajax("GET", "ddnsUpdate/getStatus", false);
+      // 下次检查更新时间
+      document.getElementById('getNextUpdateTimeMsg').innerText = json[0];
+      // 服务器IPv6地址
+      document.getElementById('domainAddress').innerText = json[1];
+      // DDNS当前状态
+      if (json[2] == "1") {
+        document.getElementById('getDDNSStatusMsg').style.color = "red";
+        document.getElementById('getDDNSStatusMsg').innerText = "需要更新 ×";
+        document.getElementById('manualUpdateDDNSDiv').style.display = "";
+        document.getElementById("manualUpdateDDNS").disabled = false;
+      }
+      if (json[2] == "0") {
+        document.getElementById('getDDNSStatusMsg').style.color = "green";
+        document.getElementById('getDDNSStatusMsg').innerText = "正常可用 √";
+      }
+      if (json[2] == "-1") {
+        document.getElementById('getDDNSStatusMsg').style.color = "yellow";
+        document.getElementById('getDDNSStatusMsg').innerText = "状态出错 !";
+      }
+      // 上次成功更新时间
+      document.getElementById('getRecentUpdate').innerText = json[3];
+    }
+
+    //手动更新域名解析
+    function updateDDNS() {
+      document.getElementById('manualUpdateDDNS').disabled = true;
+      var result = ajax("GET", "ddnsUpdate/update", false);
+
+      if (result == 1) {
+        document.getElementById('updateDDNSMsg').style.color = "green";
+        document.getElementById('updateDDNSMsg').innerText = "更新成功 √";
+        location.reload(true);
+      }
+      if (result == 0) {
+        document.getElementById('updateDDNSMsg').style.color = "black";
+        document.getElementById('updateDDNSMsg').innerText = "无需更新 !";
+      }
+      if (result == -1) {
+        document.getElementById('updateDDNSMsg').style.color = "red";
+        document.getElementById('updateDDNSMsg').innerText = "更新失败 ×";
+      }
+    }
+
+    function bannedPlayerSearch() {
+      var name = document.getElementById('bannedPlayerSearch').value;
+      if (name == null || name == "") {
+        alert("请输入玩家名称!");
+        return;
+      }
+      var result = ajax("GET", "mc/bannedPlayerSearchByName?name=" + name, false);
+      if (result.created != null) {
+        document.getElementById('bannedPlayerInfo').style.display = "";
+        document.getElementById('bannedPlayerName').innerText = name;
+        document.getElementById('bannedPlayerDate').innerText = result.created;
+      }
+    }
+
+    // 重新加载配置文件
+    function initConstFile() {
+      var result = ajax("GET", "ddnsUpdate/initConstFile", false);
+
+      if (result == 1) {
+        alert("更新成功! ");
+        location.reload(true);
+      }
+      if (result == -1) {
+        alert("更新失败! ");
+      }
+    }
+  </script>
+</head>
+
+<body onload="init()">
+  <div id="divBody">
+    <h1 style="text-align: center;">A Farmer's World</h1>
+    <h2 style="text-align: center;">Minecraft Java Edition</h2>
+    <fieldset>
+      <legend>QQ群</legend>
+      <p>
+        427400991
+        <!-- <span class="italic">(进服需要白名单)</span> -->
+      </p>
+    </fieldset>
+    <br>
+    <fieldset>
+      <legend>网页地图</legend>
+      <p><a href="http://mctest.ultra.wang:8123/" target="_blank">A Farmer's World(DynMap) - IPv6</a></p>
+    </fieldset>
+    <br>
+    <fieldset>
+      <legend>服务器IPv6地址</legend>
+      <span id="domainAddress">mctest.ultra.wang:25565</span><br>
+      <button onclick="copyToClipboard(document.getElementById('domainAddress').innerHTML)">点击复制</button>
+      <span id="copyMsg"></span>
+      <p class="italic">
+        这个域名绑定的是服务器动态IPv6地址，会默认每小时自动检查更新。<br>
+        当前状态: <span id="getDDNSStatusMsg" style="color: green;">正常可用 √</span><br>
+        上次更新时间: <span id="getRecentUpdate">2023-05-31 03:04:27</span><br>
+        下次检查时间: <span id="getNextUpdateTimeMsg" style="color:blue">2023-05-31 22:04:32</span><br>
+      </p>
+      <p id="manualUpdateDDNSDiv" style="display: none;">
+        <span class="italic">请点击下面手动更新按钮，手动把新的IPv6地址更新到域名解析。<br></span>
+        <button id="manualUpdateDDNS" onclick="updateDDNS()" disabled="">手动更新</button>&nbsp;&nbsp;<span
+          id="updateDDNSMsg"></span>
+      </p>
+    </fieldset>
+    <br>
+    <fieldset>
+      <legend>黑名单查询</legend>
+      <input type="text" id="bannedPlayerSearch" placeholder="请输入玩家名称~">&nbsp;<input type="button"
+        id="bannedPlayerSearchBtn" onclick="bannedPlayerSearch()" value="查询">
+      <p id="bannedPlayerInfo" style="display: none;">
+        玩家名称: <span id="bannedPlayerName"></span><br>
+        封禁状态: 已封禁<br>
+        封禁日期: <span id="bannedPlayerDate"></span><br>
+      </p>
+    </fieldset>
+    <br>
+    <fieldset>
+      <legend>仪表盘</legend>
+      <div style="text-align: center;">
+        <div id="dashboardCPU" class="dashboard" _echarts_instance_="ec_1685539016525"
+          style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+          <div style="position: relative; width: 160px; height: 160px; padding: 0px; margin: 0px; border-width: 0px;">
+            <canvas data-zr-dom-id="zr_0" width="320" height="320"
+              style="position: absolute; left: 0px; top: 0px; width: 160px; height: 160px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
+          </div>
+        </div>
+        <div id="dashboardCPUTemperature" class="dashboard" _echarts_instance_="ec_1685539016526"
+          style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+          <div style="position: relative; width: 160px; height: 160px; padding: 0px; margin: 0px; border-width: 0px;">
+            <canvas data-zr-dom-id="zr_0" width="320" height="320"
+              style="position: absolute; left: 0px; top: 0px; width: 160px; height: 160px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
+          </div>
+        </div>
+        <div id="dashboardMemory" class="dashboard" _echarts_instance_="ec_1685539016527"
+          style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+          <div style="position: relative; width: 160px; height: 160px; padding: 0px; margin: 0px; border-width: 0px;">
+            <canvas data-zr-dom-id="zr_0" width="320" height="320"
+              style="position: absolute; left: 0px; top: 0px; width: 160px; height: 160px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
+          </div>
+        </div>
+        <div id="dashboardDisk" class="dashboard" _echarts_instance_="ec_1685539016528"
+          style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+          <div style="position: relative; width: 160px; height: 160px; padding: 0px; margin: 0px; border-width: 0px;">
+            <canvas data-zr-dom-id="zr_0" width="320" height="320"
+              style="position: absolute; left: 0px; top: 0px; width: 160px; height: 160px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
+          </div>
+        </div>
+      </div>
+      <button id="dashboardBtn" onclick="dashboardRefresh()">刷新</button>
+
+      <script>
+        function dashboardRefresh() {
+          document.getElementById("dashboardBtn").disabled = true;
+          setTimeout(function () {
+            document.getElementById("dashboardBtn").disabled = false;
+            dashboardUpdate();
+          }, 0);
+        }
+
+        function dashboardUpdate() {
+          var hardwareUsage = ajax("GET", "hardwareMonitor/hardwareUsage", false);
+
+          var chartDomCPU = document.getElementById('dashboardCPU');
+          var myChartCPU = echarts.init(chartDomCPU);
+          var chartDomCPUTemperature = document.getElementById('dashboardCPUTemperature');
+          var myChartCPUTemperature = echarts.init(chartDomCPUTemperature);
+          var chartDomMemory = document.getElementById('dashboardMemory');
+          var myChartMemory = echarts.init(chartDomMemory);
+          var chartDomDisk = document.getElementById('dashboardDisk');
+          var myChartDisk = echarts.init(chartDomDisk);
+
+          var optionCPU = {
+            series: [{
+              type: 'gauge',
+              startAngle: 180,
+              endAngle: 0,
+              center: ['50%', '75%'],
+              radius: '90%',
+              min: 0,
+              max: 100,
+              splitNumber: -1,
+              axisLine: {
+                lineStyle: {
+                  width: 10,
+                  color: [[0.8, '#19CAAD'], [0.9, '#FDDD60'], [1, '#F4606C']]
+                }
+              },
+              pointer: {
+                icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+                length: '12%',
+                width: 10,
+                offsetCenter: [0, '-75%'],
+                itemStyle: { color: 'inherit' }
+              },
+              title: {
+                offsetCenter: [0, '-25%'],
+                fontSize: 16
+              },
+              detail: {
+                fontSize: 16,
+                offsetCenter: [0, '0%'],
+                valueAnimation: true,
+                formatter: function (value) {
+                  return value.toFixed(2) + '%';
+                },
+                color: 'inherit'
+              },
+              data: [{
+                value: hardwareUsage[0],
+                name: 'CPU'
+              }]
+            }]
+          };
+          var optionCPUTemperature = {
+            series: [{
+              type: 'gauge',
+              startAngle: 180,
+              endAngle: 0,
+              center: ['50%', '75%'],
+              radius: '90%',
+              min: 0,
+              max: 100,
+              splitNumber: -1,
+              axisLine: {
+                lineStyle: {
+                  width: 10,
+                  color: [[0.6, '#19CAAD'], [0.8, '#FDDD60'], [1, '#F4606C']]
+                }
+              },
+              pointer: {
+                icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+                length: '12%',
+                width: 10,
+                offsetCenter: [0, '-75%'],
+                itemStyle: { color: 'inherit' }
+              },
+              title: {
+                offsetCenter: [0, '-25%'],
+                fontSize: 16
+              },
+              detail: {
+                fontSize: 16,
+                offsetCenter: [0, '0%'],
+                valueAnimation: true,
+                formatter: function (value) {
+                  return value + '°C';
+                },
+                color: 'inherit'
+              },
+              data: [{
+                value: hardwareUsage[1],
+                name: 'CPU温度'
+              }]
+            }]
+          };
+          var optionMemory = {
+            series: [{
+              type: 'gauge',
+              startAngle: 180,
+              endAngle: 0,
+              center: ['50%', '75%'],
+              radius: '90%',
+              min: 0,
+              max: 100,
+              splitNumber: -1,
+              axisLine: {
+                lineStyle: {
+                  width: 10,
+                  color: [[0.8, '#19CAAD'], [0.9, '#FDDD60'], [1, '#F4606C']]
+                }
+              },
+              pointer: {
+                icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+                length: '12%',
+                width: 10,
+                offsetCenter: [0, '-75%'],
+                itemStyle: { color: 'inherit' }
+              },
+              title: {
+                offsetCenter: [0, '-25%'],
+                fontSize: 16
+              },
+              detail: {
+                fontSize: 16,
+                offsetCenter: [0, '0%'],
+                valueAnimation: true,
+                formatter: function (value) {
+                  return value + '%';
+                },
+                color: 'inherit'
+              },
+              data: [{
+                value: hardwareUsage[2],
+                name: '内存'
+              }]
+            }]
+          };
+          var optionDisk = {
+            series: [{
+              type: 'gauge',
+              startAngle: 180,
+              endAngle: 0,
+              center: ['50%', '75%'],
+              radius: '90%',
+              min: 0,
+              max: 100,
+              splitNumber: -1,
+              axisLine: {
+                lineStyle: {
+                  width: 10,
+                  color: [[0.8, '#19CAAD'], [0.9, '#FDDD60'], [1, '#F4606C']]
+                }
+              },
+              pointer: {
+                icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+                length: '12%',
+                width: 10,
+                offsetCenter: [0, '-75%'],
+                itemStyle: { color: 'inherit' }
+              },
+              title: {
+                offsetCenter: [0, '-25%'],
+                fontSize: 16
+              },
+              detail: {
+                fontSize: 16,
+                offsetCenter: [0, '0%'],
+                valueAnimation: true,
+                formatter: function (value) {
+                  return value + '%';
+                },
+                color: 'inherit'
+              },
+              data: [{
+                value: hardwareUsage[3],
+                name: '硬盘'
+              }]
+            }]
+          };
+
+          optionCPU && myChartCPU.setOption(optionCPU);
+          optionCPUTemperature && myChartCPUTemperature.setOption(optionCPUTemperature);
+          optionMemory && myChartMemory.setOption(optionMemory);
+          optionDisk && myChartDisk.setOption(optionDisk);
+        }
+      </script>
+    </fieldset>
+    <br>
+    <fieldset>
+      <legend>最近一小时硬件状态</legend>
+      <div id="hardwareUsageHistory" style="height: 480px"></div>
+      <script>
+
+        var hardwareUsageHistory = ajax("GET", "hardwareMonitor/hardwareUsageInPastHour", false);
+        
+        var time = new Array();
+        var cpuUsage = new Array();
+        var cpuTemperature = new Array();
+        var memoryUsage = new Array();
+        
+        for (var i = 0; i < hardwareUsageHistory.length; i++) {
+          var hardwareUsage = hardwareUsageHistory[i];
+          var cpuUsagePerMinute = hardwareUsage.cpuUsage;
+          var cpuTemperaturePerMinute = hardwareUsage.cpuTemperature;
+          var memoryUsagePerMinute = hardwareUsage.memoryUsage;
+          if (cpuUsagePerMinute.includes("%")) {
+            cpuUsagePerMinute = parseFloat(cpuUsagePerMinute.substring(0, 3));
+          }
+          if (cpuTemperaturePerMinute.includes("°C")) {
+            cpuTemperaturePerMinute = parseFloat(cpuTemperaturePerMinute.substring(0, 3));
+          }
+          if (memoryUsagePerMinute.includes("%")) {
+            memoryUsagePerMinute = parseFloat(memoryUsagePerMinute.substring(0, 3));
+          }
+
+          time.push(hardwareUsage.time.substring(0, 4));
+          cpuUsage.push(cpuUsagePerMinute);
+          cpuTemperature.push(cpuTemperaturePerMinute);
+          memoryUsage.push(memoryUsagePerMinute);
+        }
+
+        var chartDom = document.getElementById('hardwareUsageHistory');
+        var myChart = echarts.init(chartDom);
+        var option;
+        option = {
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['CPU使用率', 'CPU温度', '内存使用率']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: time
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name: 'CPU使用率',
+              type: 'line',
+              data: cpuUsage
+            },
+            {
+              name: 'CPU温度',
+              type: 'line',
+              data: cpuTemperature
+            },
+            {
+              name: '内存使用率',
+              type: 'line',
+              data: memoryUsage
+            }
+          ]
+        };
+        option && myChart.setOption(option);
+      </script>
+    </fieldset>
+    <br>
+    <fieldset>
+      <legend>重新加载配置文件</legend>
+      <p class="italic">
+        配置文件包含自动更新频率、更新域名、日志记录等信息。<br>
+        一般来讲这是腐竹点击的功能，因为目前还不支持在前台修改配置。<br>
+        或许在以后腐竹会更新上前台修改配置的一些功能。<br>
+        <button onclick="initConstFile()">重新加载</button>
+      </p>
+    </fieldset>
+  </div>
+</body>
+
+</html>

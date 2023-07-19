@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票日K图</title>
+    <style>
+        #footer {
+            /* position: fixed; */
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        #main {
+            width: 87%;
+            height: 75%;
+            /* margin: auto; */
+            position: fixed;
+        }
+    </style>
+    <script src="/js/echarts.min.js"></script>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+
+<body onload="stockChartsShow()">
+    <h1 style="text-align: center;">股票日K图</h1>
+    <fieldset>
+        <legend>介绍</legend>
+        <p>
+            使用了腾讯的股票接口, 配合ECharts就显示了出来. <br />功能或许还有欠缺, 后续还会再补充.
+        </p>
+    </fieldset>
+    <fieldset>
+        <legend>选择股票</legend>
+        <div>
+                <label for="dateBegin">日期区间:&nbsp;&nbsp;</label><input type="date" id="dateBegin" />
+                <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+                <input type="date" id="dateEnd" />
+                <br />
+                <input type="radio" id="sh" name="exchange" value="sh" checked="true"><label for="sh">上交所 </label>
+                <input type="radio" id="sz" name="exchange" value="sz"><label for="sz">深交所 </label>
+                <input type="radio" id="bj" name="exchange" value="bj"><label for="bj">北交所 </label>
+                <br />
+                <label for="stockNo">股票代码:&nbsp;&nbsp;</label><input type="text" id="stockNo" value="000001"
+                    style="width: 80px;" />
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" onclick="updateStock()" value="&nbsp;查询&nbsp;" />
+        </div>
+    </fieldset>
+    <fieldset id="field">
+        <legend>股票日K图</legend>
+        <div id="main"></div>
+    </fieldset>
+    <div id="footer">
+        <p>© 2023 | <a href="http://ultra.wang/" target="_blank">ultra.wang</a> | Version 1.0</p>
+    </div>
+
+    <script>
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        if (month.length = 1) {
+            month = "0" + month;
+        }
+        var day = date.getDay() + 1;
+        if (day.length = 1) {
+            day = "0" + day;
+        }
+        var dateBegin = (date.getFullYear() - 1) + "-" + month + "-" + day;
+        var dateEnd = date.getFullYear() + "-" + month + "-" + day;
+        $('#dateBegin').val(dateBegin);
+        $('#dateEnd').val(dateEnd);
+        var stockNo = $("input[name='exchange']:checked").val() + $('#stockNo').val();
+        console.log($("input[name='exchange']:checked").val());
+        console.log($('#stockNo').val());
+        var tencentStockAPI = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=" + stockNo + ",day," + dateBegin + "," + dateEnd + ",500,qfq";
+
+
+
+        function updateStock() {
+            dateBegin = $('#dateBegin').val();
+            dateEnd = $('#dateEnd').val();
+            stockNo = $("input[name='exchange']:checked").val() + $('#stockNo').val();
+            tencentStockAPI = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=" + stockNo + ",day," + dateBegin + "," + dateEnd + ",500,qfq";
+            stockChartsShow();
+        }
+
+
+
+        function stockChartsShow() {
+            var chartDom = document.getElementById('main');
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            const upColor = '#ec0000';
+            const downColor = '#00da3c';
+
+            function splitData(rawData) {
+                let categoryData = [];
+                let values = [];
+                let volumes = [];
+
+
+                var jsonData = JSON.parse(rawData).data[stockNo].day;
+
+                if (jsonData == null) {
+                    jsonData = JSON.parse(rawData).data[stockNo].qfqday;
+                }
+
+                for (let i = 0; i < jsonData.length; i++) {
+                    categoryData.push(jsonData[i].splice(0, 1)[0]);
+                    let arr = [];
+                    for (let j = 0; j < jsonData[i].length; j++) {
+                        if (j == 0) {
+                            arr.push(Number(jsonData[i][0]));
+                        }
+                        if (j == 1) {
+                            arr.push(Number(jsonData[i][1]));
+                        }
+                        if (j == 2) {
+                            arr.push(Number(jsonData[i][3]));
+                        }
+                        if (j == 3) {
+                            arr.push(Number(jsonData[i][2]));
+                        }
+                        if (j == 4) {
+                            arr.push(Number(jsonData[i][4]));
+                        }
+                    }
+                    values.push(arr);
+                    volumes.push([i, jsonData[i][4], jsonData[i][0] > jsonData[i][1] ? 1 : -1]);
+                }
+                return {
+                    categoryData: categoryData,
+                    values: values,
+                    volumes: volumes
+                };
+            }
+            function calculateMA(dayCount, data) {
+                var result = [];
+                for (var i = 0, len = data.values.length; i < len; i++) {
+                    if (i < dayCount) {
+                        result.push('-');
+                        continue;
+                    }
+                    var sum = 0;
+                    for (var j = 0; j < dayCount; j++) {
+                        sum += data.values[i - j][1];
+                    }
+                    result.push(+(sum / dayCount).toFixed(3));
+                }
+                return result;
+            }
+            $.get(tencentStockAPI, function (rawData) {
+                console.log(tencentStockAPI);
+                console.log(rawData);
+                var data = splitData(rawData);
+                myChart.setOption(
+                    (option = {
+                        animation: false,
+                        legend: {
+                            bottom: 10,
+                            left: 'center',
+                            data: [stockNo, 'MA5', 'MA10', 'MA20', 'MA30']
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross'
+                            },
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            padding: 10,
+                            textStyle: {
+                                color: '#000'
+                            },
+                            position: function (pos, params, el, elRect, size) {
+                                const obj = {
+                                    top: 10
+                                };
+                                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+                                return obj;
+                            }
+                            // extraCssText: 'width: 170px'
+                        },
+                        axisPointer: {
+                            link: [
+                                {
+                                    xAxisIndex: 'all'
+                                }
+                            ],
+                            label: {
+                                backgroundColor: '#777'
+                            }
+                        },
+                        toolbox: {
+                            feature: {
+                                dataZoom: {
+                                    yAxisIndex: false
+                                },
+                                brush: {
+                                    type: ['lineX', 'clear']
+                                }
+                            }
+                        },
+                        brush: {
+                            xAxisIndex: 'all',
+                            brushLink: 'all',
+                            outOfBrush: {
+                                colorAlpha: 0.1
+                            }
+                        },
+                        visualMap: {
+                            show: false,
+                            seriesIndex: 5,
+                            dimension: 2,
+                            pieces: [
+                                {
+                                    value: 1,
+                                    color: downColor
+                                },
+                                {
+                                    value: -1,
+                                    color: upColor
+                                }
+                            ]
+                        },
+                        grid: [
+                            {
+                                left: '10%',
+                                right: '8%',
+                                height: '50%'
+                            },
+                            {
+                                left: '10%',
+                                right: '8%',
+                                top: '63%',
+                                height: '16%'
+                            }
+                        ],
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: data.categoryData,
+                                boundaryGap: false,
+                                axisLine: { onZero: false },
+                                splitLine: { show: false },
+                                min: 'dataMin',
+                                max: 'dataMax',
+                                axisPointer: {
+                                    z: 100
+                                }
+                            },
+                            {
+                                type: 'category',
+                                gridIndex: 1,
+                                data: data.categoryData,
+                                boundaryGap: false,
+                                axisLine: { onZero: false },
+                                axisTick: { show: false },
+                                splitLine: { show: false },
+                                axisLabel: { show: false },
+                                min: 'dataMin',
+                                max: 'dataMax'
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                scale: true,
+                                splitArea: {
+                                    show: true
+                                }
+                            },
+                            {
+                                scale: true,
+                                gridIndex: 1,
+                                splitNumber: 2,
+                                axisLabel: { show: false },
+                                axisLine: { show: false },
+                                axisTick: { show: false },
+                                splitLine: { show: false }
+                            }
+                        ],
+                        dataZoom: [
+                            {
+                                type: 'inside',
+                                xAxisIndex: [0, 1],
+                                start: 80,
+                                end: 100
+                            },
+                            {
+                                show: true,
+                                xAxisIndex: [0, 1],
+                                type: 'slider',
+                                top: '85%',
+                                start: 80,
+                                end: 100
+                            }
+                        ],
+                        series: [
+                            {
+                                name: stockNo,
+                                type: 'candlestick',
+                                data: data.values,
+                                itemStyle: {
+                                    color: upColor,
+                                    color0: downColor,
+                                    borderColor: undefined,
+                                    borderColor0: undefined
+                                },
+                                tooltip: {
+                                    formatter: function (param) {
+                                        param = param[0];
+                                        return [
+                                            'Date: ' + param.name + '<hr size=1 style="margin: 3px 0">',
+                                            '开盘价: ' + param.data[0] + '<br/>',
+                                            '收盘价: ' + param.data[1] + '<br/>',
+                                            '最低: ' + param.data[2] + '<br/>',
+                                            '最高: ' + param.data[3] + '<br/>'
+                                        ].join('');
+                                    }
+                                }
+                            },
+                            {
+                                name: 'MA5',
+                                type: 'line',
+                                data: calculateMA(5, data),
+                                smooth: true,
+                                lineStyle: {
+                                    opacity: 0.5
+                                }
+                            },
+                            {
+                                name: 'MA10',
+                                type: 'line',
+                                data: calculateMA(10, data),
+                                smooth: true,
+                                lineStyle: {
+                                    opacity: 0.5
+                                }
+                            },
+                            {
+                                name: 'MA20',
+                                type: 'line',
+                                data: calculateMA(20, data),
+                                smooth: true,
+                                lineStyle: {
+                                    opacity: 0.5
+                                }
+                            },
+                            {
+                                name: 'MA30',
+                                type: 'line',
+                                data: calculateMA(30, data),
+                                smooth: true,
+                                lineStyle: {
+                                    opacity: 0.5
+                                }
+                            },
+                            {
+                                name: '成交量',
+                                type: 'bar',
+                                xAxisIndex: 1,
+                                yAxisIndex: 1,
+                                data: data.volumes
+                            }
+                        ]
+                    }),
+                    true
+                );
+                myChart.dispatchAction({
+                    type: 'brush',
+                    areas: [
+                        {
+                            brushType: 'lineX',
+                            coordRange: ['2016-06-02', '2016-06-20'],
+                            xAxisIndex: 0
+                        }
+                    ]
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

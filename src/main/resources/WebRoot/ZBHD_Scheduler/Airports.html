@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZBHD_Scheduler Airports</title>
+    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+    <script src="/js/baseFunction.js"></script>
+    <script>
+        function init() {
+            airportsSearch();
+        }
+        
+        var mainController = "zbhd_scheduler/airports/";
+
+        function airportAdd() {
+            var airportName = document.getElementById("airportName").value;
+            var airportCity = document.getElementById("airportCity").value;
+            var airportIATA = document.getElementById("airportIATA").value;
+            var airportICAO = document.getElementById("airportICAO").value;
+
+            if (airportName == "" || airportName == "undefined") {
+                alert("机场名称为空!");
+                return;
+            }
+            if (airportCity == "" || airportCity == "undefined") {
+                alert("所在城市为空!");
+                return;
+            }
+            if (airportIATA.length != 3) {
+                alert("IATA代码长度错误!");
+                return;
+            }
+            if (airportICAO.length != 4) {
+                alert("ICAO代码长度错误!");
+                return;
+            }
+
+            if (JSON.parse(ajax("GET", mainController + "airportsSearchByICAO?icao=" + airportICAO, false)) != "0") {
+                alert("ICAO代码重复!");
+                return;
+            }
+
+            var params = "name=" + airportName + "&city=" + airportCity + "&IATA=" + airportIATA + "&ICAO=" + airportICAO;
+            var controller = mainController + "airportAdd?" + params;
+            var result = ajax("POST", controller, false);
+            var resultMsg;
+            if (result == "1") {
+                resultMsg = "添加成功!";
+            } else {
+                resultMsg = "添加失败!";
+            }
+
+            document.getElementById("submitMsg").innerText = resultMsg;
+            airportsSearch();
+        }
+
+        function submitMsgClear() {
+            document.getElementById("submitMsg").innerText = "";
+        }
+
+        var pageSize = 10;   // 当前条数
+        var pageTotal;  // 总条数
+        var pageNum = 1;    // 当前页数
+        var pagePages;  // 总页数
+        function airportsSearch() {
+            removeTableTr("tableTr");
+
+            pageSizeShow = document.getElementById("pageSizeShow").value;
+            pageSize = pageSizeShow;
+
+            var searchValue = document.getElementById("airportsSearch").value;
+            var pages = "pageNum=" + pageNum + "&pageSize=" + pageSize;
+            var jsonResult;
+            if (searchValue == "") {
+                var controller = mainController + "airportsSelectByAll?" + pages;
+                jsonResult = JSON.parse(ajax("GET", controller, false));
+            } else {
+                var search = "&search=" + searchValue
+                var controller = mainController + "airportsSearch?" + pages + search;
+                jsonResult = JSON.parse(ajax("GET", controller, false));
+            }
+            pageSize = jsonResult[0].pageSize;   // 当前条数
+            pageTotal = jsonResult[0].pageTotal;  // 总条数
+            pageNum = jsonResult[0].pageNum;    // 当前页数
+            pagePages = jsonResult[0].pagePages;  // 总页数
+
+            // console.log("pageSize = " + pageSize);
+            // console.log("pageTotal = " + pageTotal);
+            // console.log("pageNum = " + pageNum);
+            // console.log("pagePages = " + pagePages);
+            document.getElementById("pageTotal").innerText = pageTotal;
+
+            var airportNo = (parseInt(pageNum) - 1) * parseInt(pageSizeShow);   // 序号
+            for (let i = 1; i < jsonResult.length; i++) {
+                var airport = jsonResult[i];
+                var tbody = document.getElementById('tableTh').parentNode;
+                var tableTr = document.getElementsByClassName('tableTr');
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement('tr');
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = 'tableTr';
+                tbody.children[tableTrNum].innerHTML = "<td>" + ++airportNo + "</td><td>" + airport.name + "</td><td>" + airport.city + "</td><td>" + airport.iata + "</td><td>" + airport.icao + "</td>";
+            }
+        }
+
+        function pageAction(action) {
+
+            if (action.includes("p")) {
+                if (pageNum > 1) {
+                    pageNum--;
+                } else {
+                    return;
+                }
+            } else if (action.includes("n")) {
+                if (pageNum < pagePages) {
+                    pageNum++;
+                } else {
+                    return;
+                }
+            }
+            airportsSearch();
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="divBody">
+        <fieldset class="fieldset">
+            <legend>机场信息添加</legend>
+            <table>
+                <tr>
+                    <td><label for="airportName">机场名称: </label></td>
+                    <td><input type="text" id="airportName" onchange="submitMsgClear()" /></td>
+                </tr>
+                <tr>
+                    <td><label for="airportCity">所在城市: </label></td>
+                    <td><input type="text" id="airportCity" onchange="submitMsgClear()" /></td>
+                </tr>
+                <tr>
+                    <td><label for="airportIATA">IATA代码: </label></td>
+                    <td><input type="text" id="airportIATA" onchange="submitMsgClear()" /></td>
+                </tr>
+                <tr>
+                    <td><label for="airportICAO">ICAO代码: </label></td>
+                    <td><input type="text" id="airportICAO" onchange="submitMsgClear()" /></td>
+                </tr>
+    
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" id="airportSubmit" onclick="airportAdd()" value="添加">
+                        <span id="submitMsg"></span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    
+        <fieldset class="fieldset">
+            <legend>机场信息查询</legend>
+            <input type="search" id="airportsSearch" placeholder="输入查询关键字">
+            <input type="button" onclick="airportsSearch()" value="查询">
+            <table id="table" style="margin: 0 auto;" border="1">
+                <tr id="tableTh">
+                    <th>序号</th>
+                    <th>机场名称</th>
+                    <th>所在城市</th>
+                    <th>IATA代码</th>
+                    <th>ICAO代码</th>
+                </tr>
+            </table>
+            共<span id="pageTotal"></span>条记录
+            每页显示<select id="pageSizeShow" onchange="airportsSearch()">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>条
+            <span onclick="pageAction('previous')">上一页</span>&nbsp;<span onclick="pageAction('next')">下一页</span>
+    
+        </fieldset>
+    </div>
+    
+</body>
+
+</html>
