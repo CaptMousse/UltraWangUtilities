@@ -1,20 +1,12 @@
 package wang.ultra.my_utilities.mc.service;
 
-import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
+import org.springframework.stereotype.Service;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.FileIOUtils;
 import wang.ultra.my_utilities.common.utils.JsonConverter;
@@ -26,7 +18,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -140,24 +131,32 @@ public class MinecraftService {
         List<Map<String, String>> whiteList = minecraftService.readWhitelistFile();
         whiteList.add(userMap);
 
-        Map<String, List<Map<String, String>>> whitlistMap = new HashMap<>();
-        whitlistMap.put("data", whiteList);
-
-        
 
 
-        System.out.println("\n" + toPrettyFormat(whitlistMap.toString()));
+        String jsonStr = JsonConverter.ListMapToJsonString(whiteList);
+        System.out.println(jsonStr);
+
+
+//        String jsonString = JSONObject.toJSONString(whiteList);
+//        JSONArray jsonArray = JSONArray.parseArray(jsonStr);
+//        String pretty = JSON.toJSONString(jsonArray, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+//                SerializerFeature.WriteDateUseDateFormat);
+
+        System.out.println(toPrettyFormat(jsonStr));
+
+        String prettyJsonStr = toPrettyFormat(jsonStr);
+
+        FileIOUtils.createFile("WabbyWabbo", "WhiteList.json", 1, prettyJsonStr);
     }
 
     /**
-     * 格式化输出JSON字符串
-     * 
+     * 使用Gson格式化输出JSON字符串
      * @return 格式化后的JSON字符串
      */
-    private static String toPrettyFormat(String json) {
+    private static String toPrettyFormat(String jsonStr) {
         JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+        JsonArray jsonArray = jsonParser.parse(jsonStr).getAsJsonArray();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(jsonObject);
+        return gson.toJson(jsonArray);
     }
 }
