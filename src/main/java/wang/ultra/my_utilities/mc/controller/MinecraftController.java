@@ -25,7 +25,7 @@ public class MinecraftController {
         Map<String, String> returnMap = new HashMap<>();
 
         if (resultMap.isEmpty()) {
-            String uuid = minecraftService.getBannedPlayerUUID(name);
+            String uuid = minecraftService.getPlayerUUID(name);
             if (uuid != null) {
                 resultMap = minecraftService.bannedPlayersSearchByUUID(uuid);
             }
@@ -38,5 +38,17 @@ public class MinecraftController {
         }
         return AjaxUtils.failed("没有查到哦~");
 
+    }
+
+    @GetMapping("whitelistAdd")
+    public AjaxUtils whitelistAdd(String name) {
+
+        String uuid = minecraftService.getPlayerUUID(name);
+
+        if (uuid != null) {
+            
+        }
+
+        return AjaxUtils.failed();
     }
 }
