@@ -63,7 +63,7 @@
                     //         checkMorningEvening = "(晚)"
                     //     }
                     // }
-                    var airlineName = arrivals.CITY + " - 邯郸" + checkMorningEvening;
+                    var airlineName = arrivals.CITY + "-邯郸" + checkMorningEvening;
 
                     var departure = arrivals.DEPARTURE.substring(0, 2) + ":" + arrivals.DEPARTURE.substring(2);
                     var arrival = arrivals.ARRIVAL.substring(0, 2) + ":" + arrivals.ARRIVAL.substring(2);
@@ -103,7 +103,7 @@
                 for (let i = 1; i < ajaxResult.length; i++) {
                     var departures = ajaxResult[i];
 
-                    var airlineName = "邯郸 - " + departures.CITY;
+                    var airlineName = "邯郸-" + departures.CITY;
 
                     var departure = departures.DEPARTURE.substring(0, 2) + ":" + departures.DEPARTURE.substring(2);
                     var arrival = departures.ARRIVAL.substring(0, 2) + ":" + departures.ARRIVAL.substring(2);
@@ -146,7 +146,7 @@
         </fieldset>
         <fieldset class="fieldset">
             <legend>邯郸机场今日进港航班</legend>
-            <table id="tableArrivals" style="margin: 0 auto;" border="1">
+            <table id="tableArrivals" style="margin: 0 auto; text-align: center;" border="1">
                 <tbody>
                     <tr id="tableThArrivals">
                         <th>序号</th>
@@ -163,7 +163,7 @@
         </fieldset>
         <fieldset class="fieldset">
             <legend>邯郸机场今日出港航班</legend>
-            <table id="tableDepartures" style="margin: 0 auto;" border="1">
+            <table id="tableDepartures" style="margin: 0 auto; text-align: center;" border="1">
                 <tbody>
                     <tr id="tableThDepartures">
                         <th>序号</th>

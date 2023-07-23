@@ -192,7 +192,7 @@
                     var createNewTr = document.createElement('tr');
                     tbody.appendChild(createNewTr);
                     tbody.children[tableTrNum].className = 'tableTr';
-                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>邯郸 - " + departures.CITY + "</td><td>" + departures.FLIGHT_NO + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + departures.AIRCRAFT + "</td>";
+                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>邯郸-" + departures.CITY + "</td><td>" + departures.FLIGHT_NO + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + departures.AIRCRAFT + "</td>";
                 }
             }
         }
@@ -262,7 +262,7 @@
         </fieldset>
         <fieldset class="fieldset">
             <legend>今日出港航班</legend>
-            <table id="tableDepartures" style="margin: 0 auto;" border="1">
+            <table id="tableDepartures" style="margin: 0 auto; text-align: center;" border="1">
                 <tr id="tableTh">
                     <th>序号</th>
                     <th>航线名称</th>
