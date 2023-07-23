@@ -24,7 +24,11 @@ MinecraftPort = 25565
 # Minecraft资料文件夹
 MinecraftDataFolder = WabbyWabbo
 # Minecraft黑名单文件名
-MinecraftBlackListFileName = BannedPlayers.json
+MinecraftBlackListFileName = banned-players.json
+# Minecraft白名单文件名
+MinecraftWhiteListFileName = whitelist.json
+# Minecraft获取用户信息的API
+MinecraftGetUserProfileAPI = https://api.mojang.com/users/profiles/minecraft/
 
 # 网卡信息
 EthernetName = enp3s0

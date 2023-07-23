@@ -34,11 +34,14 @@ public class ConstantFromFile {
     // MC端口
     private static String MinecraftPort;
 
+    // Minecraft资料文件夹
+    private static String MinecraftDataFolder;
+
     // Minecraft黑名单文件名
     private static String MinecraftBlackListFileName;
 
-    // Minecraft黑名单文件名
-    private static String MinecraftDataFolder;
+    // Minecraft白名单文件名
+    private static String MinecraftWhiteListFileName;
 
     // 网卡名
     private static String EthernetName;
@@ -121,6 +124,7 @@ public class ConstantFromFile {
             ConstantFromFile.MinecraftPort = constMap.get("MinecraftPort");
             ConstantFromFile.MinecraftDataFolder = constMap.get("MinecraftDataFolder");
             ConstantFromFile.MinecraftBlackListFileName = constMap.get("MinecraftBlackListFileName");
+            ConstantFromFile.MinecraftWhiteListFileName = constMap.get("MinecraftWhiteListFileName");
 
             ConstantFromFile.EthernetName = constMap.get("EthernetName");
 
@@ -198,12 +202,16 @@ public class ConstantFromFile {
         return MinecraftPort;
     }
 
+    public static String getMinecraftDataFolder() {
+        return MinecraftDataFolder;
+    }
+
     public static String getMinecraftBlackListFileName() {
         return MinecraftBlackListFileName;
     }
 
-    public static String getMinecraftDataFolder() {
-        return MinecraftDataFolder;
+    public static String getMinecraftWhiteListFileName() {
+        return MinecraftWhiteListFileName;
     }
 
 

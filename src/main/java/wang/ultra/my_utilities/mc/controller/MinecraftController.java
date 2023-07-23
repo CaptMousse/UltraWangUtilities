@@ -21,15 +21,8 @@ public class MinecraftController {
 
     @GetMapping("bannedPlayerSearchByName")
     public AjaxUtils bannedPlayerSearchByName(String name) {
-        Map<String, String> resultMap = minecraftService.bannedPlayersSearchByName(name);
+        Map<String, String> resultMap = minecraftService.bannedPlayerSearchByName(name);
         Map<String, String> returnMap = new HashMap<>();
-
-        if (resultMap.isEmpty()) {
-            String uuid = minecraftService.getPlayerUUID(name);
-            if (uuid != null) {
-                resultMap = minecraftService.bannedPlayersSearchByUUID(uuid);
-            }
-        }
 
         if (!resultMap.isEmpty()) {
             String created = resultMap.get("created").substring(0, 10);
@@ -40,15 +33,31 @@ public class MinecraftController {
 
     }
 
-    @GetMapping("whitelistAdd")
-    public AjaxUtils whitelistAdd(String name) {
+//    @GetMapping("whitelistAdd")
+//    public AjaxUtils whitelistAdd(String name) {
+//
+//        String result = minecraftService.whitelistAdd(name);
+//
+//        if ("1".equals(result)) {
+//            return AjaxUtils.success("白名单添加成功! ");
+//        } else if ("-1".equals(result)) {
+//            return AjaxUtils.failed("请检查白名单文件是否存在! ");
+//        }
+//
+//        return AjaxUtils.failed(result);
+//    }
 
-        String uuid = minecraftService.getPlayerUUID(name);
-
-        if (uuid != null) {
-            
-        }
-
-        return AjaxUtils.failed();
-    }
+//    @GetMapping("blacklistAdd")
+//    public AjaxUtils blacklistAdd(String name, String reason) {
+//
+//        String result = minecraftService.blacklistAdd(name, reason);
+//
+//        if ("1".equals(result)) {
+//            return AjaxUtils.success("黑名单添加成功! ");
+//        } else if ("-1".equals(result)) {
+//            return AjaxUtils.failed("请检查黑名单文件是否存在! ");
+//        }
+//
+//        return AjaxUtils.failed(result);
+//    }
 }

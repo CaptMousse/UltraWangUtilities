@@ -2,10 +2,6 @@ package wang.ultra.my_utilities.common.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 
 import java.io.*;
@@ -143,9 +139,6 @@ public class FileIOUtils {
 
     /**
      * 读取文件到字符串
-     * @param subFileFolder
-     * @param fileName
-     * @return
      */
     public static String readFileToString(String subFileFolder, String fileName) {
 
@@ -168,20 +161,23 @@ public class FileIOUtils {
                     }
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+//                throw new RuntimeException(e);
+                return String.valueOf(e);
             } finally {
                 if (inputStreamReader != null) {
                     try {
                         inputStreamReader.close();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+//                        throw new RuntimeException(e);
+                        return String.valueOf(e);
                     }
                 }
                 if (bufferedReader != null) {
                     try {
                         bufferedReader.close();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+//                        throw new RuntimeException(e);
+                        return String.valueOf(e);
                     }
                 }
             }
