@@ -43,10 +43,10 @@
                 alert("航班号不能为空!");
                 return;
             }
-            if (JSON.parse(ajax("GET", mainController + "arrivalsSearchByFlightNo?flightNo=" + flightNo, false)) != "0") {
-                alert("航班号重复!");
-                return;
-            }
+            // if (ajax("GET", mainController + "arrivalsSearchByFlightNo?flightNo=" + flightNo, false) != "0") {
+            //     alert("航班号重复!");
+            //     return;
+            // }
 
             if (departure == "") {
                 alert("起飞时间不能为空!");
@@ -74,16 +74,9 @@
             }
 
             var params = "flightNo=" + flightNo + "&airportICAO=" + airportICAO + "&departure=" + departure + "&arrival=" + arrival + "&schedule=" + schedule + "&aircraft=" + aircraft;
-            var result = ajax("POST", mainController + "arrivalsAdd?" + params, false);
+            ajax("POST", mainController + "arrivalsAdd?" + params, false);
 
-            var resultMsg;
-            if (result == "1") {
-                resultMsg = "添加成功!";
-            } else {
-                resultMsg = "添加失败!";
-            }
-
-            document.getElementById("submitMsg").innerText = resultMsg;
+            arrivalsShow();
         }
 
         function scheduleSelectReverse() {
@@ -117,7 +110,7 @@
             showModal();
             removeTableTr("modalTableTr");
 
-            var jsonResult = JSON.parse(ajax("GET", "zbhd_scheduler/airports/airportsSearchByCity?search=" + searchValue, false));
+            var jsonResult = ajax("GET", "zbhd_scheduler/airports/airportsSearchByCity?search=" + searchValue, false);
 
             var tbody = document.getElementById('tableThAirports').parentNode;
             var tableTr = document.getElementsByClassName('modalTableTr');
@@ -146,13 +139,13 @@
 
 
         function init() {
-            arrivalsToday();
+            arrivalsShow();
         }
 
-        function arrivalsToday() {
-            removeTableTr();
+        function arrivalsShow() {
+            removeTableTr("tableTr");
 
-            var jsonResult = JSON.parse(ajax("GET", mainController + "arrivalsToday?pageNum=0&pageSize=0", false));
+            var jsonResult = ajax("GET", mainController + "arrivalsShow?pageNum=0&pageSize=0", false);
 
             var tbody = document.getElementById('tableTh').parentNode;
             var tableTr = document.getElementsByClassName('tableTr');
@@ -167,28 +160,28 @@
             } else {
                 for (let i = 1; i < jsonResult.length; i++) {
                     var arrivals = jsonResult[i];
-                    var pvgFlightCheck = "";
-                    if (arrivals.CITY == "上海") {
-                        if (parseInt(arrivals.arrival) < 1200) {
-                            pvgFlightCheck = "(早)"
-                        }
-                        if (parseInt(arrivals.arrival) > 1200) {
-                            pvgFlightCheck = "(晚)"
-                        }
-                    }
-                    departure = arrivals.departure.substring(0, 2) + ":" + arrivals.departure.substring(2);
-                    var arrival = arrivals.arrival.substring(0, 2) + ":" + arrivals.arrival.substring(2);
-                    var schedule = arrivals.schedule;
+                    // var pvgFlightCheck = "";
+                    // if (arrivals.CITY == "上海") {
+                    //     if (parseInt(arrivals.arrival) < 1200) {
+                    //         pvgFlightCheck = "(早)"
+                    //     }
+                    //     if (parseInt(arrivals.arrival) > 1200) {
+                    //         pvgFlightCheck = "(晚)"
+                    //     }
+                    // }
+                    var departure = arrivals.DEPARTURE.substring(0, 2) + ":" + arrivals.DEPARTURE.substring(2);
+                    var arrival = arrivals.ARRIVAL.substring(0, 2) + ":" + arrivals.ARRIVAL.substring(2);
+                    var schedule = arrivals.SCHEDULE;
                     if (schedule == "1234567") {
                         schedule = "每日一班";
                     } else {
-                        schedule = arrivals.schedule.replaceAll("0", "");
+                        schedule = arrivals.SCHEDULE.replaceAll("0", "");
                     }
                     var tableTrNum = tableTr.length + 1;
                     var createNewTr = document.createElement('tr');
                     tbody.appendChild(createNewTr);
                     tbody.children[tableTrNum].className = 'tableTr';
-                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>" + arrivals.CITY + "-邯郸" + pvgFlightCheck + "</td><td>" + arrivals.flight_no + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + arrivals.aircraft + "</td>";
+                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>" + arrivals.CITY + "-邯郸" + "</td><td>" + arrivals.FLIGHT_NO + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + arrivals.AIRCRAFT + "</td>";
                 }
             }
         }
@@ -245,7 +238,7 @@
                 <div class="modal-data">
                     <fieldset class="fieldset">
                         <legend>选择机场</legend>
-                        <table id="table" style="margin: 0 auto;" border="1">
+                        <table id="tableAirports" style="margin: 0 auto;" border="1">
                             <tr id="tableThAirports">
                                 <th>机场名称</th>
                                 <th>操作</th>
@@ -258,7 +251,7 @@
         </fieldset>
         <fieldset class="fieldset">
             <legend>今日进港航班</legend>
-            <table id="table" style="margin: 0 auto;" border="1">
+            <table id="tableArrivals" style="margin: 0 auto;" border="1">
                 <tr id="tableTh">
                     <th>序号</th>
                     <th>航线名称</th>

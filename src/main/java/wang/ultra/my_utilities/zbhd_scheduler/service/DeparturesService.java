@@ -8,7 +8,9 @@ import wang.ultra.my_utilities.zbhd_scheduler.entityVO.SearchVO;
 import wang.ultra.my_utilities.zbhd_scheduler.mapper.DeparturesMapper;
 import wang.ultra.my_utilities.zbhd_scheduler.mapper.InsertMapper;
 import wang.ultra.my_utilities.common.utils.DateConverter;
+import wang.ultra.my_utilities.zbhd_scheduler.mapper.UpdateMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,24 +22,38 @@ public class DeparturesService {
     @Autowired
     DeparturesMapper departuresMapper;
 
-    public Integer departuresAdd(List<Departures> departuresList) {
+    @Autowired
+    UpdateMapper updateMapper;
 
-        System.out.println("departuresList = " + departuresList);
-        if (departuresList.isEmpty()) {
-            return -1;
+    public Integer departuresAdd(Departures departures) {
+
+//        System.out.println("departuresList = " + departuresList);
+
+        SearchVO searchVO = new SearchVO();
+        searchVO.setFlightNo(departures.getFlightNo());
+        List<Map<String, Object>> searchList = departuresSearch(searchVO);
+
+        if (!searchList.isEmpty()) {
+            // 更新
+            departures.setUpdateDate(DateConverter.getDate());
+            departures.setStatus(0);
+            updateMapper.departureUpdate(departures);
+
+            return 2;
         }
-        for (Departures d : departuresList) {
-            if (d.getFlightNo() == null || d.getAirportICAO() == null || d.getDeparture() == null || d.getArrival() == null || d.getSchedule() == null) {
-                return -1;
-            }
-            d.setUpdateDate(DateConverter.getDate());
-            d.setStatus(0);
+
+        if (departures.getFlightNo() == null || departures.getAirportICAO() == null || departures.getDeparture() == null || departures.getArrival() == null || departures.getSchedule() == null) {
+            return -2;
         }
+        departures.setUpdateDate(DateConverter.getDate());
+        departures.setStatus(0);
+
+        List<Departures> departuresList = new ArrayList<>();
+        departuresList.add(departures);
 
         try {
-            insertMapper.departureAdd(departuresList);    
+            insertMapper.departureAdd(departuresList);
         } catch (Exception e) {
-            // TODO: handle exception
             return -1;
         }
         return 1;
@@ -53,16 +69,18 @@ public class DeparturesService {
 
     /**
      * 根据今天星期几返回数据
-     * @return
      */
     public List<Map<String, Object>> departuresToday() {
         String weekday = DateConverter.getWeekday();
         ScheduleVO scheduleVO = new ScheduleVO(weekday);
-        List<Map<String,Object>> departuresTodayList = departuresMapper.departuresToday(scheduleVO);
-        return departuresTodayList;
+        return departuresMapper.departuresToday(scheduleVO);
     }
 
     public Integer departuresSearchCount(Departures departures) {
         return departuresMapper.departuresSearchCount(departures);
+    }
+
+    public String getLastUpdateDate() {
+        return departuresMapper.getLastUpdateDate();
     }
 }

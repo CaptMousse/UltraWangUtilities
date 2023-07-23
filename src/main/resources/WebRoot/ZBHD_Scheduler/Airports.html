@@ -38,22 +38,15 @@
                 return;
             }
 
-            if (JSON.parse(ajax("GET", mainController + "airportsSearchByICAO?icao=" + airportICAO, false)) != "0") {
+            if (ajax("GET", mainController + "airportsSearchByICAO?icao=" + airportICAO, false) != "0") {
                 alert("ICAO代码重复!");
                 return;
             }
 
             var params = "name=" + airportName + "&city=" + airportCity + "&IATA=" + airportIATA + "&ICAO=" + airportICAO;
             var controller = mainController + "airportAdd?" + params;
-            var result = ajax("POST", controller, false);
-            var resultMsg;
-            if (result == "1") {
-                resultMsg = "添加成功!";
-            } else {
-                resultMsg = "添加失败!";
-            }
-
-            document.getElementById("submitMsg").innerText = resultMsg;
+            ajax("POST", controller, false);
+           
             airportsSearch();
         }
 
@@ -76,11 +69,11 @@
             var jsonResult;
             if (searchValue == "") {
                 var controller = mainController + "airportsSelectByAll?" + pages;
-                jsonResult = JSON.parse(ajax("GET", controller, false));
+                jsonResult = ajax("GET", controller, false);
             } else {
                 var search = "&search=" + searchValue
                 var controller = mainController + "airportsSearch?" + pages + search;
-                jsonResult = JSON.parse(ajax("GET", controller, false));
+                jsonResult = ajax("GET", controller, false);
             }
             pageSize = jsonResult[0].pageSize;   // 当前条数
             pageTotal = jsonResult[0].pageTotal;  // 总条数

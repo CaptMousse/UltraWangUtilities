@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="wang.ultra.my_utilities.zbhd_scheduler.mapper.ArrivalsMapper">
-    
-
-    <select id="arrivalsSelectAll" resultType="map">
-        select * from ARRIVALS order by arrival
-    </select>
 
     <sql id="arrivalsSelectSql">
-        select p.NAME, p.CITY, a.flight_no, a.departure, a.arrival, a.schedule, a.aircraft from ARRIVALS a
-        left join AIRPORTS p on (a.airport_ICAO = p.ICAO)
+        select p.NAME, p.CITY, a.FLIGHT_NO, a.DEPARTURE, a.ARRIVAL, a.SCHEDULE, a.AIRCRAFT
+        from ARRIVALS a
+        inner join AIRPORTS p on (a.AIRPORT_ICAO = p.ICAO)
     </sql>
+
+    <select id="arrivalsSelectAll" resultType="map">
+<!--        select * from ARRIVALS order by arrival-->
+        <include refid="arrivalsSelectSql"></include>
+        and a.STATUS = 0
+        order by a.ARRIVAL
+    </select>
 
     <select id="arrivalsSearch" resultType="map" parameterType="wang.ultra.my_utilities.zbhd_scheduler.entityVO.SearchVO">
         <include refid="arrivalsSelectSql"></include>
@@ -41,18 +44,25 @@
         <include refid="arrivalsSelectSql"></include>
         <where>
             <if test="schedule != null and schedule.trim() != ''">
-                a.schedule like '%${schedule}%'
+                a.SCHEDULE like '%${schedule}%'
             </if>
+            and a.STATUS = 0
         </where>
-        order by arrival
+        order by ARRIVAL
     </select>
 
     <select id="arrivalsSearchCount" resultType="int" parameterType="wang.ultra.my_utilities.zbhd_scheduler.entity.Arrivals">
         select count(*) from ARRIVALS
         <where>
             <if test="flightNo != null and flightNo.trim() != ''">
-                flight_no like '%${flightNo}%'
+                FLIGHT_NO like '%${flightNo}%'
             </if>
         </where>
+    </select>
+
+    <select id="getLastUpdateDate" resultType="String">
+        select UPDATE_DATE from ARRIVALS
+        order by UPDATE_DATE desc
+        limit 1;
     </select>
 </mapper>

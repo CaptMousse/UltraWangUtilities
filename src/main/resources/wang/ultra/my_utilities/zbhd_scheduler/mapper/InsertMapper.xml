@@ -4,21 +4,21 @@
 
     <insert id="airportsAdd" parameterType="list">
         insert into AIRPORTS (ICAO, IATA, NAME, CITY) values
-        <foreach collection="list" separator="," item="wang.ultra.my_utilities.zbhd_scheduler.entity.Airports">
+        <foreach collection="list" separator="," item="Airports">
             ('${Airports.ICAO}', '${Airports.IATA}', '${Airports.name}', '${Airports.city}')
         </foreach>
     </insert>
 
     <insert id="arrivalsAdd" parameterType="list">
         insert into ARRIVALS (flight_no, airport_ICAO, departure, arrival, schedule, aircraft, update_date, status) values
-        <foreach collection="list" separator="," item="wang.ultra.my_utilities.zbhd_scheduler.entity.Arrivals">
+        <foreach collection="list" separator="," item="Arrivals">
             ('${Arrivals.flightNo}', '${Arrivals.airportICAO}', '${Arrivals.departure}', '${Arrivals.arrival}', '${Arrivals.schedule}', '${Arrivals.aircraft}', '${Arrivals.updateDate}', '${Arrivals.status}')
         </foreach>
     </insert>
 
     <insert id="departureAdd" parameterType="list">
         insert into DEPARTURES (flight_no, airport_ICAO, departure, arrival, schedule, aircraft, update_date, status) values
-        <foreach collection="list" separator="," item="wang.ultra.my_utilities.zbhd_scheduler.entity.Departures">
+        <foreach collection="list" separator="," item="Departures">
             ('${Departures.flightNo}', '${Departures.airportICAO}', '${Departures.departure}', '${Departures.arrival}', '${Departures.schedule}', '${Departures.aircraft}', '${Departures.updateDate}', '${Departures.status}')
         </foreach>
     </insert>

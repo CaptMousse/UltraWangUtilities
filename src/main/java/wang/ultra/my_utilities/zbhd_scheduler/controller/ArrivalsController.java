@@ -22,16 +22,21 @@ public class ArrivalsController {
     ArrivalsService arrivalsService;
 
     @PostMapping("arrivalsAdd")
-    public Integer arrivalsAdd(Arrivals arrivals) {
+    public AjaxUtils arrivalsAdd(Arrivals arrivals) {
 
-        List<Arrivals> arrivalsList = new ArrayList<>();
-        arrivalsList.add(arrivals);
+        int resultInt = arrivalsService.arrivalsAdd(arrivals);
 
-        return arrivalsService.arrivalsAdd(arrivalsList);
+        return switch (resultInt) {
+            case -2 -> AjaxUtils.failed("数据错误! ");
+            case -1 -> AjaxUtils.failed("添加失败! ");
+            case 1 -> AjaxUtils.success("添加成功! ");
+            case 2 -> AjaxUtils.success("更新成功! ");
+            default -> AjaxUtils.failed("发生异常! ");
+        };
     }
 
     @GetMapping("arrivalsShow")
-    public List<Object> arrivalsShow(int pageNum, int pageSize) {
+    public AjaxUtils arrivalsShow(int pageNum, int pageSize) {
         List<Map<String, Object>> arrivalsList = arrivalsService.arrivalsShow();
         PageHelper.startPage(pageNum, pageSize);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(arrivalsList);
@@ -45,11 +50,11 @@ public class ArrivalsController {
         returnList.add(pageMap);
 
         returnList.addAll(arrivalsList);
-        return returnList;
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("arrivalsSearch")
-    public List<Object> arrivalsSearch(String search, int pageNum, int pageSize) {
+    public AjaxUtils arrivalsSearch(String search, int pageNum, int pageSize) {
         SearchVO searchVO = new SearchVO();
         searchVO.setFlightNo(search);
         searchVO.setAirportICAO(search);
@@ -71,14 +76,14 @@ public class ArrivalsController {
 
         returnList.addAll(arrivalsSearchList);
 
-        return returnList;
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("arrivalsSearchByFlightNo")
-    public Integer arrivalsSearchByFlightNo(String flightNo) {
+    public AjaxUtils arrivalsSearchByFlightNo(String flightNo) {
         Arrivals arrivals = new Arrivals();
         arrivals.setFlightNo(flightNo);
-        return arrivalsService.arrivalsSearchCount(arrivals);
+        return AjaxUtils.success(arrivalsService.arrivalsSearchCount(arrivals));
     }
 
     @GetMapping("arrivalsToday")

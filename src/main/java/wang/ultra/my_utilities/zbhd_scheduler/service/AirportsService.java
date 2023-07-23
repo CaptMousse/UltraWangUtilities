@@ -20,12 +20,12 @@ public class AirportsService {
     public Integer airportsAdd(List<Airports> airports) {
         System.out.println("airports = " + airports);
         if (airports.isEmpty()) {
-            return -1;
+            return -2;
         }
 
         for (Airports a : airports) {
             if (a.getICAO() == null || a.getIATA() == null || a.getName() == null || a.getCity() == null) {
-                return -1;
+                return -2;
             }
         }
 

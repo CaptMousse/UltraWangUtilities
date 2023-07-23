@@ -10,20 +10,23 @@ public class DateConverter {
     public static String getTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
+
     public static String getTime(Long time) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(new Date(time));
     }
+
     /**
-     *
      * @return 例如20230610193932
      */
     public static String getNoSymbolTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     }
+
     public static String getNoSymbolHourMinutes() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmm"));
     }
+
     public static String getNoSymbolTime(Long time) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
         return format.format(new Date(time));
@@ -31,6 +34,13 @@ public class DateConverter {
 
     public static String getDate() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
+
+    public static String getDateFromStr(String str) {
+        StringBuilder sb = new StringBuilder(str);
+        sb.insert(6, "-");
+        sb.insert(4, "-");
+        return sb.toString();
     }
 
     public static String getSimpleTime() {
@@ -47,12 +57,12 @@ public class DateConverter {
         Calendar calendar = Calendar.getInstance();
         int weekday = calendar.get(Calendar.DAY_OF_WEEK);
         boolean isFirstSunday = (calendar.getFirstDayOfWeek() == Calendar.SUNDAY);
-        if(isFirstSunday) {
+        if (isFirstSunday) {
             weekday = weekday - 1;
-            if(weekday == 0) {
-	            weekday = 7;
+            if (weekday == 0) {
+                weekday = 7;
             }
-	    }
+        }
         return String.valueOf(weekday);
     }
 }

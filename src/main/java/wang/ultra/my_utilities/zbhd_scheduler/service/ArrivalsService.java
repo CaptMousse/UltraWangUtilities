@@ -8,7 +8,9 @@ import wang.ultra.my_utilities.zbhd_scheduler.entityVO.SearchVO;
 import wang.ultra.my_utilities.zbhd_scheduler.mapper.ArrivalsMapper;
 import wang.ultra.my_utilities.zbhd_scheduler.mapper.InsertMapper;
 import wang.ultra.my_utilities.common.utils.DateConverter;
+import wang.ultra.my_utilities.zbhd_scheduler.mapper.UpdateMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,27 +20,39 @@ public class ArrivalsService {
     InsertMapper insertMapper;
 
     @Autowired
+    UpdateMapper updateMapper;
+
+    @Autowired
     ArrivalsMapper arrivalsMapper;
 
-    public Integer arrivalsAdd(List<Arrivals> arrivalsList) {
+    public Integer arrivalsAdd(Arrivals arrivals) {
 
-        System.out.println("arrivalsList = " + arrivalsList);
-        if (arrivalsList.isEmpty()) {
+        SearchVO searchVO = new SearchVO();
+        searchVO.setFlightNo(arrivals.getFlightNo());
+        List<Map<String, Object>> searchList = arrivalsSearch(searchVO);
+
+
+        if (!searchList.isEmpty()) {
+            // 更新
+            arrivals.setUpdateDate(DateConverter.getDate());
+            arrivals.setStatus(0);
+            updateMapper.arrivalUpdate(arrivals);
+
+            return 2;
+        }
+
+        if (arrivals.getAirportICAO() == null || arrivals.getDeparture() == null || arrivals.getArrival() == null || arrivals.getSchedule() == null) {
             return -1;
         }
-        for (Arrivals a : arrivalsList) {
-            if (a.getFlightNo() == null || a.getAirportICAO() == null || a.getDeparture() == null || a.getArrival() == null || a.getSchedule() == null) {
-                return -1;
-            }
-            a.setUpdateDate(DateConverter.getDate());
-            a.setStatus(0);
-            System.out.println("a = " + a);
-        }
+        arrivals.setUpdateDate(DateConverter.getDate());
+        arrivals.setStatus(0);
+
+        List<Arrivals> arrivalsList = new ArrayList<>();
+        arrivalsList.add(arrivals);
 
         try {
-            insertMapper.arrivalsAdd(arrivalsList);    
+            insertMapper.arrivalsAdd(arrivalsList);
         } catch (Exception e) {
-            // TODO: handle exception
             return -1;
         }
         return 1;
@@ -55,12 +69,15 @@ public class ArrivalsService {
     public List<Map<String, Object>> arrivalsToday() {
         String weekday = DateConverter.getWeekday();
         ScheduleVO arrivalsScheduleVO = new ScheduleVO(weekday);
-        List<Map<String,Object>> arrivalsTodayList = arrivalsMapper.arrivalsToday(arrivalsScheduleVO);
         // ArrivalsScheduleVO arrivalsScheduleVO = new ArrivalsScheduleVO();
-        return arrivalsTodayList;
+        return arrivalsMapper.arrivalsToday(arrivalsScheduleVO);
     }
 
     public Integer arrivalsSearchCount(Arrivals arrivals) {
         return arrivalsMapper.arrivalsSearchCount(arrivals);
+    }
+
+    public String getLastUpdateDate() {
+        return arrivalsMapper.getLastUpdateDate();
     }
 }

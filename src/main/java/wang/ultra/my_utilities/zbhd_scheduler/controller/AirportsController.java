@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.zbhd_scheduler.entity.Airports;
 import wang.ultra.my_utilities.zbhd_scheduler.service.AirportsService;
 
@@ -20,18 +21,26 @@ public class AirportsController {
     AirportsService airportsService;
 
     @PostMapping("/airportAdd")
-    public Integer airportsAdd(Airports airports) {
+    public AjaxUtils airportsAdd(Airports airports) {
 //        List<Airports> airportsList = new ArrayList<>();
         List<Airports> airportsList = new ArrayList<>();
 
         airportsList.add(airports);
 
 
-        return airportsService.airportsAdd(airportsList);
+        Integer resultInt = airportsService.airportsAdd(airportsList);
+
+        return switch (resultInt) {
+            case -2 -> AjaxUtils.failed("数据错误! ");
+            case -1 -> AjaxUtils.failed("添加失败! ");
+            case 1 -> AjaxUtils.success("添加成功! ");
+            case 2 -> AjaxUtils.success("更新成功! ");
+            default -> AjaxUtils.failed("发生异常! ");
+        };
     }
 
     @GetMapping("/airportsSelectByAll")
-    public List<Object> airportsSelectByAll(int pageNum, int pageSize) {
+    public AjaxUtils airportsSelectByAll(int pageNum, int pageSize) {
         //PageHelper的次序不能乱
 
         PageHelper.startPage(pageNum, pageSize);
@@ -49,15 +58,13 @@ public class AirportsController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Airports airport : airportsList) {
-            returnList.add(airport);
-        }
+        returnList.addAll(airportsList);
 
-        return returnList;
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("/airportsSearch")
-    public List<Object> airportsSearch(String search, int pageNum, int pageSize) {
+    public AjaxUtils airportsSearch(String search, int pageNum, int pageSize) {
         Airports airports = new Airports();
         airports.setICAO(search);
         airports.setIATA(search);
@@ -76,25 +83,23 @@ public class AirportsController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Airports airport : airportsList) {
-            returnList.add(airport);
-        }
-        return returnList;
+        returnList.addAll(airportsList);
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("/airportsSearchByICAO")
-    public Integer airportsSearchByICAO(String icao) {
+    public AjaxUtils airportsSearchByICAO(String icao) {
         Airports airports = new Airports();
         airports.setICAO(icao);
-        return airportsService.airportsSearchCount(airports);
+        return AjaxUtils.success(airportsService.airportsSearchCount(airports));
     }
 
     @GetMapping("/airportsSearchByCity")
-    public List<Airports> airportsSearchByCity(String search) {
+    public AjaxUtils airportsSearchByCity(String search) {
         Airports airports = new Airports();
         airports.setCity(search);
         airports.setName(search);
-        return airportsService.airportsSearch(airports);
+        return AjaxUtils.success(airportsService.airportsSearch(airports));
     }
 
 }

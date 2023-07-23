@@ -18,4 +18,6 @@ public interface ArrivalsMapper {
     List<Map<String, Object>> arrivalsToday(ScheduleVO arrivalsScheduleVO);
 
     int arrivalsSearchCount(Arrivals arrivals);
+
+    String getLastUpdateDate();
 }

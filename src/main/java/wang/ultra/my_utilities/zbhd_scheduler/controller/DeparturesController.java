@@ -22,16 +22,22 @@ public class DeparturesController {
     DeparturesService departuresService;
 
     @PostMapping("departuresAdd")
-    public Integer departuresAdd(Departures departures) {
+    public AjaxUtils departuresAdd(Departures departures) {
 
-        List<Departures> departuresList = new ArrayList<>();
-        departuresList.add(departures);
+        int resultInt = departuresService.departuresAdd(departures);
 
-        return departuresService.departuresAdd(departuresList);
+        return switch (resultInt) {
+            case -2 -> AjaxUtils.failed("数据错误! ");
+            case -1 -> AjaxUtils.failed("添加失败! ");
+            case 1 -> AjaxUtils.success("添加成功! ");
+            case 2 -> AjaxUtils.success("更新成功! ");
+            default -> AjaxUtils.failed("发生异常! ");
+        };
+
     }
 
     @GetMapping("departuresShow")
-    public List<Object> departuresShow(int pageNum, int pageSize) {
+    public AjaxUtils departuresShow(int pageNum, int pageSize) {
         List<Map<String, Object>> departuresList = departuresService.departuresShow();
         PageHelper.startPage(pageNum, pageSize);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(departuresList);
@@ -44,14 +50,12 @@ public class DeparturesController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Map<String, Object> map : departuresList) {
-            returnList.add(map);
-        }
-        return returnList;
+        returnList.addAll(departuresList);
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("departuresSearch")
-    public List<Object> departuresSearch(String search, int pageNum, int pageSize) {
+    public AjaxUtils departuresSearch(String search, int pageNum, int pageSize) {
         SearchVO searchVO = new SearchVO();
         searchVO.setFlightNo(search);
         searchVO.setAirportICAO(search);
@@ -71,11 +75,9 @@ public class DeparturesController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Map<String, Object> map : departuresSearchList) {
-            returnList.add(map);
-        }
+        returnList.addAll(departuresSearchList);
 
-        return returnList;
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("departuresSearchByFlightNo")
@@ -87,7 +89,7 @@ public class DeparturesController {
 
     @GetMapping("departuresToday")
     public AjaxUtils departuresToday(int pageNum, int pageSize) {
-        List<Map<String,Object>> departuresTodayList = departuresService.departuresToday();
+        List<Map<String, Object>> departuresTodayList = departuresService.departuresToday();
 
         PageHelper.startPage(pageNum, pageSize);
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(departuresTodayList);
@@ -100,9 +102,7 @@ public class DeparturesController {
         List<Object> returnList = new ArrayList<>();
         returnList.add(pageMap);
 
-        for (Map<String, Object> map : departuresTodayList) {
-            returnList.add(map);
-        }
+        returnList.addAll(departuresTodayList);
 
         return AjaxUtils.success(returnList);
     }
