@@ -69,7 +69,7 @@
                     var arrival = arrivals.ARRIVAL.substring(0, 2) + ":" + arrivals.ARRIVAL.substring(2);
                     var schedule = scheduleFormat(arrivals.SCHEDULE);
                     var status = "";
-                    if (parseInt(arrivals.arrival) < parseInt(currTime)) {
+                    if (parseInt(arrivals.ARRIVAL) < parseInt(currTime)) {
                         status = "已进港";
                     } else {
                         status = "未进港";
@@ -109,7 +109,7 @@
                     var arrival = departures.ARRIVAL.substring(0, 2) + ":" + departures.ARRIVAL.substring(2);
                     var schedule = scheduleFormat(departures.SCHEDULE);
                     var status = "";
-                    if (parseInt(departures.departure) < parseInt(currTime)) {
+                    if (parseInt(departures.DEPARTURE) < parseInt(currTime)) {
                         status = "已出港";
                     } else {
                         status = "未出港";
