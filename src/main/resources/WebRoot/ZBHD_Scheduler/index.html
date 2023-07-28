@@ -102,9 +102,7 @@
             } else {
                 for (let i = 1; i < ajaxResult.length; i++) {
                     var departures = ajaxResult[i];
-
                     var airlineName = "邯郸-" + departures.CITY;
-
                     var departure = departures.DEPARTURE.substring(0, 2) + ":" + departures.DEPARTURE.substring(2);
                     var arrival = departures.ARRIVAL.substring(0, 2) + ":" + departures.ARRIVAL.substring(2);
                     var schedule = scheduleFormat(departures.SCHEDULE);

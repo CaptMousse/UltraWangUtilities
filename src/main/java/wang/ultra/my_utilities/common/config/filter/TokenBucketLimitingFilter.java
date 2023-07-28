@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
+import wang.ultra.my_utilities.common.utils.DateConverter;
+import wang.ultra.my_utilities.common.utils.SendMailUtils;
 
 import java.io.IOException;
 
@@ -54,6 +56,12 @@ public class TokenBucketLimitingFilter implements Filter {
             String returnStr = AjaxUtils.failedJsonString("当前访问过多, 请稍后再试! ");
             response.setHeader("Content-Type", "application/json; charset=utf-8");
             response.getWriter().write(returnStr);
+
+            String mailTo = ConstantFromFile.getMailTo();
+            String mailSubject = "【UltraWang监控提醒】在" + DateConverter.getSimpleTime() + "过滤器限流已启动";
+            String mailContent = "<h1 style=\"text-align: center;\">歪比巴卜</h1>";
+            SendMailUtils sendMailUtils = new SendMailUtils();
+            sendMailUtils.sendMail(mailTo, mailSubject, mailContent);
         }
     }
 }
