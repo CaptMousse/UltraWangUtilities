@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.stereotype.Service;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.DateConverter;
@@ -18,10 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("minecraftService")
 public class MinecraftService {
@@ -72,38 +70,21 @@ public class MinecraftService {
             stringBuilder.append(strRead);
         }
 
-        return JsonConverter.JsonStringToMap(stringBuilder.toString()).get("id");
+        String uuid = JsonConverter.JsonStringToMap(stringBuilder.toString()).get("id");
+        return mcUuidConverter(uuid);
     }
 
-    private Map<String, String> getBannedPlayersByUUID(String uuid) {
+    private List<Map<String, String>> getBlacklist() {
         String fileName = ConstantFromFile.getMinecraftBlackListFileName();
 //        String fileName = "banned-players.json";
-        List<Map<String, String>> blackList = fileToJsonArray(fileName);
-        if (blackList != null) {
-            for (Map<String, String> map : blackList) {
-                String bannedPlayerUUID = map.get("uuid").replaceAll("-", "");
-                if (uuid.equals(bannedPlayerUUID)) {
-                    return map;
-                }
-            }
-        }
-        return new HashMap<>();
+        return Objects.requireNonNull(fileToJsonArray(fileName));
     }
 
-    private Map<String, String> getBannedPlayersByName(String name) {
-        String fileName = ConstantFromFile.getMinecraftBlackListFileName();
-//        String fileName = "banned-players.json";
-        List<Map<String, String>> blackList = fileToJsonArray(fileName);
-        if (blackList != null) {
-            for (Map<String, String> map : blackList) {
-                String bannedPlayerName = map.get("name");
-                if (name.equals(bannedPlayerName)) {
-                    return map;
-                }
-            }
-        }
-        return new HashMap<>();
+    private List<Map<String, String>> getWhitelist() {
+        String whitelistFileName = ConstantFromFile.getMinecraftWhiteListFileName();
+        return Objects.requireNonNull(fileToJsonArray(whitelistFileName));
     }
+
 
     /**
      * UUID转换
@@ -216,27 +197,58 @@ public class MinecraftService {
      * @param name
      * @return
      */
-    public Map<String, String> bannedPlayerSearchByName(String name) {
+    public Map<String, String> blacklistSearchByName(String name) {
 
-        // 先根据名字取查文件
-        Map<String, String> resultMap = getBannedPlayersByName(name);
-
-        // 没查到的话就去查他的UUID, 再用UUID查文件
-        if (resultMap.isEmpty()) {
-            String uuid;
-            try {
-                uuid = getPlayerUUID(name);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        // 先获取到黑名单, 根据名字查
+        List<Map<String, String>> resultList = getBlacklist();
+        for (Map<String, String> map : resultList) {
+            if (map.get("name").equals(name)) {
+                return map;
             }
-            if (uuid == null) {
-                // UUID没查到就代表名字错了, 返回空
-                return new HashMap<>();
-            }
-            return getBannedPlayersByUUID(uuid);
         }
 
-        return resultMap;
+        // 没查到的话就去查他的UUID, 再根据UUID查
+        String uuid;
+        try {
+            uuid = getPlayerUUID(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        if (uuid != null) {
+            for (Map<String, String> map : resultList) {
+                if (map.get("uuid").equals(uuid)) {
+                    return map;
+                }
+            }
+        }
+        return new HashMap<>();
+    }
+
+    public Map<String, String> whitelistSearchByName(String name) {
+
+        // 先获取到黑名单, 根据名字查
+        List<Map<String, String>> resultList = getWhitelist();
+        for (Map<String, String> map : resultList) {
+            if (map.get("name").equals(name)) {
+                return map;
+            }
+        }
+
+        // 没查到的话就去查他的UUID, 再根据UUID查
+        String uuid;
+        try {
+            uuid = getPlayerUUID(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        if (uuid != null) {
+            for (Map<String, String> map : resultList) {
+                if (map.get("uuid").equals(uuid)) {
+                    return map;
+                }
+            }
+        }
+        return new HashMap<>();
     }
 
 

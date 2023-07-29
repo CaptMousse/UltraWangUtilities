@@ -19,18 +19,25 @@ public class MinecraftController {
     @Autowired
     MinecraftService minecraftService;
 
-    @GetMapping("bannedPlayerSearchByName")
-    public AjaxUtils bannedPlayerSearchByName(String name) {
-        Map<String, String> resultMap = minecraftService.bannedPlayerSearchByName(name);
-        Map<String, String> returnMap = new HashMap<>();
-
+    @GetMapping("blacklistSearchByName")
+    public AjaxUtils blacklistSearchByName(String name) {
+        Map<String, String> resultMap = minecraftService.blacklistSearchByName(name);
         if (!resultMap.isEmpty()) {
+            Map<String, String> returnMap = new HashMap<>();
             String created = resultMap.get("created").substring(0, 10);
             returnMap.put("created", created);
             return AjaxUtils.success(returnMap);
         }
-        return AjaxUtils.failed("没有查到哦~");
+        return AjaxUtils.failed("没有查到哦~ ");
 
+    }
+    @GetMapping("whitelistSearchByName")
+    public AjaxUtils whitelistSearchByName(String name) {
+        Map<String, String> resultMap = minecraftService.whitelistSearchByName(name);
+        if (!resultMap.isEmpty()) {
+            return AjaxUtils.success("您已在白名单中! ", true);
+        }
+        return AjaxUtils.failed("您还没有在白名单, 请及时联系腐竹确认~ ");
     }
 
 //    @GetMapping("whitelistAdd")

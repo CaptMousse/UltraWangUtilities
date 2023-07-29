@@ -79,17 +79,36 @@
       }
     }
 
-    function bannedPlayerSearch() {
-      var name = document.getElementById('bannedPlayerSearch').value;
+    function blacklistSearch() {
+      var name = document.getElementById('playerNameSearch').value;
       if (name == null || name == "") {
         alert("请输入玩家名称!");
         return;
       }
-      var result = ajax("GET", "mc/bannedPlayerSearchByName?name=" + name, false);
-      if (result.created != null) {
+
+      var radio = document.getElementsByName('playerNameSearchType');
+      var type;
+      for (let i = 0; i < radio.length; i++) {
+        if (radio[i].checked) {
+          type = radio[i].value;
+        }
+      }
+
+      var controller;
+      if (type == "blacklist") {
+        controller = "mc/blacklistSearchByName?name=" + name;
+      }
+      if (type == "whitelist") {
+        controller = "mc/whitelistSearchByName?name=" + name;
+      }
+      var result = ajax("GET", controller, false);
+      
+      if (result.created != null && type == "blacklist") {
         document.getElementById('bannedPlayerInfo').style.display = "";
         document.getElementById('bannedPlayerName').innerText = name;
         document.getElementById('bannedPlayerDate').innerText = result.created;
+      } else {
+        document.getElementById('bannedPlayerInfo').style.display = "none";
       }
     }
 
@@ -144,9 +163,13 @@
     </fieldset>
     <br>
     <fieldset>
-      <legend>黑名单查询</legend>
-      <input type="text" id="bannedPlayerSearch" placeholder="请输入玩家名称~">&nbsp;<input type="button"
-        id="bannedPlayerSearchBtn" onclick="bannedPlayerSearch()" value="查询">
+      <legend>黑/白名单查询</legend>
+      <input type="radio" name="playerNameSearchType" id="playerNameSearchBlacklist" value="blacklist" checked>
+      <label for="playerNameSearchBlacklist">黑名单</label>
+      <input type="radio" name="playerNameSearchType" id="playerNameSearchWhitelist" value="whitelist">
+      <label for="playerNameSearchWhitelist">白名单</label>&nbsp;&nbsp;
+      <input type="text" id="playerNameSearch" placeholder="请输入玩家名称~">&nbsp;&nbsp;
+      <input type="button" id="blacklistSearchBtn" onclick="blacklistSearch()" value="查询">
       <p id="bannedPlayerInfo" style="display: none;">
         玩家名称: <span id="bannedPlayerName"></span><br>
         封禁状态: 已封禁<br>
