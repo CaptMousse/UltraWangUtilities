@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>邯郸机场今日进出港航班</title>
-    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
-    <script src="/js/baseFunction.js"></script>
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <script src="/resource/js/baseFunction.js"></script>
     <script>
         function init() {
             footerShow();
@@ -136,46 +137,54 @@
 <body onload="init()">
     <div id="divBody">
         <h1 style="text-align: center;">邯郸机场今日进出港航班</h1>
-        <fieldset class="fieldset">
-            <legend>说明</legend>
-            本时刻表数据基于《邯郸机场2023夏秋航季直达航班时刻表》整理，更新时间：<span id="updateDate">null</span>。<br>
-            如若数据出现纰漏，请不要以本时刻表数据为准。
-            
-        </fieldset>
-        <fieldset class="fieldset">
-            <legend>邯郸机场今日进港航班</legend>
-            <table id="tableArrivals" style="margin: 0 auto; text-align: center;" border="1">
+        <p><br></p>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">说明</h3>
+            </div>
+            <div class="panel-body">
+                本时刻表数据基于《邯郸机场2023夏秋航季直达航班时刻表》整理，更新时间：<span id="updateDate">null</span>。<br>
+                如若数据出现纰漏，请不要以本时刻表数据为准。
+            </div>
+        </div>
+        <div><br></div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">邯郸机场今日进港航班</div>
+            <table id="tableArrivals" class="table" style="text-align: center;">
                 <tbody>
                     <tr id="tableThArrivals">
-                        <th>序号</th>
-                        <th>航线名称</th>
-                        <th>航班号</th>
-                        <th>起飞机场</th>
-                        <th>起飞时间</th>
-                        <th>降落时间</th>
-                        <th>班期</th>
-                        <th>状态</th>
+                        <th style="text-align: center;">序号</th>
+                        <th style="text-align: center;">航线名称</th>
+                        <th style="text-align: center;">航班号</th>
+                        <th style="text-align: center;">起飞机场</th>
+                        <th style="text-align: center;">起飞时间</th>
+                        <th style="text-align: center;">降落时间</th>
+                        <th style="text-align: center;">班期</th>
+                        <th style="text-align: center;">状态</th>
                     </tr>
                 </tbody>
             </table>
-        </fieldset>
-        <fieldset class="fieldset">
-            <legend>邯郸机场今日出港航班</legend>
-            <table id="tableDepartures" style="margin: 0 auto; text-align: center;" border="1">
+        </div>
+        <div><br></div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">邯郸机场今日出港航班</div>
+            <table id="tableDepartures" class="table" style="text-align: center;">
                 <tbody>
                     <tr id="tableThDepartures">
-                        <th>序号</th>
-                        <th>航线名称</th>
-                        <th>航班号</th>
-                        <th>起飞机场</th>
-                        <th>起飞时间</th>
-                        <th>降落时间</th>
-                        <th>班期</th>
-                        <th>状态</th>
+                        <th style="text-align: center;">序号</th>
+                        <th style="text-align: center;">航线名称</th>
+                        <th style="text-align: center;">航班号</th>
+                        <th style="text-align: center;">起飞机场</th>
+                        <th style="text-align: center;">起飞时间</th>
+                        <th style="text-align: center;">降落时间</th>
+                        <th style="text-align: center;">班期</th>
+                        <th style="text-align: center;">状态</th>
                     </tr>
                 </tbody>
             </table>
-        </fieldset>
+        </div>
     </div>
 </body>
 

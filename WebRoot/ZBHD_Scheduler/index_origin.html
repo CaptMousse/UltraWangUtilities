@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邯郸机场今日进出港航班</title>
+    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+    <script src="/js/baseFunction.js"></script>
+    <script>
+        function init() {
+            footerShow();
+            getUpdateDate();
+            arrivalsToday();
+            departuresToday();
+        }
+
+        function getCurrTime() {
+            var date = new Date();
+            var hours = parseInt(date.getHours());
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+            var minutes = parseInt(date.getMinutes());
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            return hours + "" + minutes;
+        }
+        var currTime = getCurrTime();
+
+        function getUpdateDate() {
+            var updateDate = ajax("GET", "zbhd_scheduler/getUpdateDate", false);
+            document.getElementById('updateDate').innerText = updateDate;
+        }
+
+        function arrivalsToday() {
+            removeTableTr("tableTr");
+
+            var controller = "zbhd_scheduler/arrivals/arrivalsToday?pageNum=0&pageSize=0";
+            var ajaxResult = ajax("GET", controller, false);
+
+            var tbody = document.getElementById('tableThArrivals').parentNode;
+            var tableTr = document.getElementsByClassName('tableTrArrivals');
+
+            if (ajaxResult[0].pageTotal == "0") {
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement('tr');
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = 'tableTrArrivals';
+                tbody.children[tableTrNum].innerHTML = "<td colspan='7'>今日暂无航班</td>";
+            } else {
+                for (let i = 1; i < ajaxResult.length; i++) {
+                    var arrivals = ajaxResult[i];
+
+                    var checkMorningEvening = "";
+                    // if (arrivals.CITY == "上海") {
+                    //     if (parseInt(arrivals.arrival) < 1200) {
+                    //         checkMorningEvening = "(早)"
+                    //     }
+                    //     if (parseInt(arrivals.arrival) > 1200) {
+                    //         checkMorningEvening = "(晚)"
+                    //     }
+                    // }
+                    var airlineName = arrivals.CITY + "-邯郸" + checkMorningEvening;
+
+                    var departure = arrivals.DEPARTURE.substring(0, 2) + ":" + arrivals.DEPARTURE.substring(2);
+                    var arrival = arrivals.ARRIVAL.substring(0, 2) + ":" + arrivals.ARRIVAL.substring(2);
+                    var schedule = scheduleFormat(arrivals.SCHEDULE);
+                    var status = "";
+                    if (parseInt(arrivals.ARRIVAL) < parseInt(currTime)) {
+                        status = "已进港";
+                    } else {
+                        status = "未进港";
+                    }
+
+                    var tableTrNum = tableTr.length + 1;
+                    var createNewTr = document.createElement('tr');
+                    tbody.appendChild(createNewTr);
+                    tbody.children[tableTrNum].className = 'tableTrArrivals';
+                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>" + airlineName + "</td><td>" + arrivals.FLIGHT_NO + "</td><td>" + arrivals.NAME + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + status + "</td>";
+                }
+            }
+        }
+
+        function departuresToday() {
+            removeTableTr("tableTr");
+
+            var controller = "zbhd_scheduler/departures/departuresToday?pageNum=0&pageSize=0";
+            var ajaxResult = ajax("GET", controller, false);
+
+            var tbody = document.getElementById('tableThDepartures').parentNode;
+            var tableTr = document.getElementsByClassName('tableTrDepartures');
+
+            if (ajaxResult[0].pageTotal == "0") {
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement('tr');
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = 'tableTrDepartures';
+                tbody.children[tableTrNum].innerHTML = "<td colspan='7'>今日暂无航班</td>";
+            } else {
+                for (let i = 1; i < ajaxResult.length; i++) {
+                    var departures = ajaxResult[i];
+                    var airlineName = "邯郸-" + departures.CITY;
+                    var departure = departures.DEPARTURE.substring(0, 2) + ":" + departures.DEPARTURE.substring(2);
+                    var arrival = departures.ARRIVAL.substring(0, 2) + ":" + departures.ARRIVAL.substring(2);
+                    var schedule = scheduleFormat(departures.SCHEDULE);
+                    var status = "";
+                    if (parseInt(departures.DEPARTURE) < parseInt(currTime)) {
+                        status = "已出港";
+                    } else {
+                        status = "未出港";
+                    }
+
+                    var tableTrNum = tableTr.length + 1;
+                    var createNewTr = document.createElement('tr');
+                    tbody.appendChild(createNewTr);
+                    tbody.children[tableTrNum].className = 'tableTrDepartures';
+                    tbody.children[tableTrNum].innerHTML = "<td>" + i + "</td><td>" + airlineName + "</td><td>" + departures.FLIGHT_NO + "</td><td>" + departures.NAME + "</td><td>" + departure + "</td><td>" + arrival + "</td><td>" + schedule + "</td><td>" + status + "</td>";
+                }
+            }
+        }
+
+        function scheduleFormat(schedule) {
+            if (schedule == "1234567") {
+                schedule = "每日一班";
+            } else {
+                schedule = schedule.replaceAll("0", "");
+            }
+            return schedule;
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="divBody">
+        <h1 style="text-align: center;">邯郸机场今日进出港航班</h1>
+        <fieldset class="fieldset">
+            <legend>说明</legend>
+            本时刻表数据基于《邯郸机场2023夏秋航季直达航班时刻表》整理，更新时间：<span id="updateDate">null</span>。<br>
+            如若数据出现纰漏，请不要以本时刻表数据为准。
+            
+        </fieldset>
+        <fieldset class="fieldset">
+            <legend>邯郸机场今日进港航班</legend>
+            <table id="tableArrivals" style="margin: 0 auto; text-align: center;" border="1">
+                <tbody>
+                    <tr id="tableThArrivals">
+                        <th>序号</th>
+                        <th>航线名称</th>
+                        <th>航班号</th>
+                        <th>起飞机场</th>
+                        <th>起飞时间</th>
+                        <th>降落时间</th>
+                        <th>班期</th>
+                        <th>状态</th>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset class="fieldset">
+            <legend>邯郸机场今日出港航班</legend>
+            <table id="tableDepartures" style="margin: 0 auto; text-align: center;" border="1">
+                <tbody>
+                    <tr id="tableThDepartures">
+                        <th>序号</th>
+                        <th>航线名称</th>
+                        <th>航班号</th>
+                        <th>起飞机场</th>
+                        <th>起飞时间</th>
+                        <th>降落时间</th>
+                        <th>班期</th>
+                        <th>状态</th>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</body>
+
+</html>

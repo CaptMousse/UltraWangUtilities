@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UltraWang</title>
+    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+    <style>
+        #divBody {
+            max-width: 100%;
+            margin: 0px;
+        }
+
+        #headerDiv {
+            width: auto;
+            height: 100px;
+            background-color: #112233;
+        }
+
+        #iconDiv {
+            width: 200px;
+            height: 100px;
+            background-color: #A1B2C3;
+        }
+
+
+
+        .li-e {
+            list-style-type: none;
+            text-align: center;
+            float: left;
+            height: 100px;
+            width: 155px;
+            background-color: #C1B2A3;
+        }
+
+        .a-e {
+            display: block;
+            padding: 0 20px;
+            line-height: 70px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .li-e:hover {
+            /* list-style-type: none;
+            text-align: center;
+            float: left;
+            height: 100px; */
+            background-color: #A9B8C7;
+        }
+
+
+        #center {
+            text-align: center;
+        }
+
+        #footer {
+            background-color: #C6C6C6;
+        }
+    </style>
+    <script src="/js/baseFunction.js"></script>
+    <script>
+        function init() {
+            footerShow();
+        }
+        var divHeight = (window.innerHeight / 2) + "px";
+        document.getElementById('center').style.marginTop = (window.innerHeight / 4) + 'px';
+    </script>
+</head>
+
+<body style="background-color: #DDDDDD; margin: 0px;" onload="init()">
+
+    <div id="divBody">
+        <div id="headerDiv">
+            <div id="iconDiv"></div>
+            <div id="ulDiv">
+                <ul id="ul-e">
+                    <li class="li-e">&nbsp;&nbsp;<a class="a-e"
+                            href="http://ultra.wang/guessNum/guessNum.html">猜数字游戏</a>&nbsp;&nbsp;</li>
+                    <li class="li-e">&nbsp;&nbsp;<a class="a-e"
+                            href="http://ultra.wang/stockShow/index.html">股票日K图</a>&nbsp;&nbsp;</li>
+                    <li class="li-e">&nbsp;&nbsp;<a class="a-e"
+                            href="http://ultra.wang/ZBHD_Scheduler/index.html">邯郸机场时刻表</a>&nbsp;&nbsp;</li>
+                    <li class="li-e">&nbsp;&nbsp;<a class="a-e"
+                            href="http://ultra.wang/idiompedia/index.html">成语查询</a>&nbsp;&nbsp;</li>
+                    <li class="li-e">&nbsp;&nbsp;<a class="a-e"
+                            href="http://ultra.wang/mc/index.html">MC服务器</a>&nbsp;&nbsp;</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

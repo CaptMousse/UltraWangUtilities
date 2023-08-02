@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>成语字典</title>
-    <link rel="stylesheet" type="text/css" href="/css/baseCss.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <style>
         .modal-data {
             max-width: 600px;
@@ -18,7 +19,9 @@
             padding: 15px;
         }
     </style>
-    <script src="/js/baseFunction.js"></script>
+    <script src="/resource/js/baseFunction.js"></script>
+    <script src="/resource/js/jquery-3.6.0.min.js"></script>
+    <script src="/resource/js/echarts.min.js"></script>
     <script>
         function init() {
             footerShow();
@@ -40,9 +43,9 @@
             if (ajaxResult.length <= 0) {
                 tbody.appendChild(document.createElement('tr'));
                 tbody.children[++tableTrNum].className = 'qmTableTr';
-                tbody.children[tableTrNum].innerHTML += "<td>暂未收录该成语</td>";
+                tbody.children[tableTrNum].innerHTML += "<td style=\"text-align: center;\">暂未收录该成语</td>";
             } else {
-                var fieldsetWidth = document.getElementById("fieldsetObj").clientWidth;
+                var fieldsetWidth = document.getElementById("tableDiv").clientWidth;
                 var numTd = Math.floor(fieldsetWidth / 80);
                 for (let i = 0; i < ajaxResult.length; i++) {
                     var idiom = ajaxResult[i];
@@ -50,7 +53,7 @@
                         tbody.appendChild(document.createElement('tr'));
                         tbody.children[++tableTrNum].className = 'qmTableTr';
                     }
-                    tbody.children[tableTrNum].innerHTML += "<td><a href='javascript:void(0);' onclick='searchIdiom(\"" + idiom.word + "\")'>" + idiom.word + "</td>";
+                    tbody.children[tableTrNum].innerHTML += "<td style=\"text-align: center;\"><a href='javascript:void(0);' onclick='searchIdiom(\"" + idiom.word + "\")'>" + idiom.word + "</td>";
                 }
             }
         }
@@ -97,35 +100,61 @@
 
 <body onload="init()">
     <div id="divBody">
-        <h1 style="text-align: center;">成语字典</h1>
-        <fieldset>
-            <legend>简介</legend>
-            <p>
+        <div>
+            <h1 style="text-align: center;">成语字典</h1>
+        </div>
+
+        <div><br></div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">简介</h3>
+            </div>
+            <div class="panel-body">
                 这里收录了不到三万条四字成语，可以在下面查询成语的拼音、释义、出处以及示例。<br>
                 如果要模糊查询，请用问号表示空位，查询仅限四字成语。<br>
                 例如输入“无?奉?”，即可联想出成语“无可奉告”。
-            </p>
-        </fieldset>
-        <fieldset id="fieldsetObj">
-            <legend>成语查询</legend>
-            <p>
-                <input id="idiomByQuestionMark" type="text" value="" placeholder="请输入成语">
-                <input id="searchButton" type="button" onclick="searchIdiomsByQuestionMark()" value="查询">
-            </p>
-            <table id="qmTable" style="margin: 0 auto;" border="1">
-                <input id="qmTableChild" type="hidden">
-            </table>
-        </fieldset>
+            </div>
+        </div>
+
+        <div><br></div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">成语查询</h3>
+            </div>
+            <div id="tableDiv" class="panel-body">
+                <p>
+                    <input id="idiomByQuestionMark" type="text" value="" placeholder="请输入成语">
+                    <input id="searchButton" type="button" onclick="searchIdiomsByQuestionMark()" value="查询">
+                </p>
+                <table id="qmTable" class="table" style="margin: 0 auto;" border="1">
+                    <input id="qmTableChild" type="hidden">
+                </table>
+            </div>
+        </div>
+
+
+
     </div>
     <div id="modal-background" style="visibility: hidden;">
         <div class="modal-data">
-            <fieldset class="fieldset">
-                <legend id="modalFieldsetName"></legend>
-                <table id="modalTable" style="margin: 0 auto;" border="1">
+
+
+            <div class="panel-heading">
+                <h3 id="modalFieldsetName" class="panel-title">null</h3>
+            </div>
+            <div id="tableDiv" class="panel-body">
+                <table id="modalTable" class="table" style="margin: 0 auto;" border="1">
                     <input id="tableChild" type="hidden">
                 </table>
-            </fieldset>
-            <p style="text-align: center"><a onclick="showModal()">[关闭]</a></p>
+            </div>
+
+            <div><br></div>
+            <div>
+                <p style="text-align: center"><a onclick="showModal()">[关闭]</a></p>
+            </div>
+
         </div>
     </div>
 </body>
