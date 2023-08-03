@@ -8,6 +8,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 提供给接口的方法
+ */
 public class HardwareUsageService {
     HardwareUsageUtils hardwareUsageUtils = new HardwareUsageUtils();
 

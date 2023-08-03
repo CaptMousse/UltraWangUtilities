@@ -17,7 +17,20 @@ public class CommonScheduler {
         Long ddnsMonitorPeriod = ConstantFromFile.getDdnsIntervalTime();
         ses.scheduleAtFixedRate(new DdnsMonitorRunnable(), 0, ddnsMonitorPeriod, TimeUnit.HOURS);
 
-        Long hardrwareMonitorPeriod = ConstantFromFile.getMonitorRate();
-        ses.scheduleAtFixedRate(new HardwareMonitorRunnable(), 0, hardrwareMonitorPeriod, TimeUnit.MINUTES);
+        String hardwareMonitorPeriod = ConstantFromFile.getMonitorRate();
+        long monitorRate = Long.parseLong(hardwareMonitorPeriod.substring(0, hardwareMonitorPeriod.length() - 1));
+        String hardwareMonitorUnit = hardwareMonitorPeriod.substring(hardwareMonitorPeriod.length() - 1);
+        if ("h".equals(hardwareMonitorUnit)) {
+            System.out.println("hhh");
+            ses.scheduleAtFixedRate(new HardwareMonitorRunnable(), 0, monitorRate, TimeUnit.HOURS);
+        }
+        if ("m".equals(hardwareMonitorUnit)) {
+            System.out.println("mmm");
+            ses.scheduleAtFixedRate(new HardwareMonitorRunnable(), 0, monitorRate, TimeUnit.MINUTES);
+        }
+        if ("s".equals(hardwareMonitorUnit)) {
+            System.out.println("sss");
+            ses.scheduleAtFixedRate(new HardwareMonitorRunnable(), 0, monitorRate, TimeUnit.SECONDS);
+        }
     }
 }

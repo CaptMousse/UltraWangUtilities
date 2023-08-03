@@ -10,6 +10,9 @@ import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 监控
+ */
 public class MonitorService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MonitorService.class);
@@ -58,7 +61,7 @@ public class MonitorService {
 
         }
 
-        // 硬件监控持久化到数据库
+        // 硬件监控持久化
         MonitorEntity entity = new MonitorEntity();
         entity.setCpuUsage(cpuUsage.toString());
         entity.setCpuTemperature(cpuTemperature.toString());

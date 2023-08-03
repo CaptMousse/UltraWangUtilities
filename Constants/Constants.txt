@@ -56,9 +56,9 @@ MailTo = sefvdx@ultra.wang
 
 # 监听状态
 # 0代表停止, 1代表开启
-HardwareMonitorStatus = 0
-# 监听频率(时间间隔, 单位分钟)
-MonitorRate = 1
+HardwareMonitorStatus = 1
+# 监听频率(时间间隔, 例如1h代表1小时, 10m代表10分钟, 30s代表30秒)
+MonitorRate = 1m
 # 监听CPU使用率
 MonitorCpuUsage = 90
 # 监听CPU温度

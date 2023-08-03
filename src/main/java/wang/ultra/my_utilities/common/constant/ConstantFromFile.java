@@ -74,7 +74,7 @@ public class ConstantFromFile {
     private static String HardwareMonitorStatus;
 
     // 监控频率
-    private static Long MonitorRate;
+    private static String MonitorRate;
 
     private static Double MonitorCpuUsage;
 
@@ -139,7 +139,7 @@ public class ConstantFromFile {
             ConstantFromFile.MailTo = constMap.get("MailTo");
 
             ConstantFromFile.HardwareMonitorStatus = constMap.get("HardwareMonitorStatus");
-            ConstantFromFile.MonitorRate = Long.valueOf(constMap.get("MonitorRate"));
+            ConstantFromFile.MonitorRate = constMap.get("MonitorRate");
             ConstantFromFile.MonitorCpuUsage = Double.valueOf(constMap.get("MonitorCpuUsage"));
             ConstantFromFile.MonitorCpuTemperature = Double.valueOf(constMap.get("MonitorCpuTemperature"));
             ConstantFromFile.MonitorMemoryChange = Double.valueOf(constMap.get("MonitorMemoryChange"));
@@ -270,7 +270,7 @@ public class ConstantFromFile {
     }
 
 
-    public static Long getMonitorRate() {
+    public static String getMonitorRate() {
         return MonitorRate;
     }
 
