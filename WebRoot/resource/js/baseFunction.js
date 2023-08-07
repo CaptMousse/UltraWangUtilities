@@ -2,7 +2,7 @@ var date = new Date();
 var year = date.getFullYear();
 
 function getAddress() {
-    var port = "8124";
+    var port = "8125";
 
     var addressLocal = "http://127.0.0.1:" + port + "/";
     var addressLocalLAN = "http://192.168.31.230:" + port + "/";

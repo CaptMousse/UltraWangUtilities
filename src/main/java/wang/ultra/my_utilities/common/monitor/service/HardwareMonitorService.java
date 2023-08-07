@@ -61,7 +61,7 @@ public class HardwareMonitorService {
         }
 
         // System.out.println("minuteList = " + minuteList);
-        System.out.println("hourList = " + hourList);
+        // System.out.println("hourList = " + hourList);
     }
 
     private String getAvgResultFromList(List<String> list) {
