@@ -17,7 +17,7 @@ public class HardwareMonitorService {
     List<Map<String, String>> hourList = new ArrayList<>();
     List<Map<String, String>> minuteList = new ArrayList<>();
 
-    String minuteRecord = "-1";
+    String minuteRecord = DateConverter.getNoSymbolTime().substring(10, 12);
 
     public void hardwareMonitorRecord(MonitorEntity entity) {
 
@@ -29,45 +29,50 @@ public class HardwareMonitorService {
 
         String minute = DateConverter.getNoSymbolTime().substring(10, 12);
         if (!minute.equals(minuteRecord)) {
-            // 把每个遍历出来算平均数
-            List<String> cpuUsageList = new ArrayList<>();
-            List<String> cpuTemperatureList = new ArrayList<>();
-            List<String> memoryUsageList = new ArrayList<>();
-            for (Map<String, String> map : minuteList) {
-                cpuUsageList.add(map.get("cpuUsage"));
-                cpuTemperatureList.add(map.get("cpuTemperature"));
-                memoryUsageList.add(map.get("memoryUsage"));
-            }
-            double cpuUsageAvg = getAvgResultFromList(cpuUsageList);
-            double cpuTemperatureAvg = getAvgResultFromList(cpuTemperatureList);
-            double memoryUsageAvg = getAvgResultFromList(memoryUsageList);
+            if (!minuteList.isEmpty()) {
+                // 把每个遍历出来算平均数
+                List<String> cpuUsageList = new ArrayList<>();
+                List<String> cpuTemperatureList = new ArrayList<>();
+                List<String> memoryUsageList = new ArrayList<>();
+                for (Map<String, String> map : minuteList) {
+                    cpuUsageList.add(map.get("cpuUsage"));
+                    cpuTemperatureList.add(map.get("cpuTemperature"));
+                    memoryUsageList.add(map.get("memoryUsage"));
+                }
+                String cpuUsageAvg = getAvgResultFromList(cpuUsageList);
+                String cpuTemperatureAvg = getAvgResultFromList(cpuTemperatureList);
+                String memoryUsageAvg = getAvgResultFromList(memoryUsageList);
 
-            // 放进小时list里面
-            Map<String, String> minuteMap = new HashMap<>();
-            minuteMap.put("time", DateConverter.getNoSymbolHourMinutes());
-            minuteMap.put("cpuUsage", String.valueOf(cpuUsageAvg));
-            minuteMap.put("cpuTemperature", String.valueOf(cpuTemperatureAvg));
-            minuteMap.put("memoryUsage", String.valueOf(memoryUsageAvg));
-            hourList.add(minuteMap);
+                // 放进小时list里面
+                Map<String, String> minuteMap = new HashMap<>();
+                minuteMap.put("time", DateConverter.getNoSymbolHourMinutes());
+                minuteMap.put("cpuUsage", cpuUsageAvg);
+                minuteMap.put("cpuTemperature", cpuTemperatureAvg);
+                minuteMap.put("memoryUsage", memoryUsageAvg);
+                hourList.add(minuteMap);
 
-            // 初始化
-            minuteRecord = minute;
-            minuteList.clear();
-            if (hourList.size() >= 60) {
-                hourList.remove(0);
+                // 初始化
+                minuteRecord = minute;
+                minuteList.clear();
+                if (hourList.size() >= 60) {
+                    hourList.remove(0);
+                }
             }
         }
 
-        System.out.println("minuteList = " + minuteList);
+        // System.out.println("minuteList = " + minuteList);
         System.out.println("hourList = " + hourList);
     }
 
-    private double getAvgResultFromList(List<String> list) {
+    private String getAvgResultFromList(List<String> list) {
         double result = 0;
         for (String resultStr : list) {
             result += Double.parseDouble(resultStr);
         }
-        return result / list.size();
+
+        // String.format("%.2f", result / list.size()) + "%"
+
+        return String.format("%.2f", result / list.size());
     }
 
     private String roundHalfUp(String num) {
@@ -75,11 +80,11 @@ public class HardwareMonitorService {
         return bd.toString();
     }
 
-
-    public List<Map<String, String>> showHardwareMonitorInHour() {
+    public List<Map<String, String>> getHourList() {
         return hourList;
     }
-    public List<Map<String, String>> showHardwareMonitorInMinute() {
+
+    public List<Map<String, String>> getMinuList() {
         return minuteList;
     }
 }

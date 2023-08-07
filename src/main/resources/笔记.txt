@@ -1,0 +1,3 @@
+查看端口占用情况
+netstat -tunlp|grep 8124
+

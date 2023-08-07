@@ -30,7 +30,7 @@ public class HardUsageController {
 
     @GetMapping("/hardwareUsageInPastHour")
     public AjaxUtils hardwareUsageInPastHour() {
-        return AjaxUtils.success(hardwareMonitorService.showHardwareMonitorInHour());
+        return AjaxUtils.success(hardwareMonitorService.getHourList());
     }
 
     @GetMapping("/sendTestMail")
