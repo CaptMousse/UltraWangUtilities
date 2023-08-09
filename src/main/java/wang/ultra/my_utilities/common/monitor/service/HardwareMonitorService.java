@@ -17,7 +17,7 @@ public class HardwareMonitorService {
     List<Map<String, String>> hourList = new ArrayList<>();
     List<Map<String, String>> minuteList = new ArrayList<>();
 
-    String minuteRecord = DateConverter.getNoSymbolTime().substring(10, 12);
+    String minuteRecord = DateConverter.getNoSymbolTime().substring(8, 12);
 
     public void hardwareMonitorRecord(MonitorEntity entity) {
 
@@ -27,7 +27,7 @@ public class HardwareMonitorService {
         entityMap.put("memoryUsage", entity.getMemoryUsage());
         minuteList.add(entityMap);
 
-        String minute = DateConverter.getNoSymbolTime().substring(10, 12);
+        String minute = DateConverter.getNoSymbolTime().substring(8, 12);
         if (!minute.equals(minuteRecord)) {
             if (!minuteList.isEmpty()) {
                 // 把每个遍历出来算平均数
@@ -45,7 +45,7 @@ public class HardwareMonitorService {
 
                 // 放进小时list里面
                 Map<String, String> minuteMap = new HashMap<>();
-                minuteMap.put("time", DateConverter.getNoSymbolHourMinutes());
+                minuteMap.put("time", minuteRecord);    // 用前一分钟的时间
                 minuteMap.put("cpuUsage", cpuUsageAvg);
                 minuteMap.put("cpuTemperature", cpuTemperatureAvg);
                 minuteMap.put("memoryUsage", memoryUsageAvg);
@@ -54,7 +54,7 @@ public class HardwareMonitorService {
                 // 初始化
                 minuteRecord = minute;
                 minuteList.clear();
-                if (hourList.size() >= 60) {
+                if (hourList.size() > 60) {
                     hourList.remove(0);
                 }
             }
