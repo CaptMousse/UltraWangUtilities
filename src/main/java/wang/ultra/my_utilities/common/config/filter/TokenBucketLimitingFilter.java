@@ -49,12 +49,12 @@ public class TokenBucketLimitingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
-
+        response.setHeader("Content-Type", "application/json; charset=utf-8");
+        
         if (tokenBucketResult) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String returnStr = AjaxUtils.failedJsonString("当前访问过多, 请稍后再试! ");
-            response.setHeader("Content-Type", "application/json; charset=utf-8");
             response.getWriter().write(returnStr);
 
             String mailTo = ConstantFromFile.getMailTo();
