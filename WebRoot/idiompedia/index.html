@@ -24,7 +24,7 @@
     <script src="/resource/js/echarts.min.js"></script>
     <script>
         function init() {
-            footerShow();
+            
         }
         function searchIdiomsByQuestionMark() {
             var idiomValue = document.getElementById("idiomByQuestionMark").value;
@@ -99,9 +99,20 @@
 </head>
 
 <body onload="init()">
+    <div id="divHeader">
+        <script>
+            $('#divHeader').load('../resource/header.html');
+            var activeHeader = "idiompedia";
+        </script>
+    </div>
+
     <div id="divBody">
-        <div>
-            <h1 style="text-align: center;">成语字典</h1>
+        <div class="jumbotron">
+            <div class="container">
+                <div>
+                    <h1 style="text-align: center;">成语字典</h1>
+                </div>
+            </div>
         </div>
 
         <div><br></div>
@@ -133,10 +144,14 @@
                 </table>
             </div>
         </div>
-
-
-
     </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('../resource/footer.html');
+        </script>
+    </div>
+
     <div id="modal-background" style="visibility: hidden;">
         <div class="modal-data">
 

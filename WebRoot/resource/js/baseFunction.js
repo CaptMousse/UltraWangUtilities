@@ -89,11 +89,11 @@ function showModal() {
 }
 
 // 显示页脚
-function footerShow() {
-    var mainBody = document.getElementById("divBody").parentNode;
-    var footerDiv = document.getElementsByClassName('footerDiv');
-    var footerDiv = mainBody.childElementCount;
-    mainBody.appendChild(document.createElement('div'));
-    mainBody.children[footerDiv].className = 'footerDiv';
-    mainBody.children[footerDiv].innerHTML = "<div id='footer'><p>© 2018-" + year + " | <a href='http://ultra.wang/' target='_blank'>ultra.wang</a></p></div>";
-}
+// function footerShow() {
+//     var mainBody = document.getElementById("divBody").parentNode;
+//     var footerDiv = document.getElementsByClassName('footerDiv');
+//     var footerDiv = mainBody.childElementCount;
+//     mainBody.appendChild(document.createElement('div'));
+//     mainBody.children[footerDiv].className = 'footerDiv';
+//     mainBody.children[footerDiv].innerHTML = "<div id='footer'><p>© 2018-" + year + " | <a href='http://ultra.wang/' target='_blank'>ultra.wang</a></p></div>";
+// }

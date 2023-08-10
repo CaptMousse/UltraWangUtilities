@@ -15,6 +15,7 @@
       width: 160px;
       height: 160px;
     }
+
     .italic {
       font-style: italic;
     }
@@ -25,7 +26,6 @@
   <script>
     // 初始化
     function init() {
-      footerShow();
       dashboardRefresh();
       initStatus();
     }
@@ -127,14 +127,19 @@
 </head>
 
 <body onload="init()">
-  <div id="divBody">
+  <div id="divHeader">
+    <script>
+      $('#divHeader').load('../resource/header.html');
+      var activeHeader = "mc";
+    </script>
+  </div>
 
+  <div id="divBody">
     <div class="jumbotron">
       <div class="container">
         <h1 style="text-align: center;">A Farmer's World<br><small>Minecraft Java Edition</small></h1>
       </div>
     </div>
-
     <div><br></div>
 
     <div class="panel panel-default">
@@ -545,10 +550,16 @@
           配置文件包含自动更新频率、更新域名、日志记录等信息。<br>
           一般来讲这是腐竹点击的功能，因为目前还不支持在前台修改配置。<br>
           或许在以后腐竹会更新上前台修改配置的一些功能。<br><br>
-          <button onclick="initConstFile()">重新加载</button>
         </p>
+        <button onclick="initConstFile()">重新加载</button>
       </div>
     </div>
+  </div>
+
+  <div id="divFooter">
+    <script>
+      $('#divFooter').load('../resource/footer.html');
+    </script>
   </div>
 </body>
 

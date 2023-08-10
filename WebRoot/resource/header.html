@@ -1,0 +1,34 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">WabbyWabbo</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">UltraWang</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- 如果要添加新的列表, 请指定个id方便定位选中 -->
+                <li id="zbhd_scheduler" class="scroll"><a href="http://ultra.wang/ZBHD_Scheduler/index.html">邯郸机场时刻表</a></li>
+                <li id="idiompedia" class="scroll"><a href="http://ultra.wang/idiompedia/index.html">成语查询</a></li>
+                <li id="mc" class="scroll"><a href="http://ultra.wang/mc/index.html">A Farmer's World</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                        aria-expanded="false">其他小玩意儿<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li id="guessNum" class="scroll"><a href="http://ultra.wang/guessNum/guessNum.html">猜数字游戏</a></li>
+                        <li id="stockShow" class="scroll"><a href="http://ultra.wang/stockShow/index.html">股票日K图</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<script>
+    // 定位选中
+    document.getElementById(activeHeader).className = 'active';
+</script>

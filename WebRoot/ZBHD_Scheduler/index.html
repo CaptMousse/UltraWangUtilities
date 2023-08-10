@@ -8,10 +8,11 @@
     <title>邯郸机场今日进出港航班</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
-    <script src="/resource/js/baseFunction.js"></script>
+    <script src="../resource/js/jquery-3.6.3.min.js"></script>
+    <script src="../resource/js/bootstrap.min.js"></script>
+    <script src="../resource/js/baseFunction.js"></script>
     <script>
         function init() {
-            footerShow();
             getUpdateDate();
             arrivalsToday();
             departuresToday();
@@ -135,8 +136,19 @@
 </head>
 
 <body onload="init()">
+    <div id="divHeader">
+        <script>
+            $('#divHeader').load('../resource/header.html');
+            var activeHeader = "zbhd_scheduler";
+        </script>
+    </div>
+
     <div id="divBody">
-        <h1 style="text-align: center;">邯郸机场今日进出港航班</h1>
+        <div class="jumbotron">
+            <div class="container">
+                <h1 style="text-align: center;">邯郸机场今日进出港航班</h1>
+            </div>
+        </div>
         <p><br></p>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -185,6 +197,13 @@
                 </tbody>
             </table>
         </div>
+
+    </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('../resource/footer.html');
+        </script>
     </div>
 </body>
 

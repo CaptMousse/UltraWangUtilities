@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="resource/css/baseCss.css">
     <style>
         #main {
-            background-color: #f0f0f0;
+            background-color: #eee;
         }
 
         #center {
@@ -17,7 +17,7 @@
         }
 
         #footer {
-            background-color: #f0f0f0;
+            background-color: #eee;
         }
     </style>
     <script src="resource/js/jquery-3.6.3.min.js"></script>
@@ -32,43 +32,29 @@
 </head>
 
 <body id="main" onload="init()">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">WabbyWabbo</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">UltraWang</a>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="scroll"><a href="http://ultra.wang/ZBHD_Scheduler/index.html">邯郸机场时刻表</a></li>
-                    <li class="scroll"><a href="http://ultra.wang/idiompedia/index.html">成语查询</a></li>
-                    <li class="scroll"><a href="http://ultra.wang/mc/index.html">A Farmer's World</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                            aria-expanded="false">其他小玩意儿<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li class="scroll"><a href="guessNum/guessNum.html">猜数字游戏</a></li>
-                            <li class="scroll"><a href="stockShow/index.html">股票日K图</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div id="divHeader">
+        <script>
+            $('#divHeader').load('resource/header.html');
+        </script>
+    </div>
+    
     <div id="divBody">
         <div class="jumbotron">
-            <div class="container">
+            <!-- <div class="container"> -->
+                <h1 id="center" style="text-align: center;"><br></h1>
+                <h1 id="center" style="text-align: center;"><br></h1>
+                <h1 id="center" style="text-align: center;"><br></h1>
                 <h1 id="center" style="text-align: center;">
                     原  来  这  就  是  网  站  首  页  啊
                 </h1>
-            </div>
+            <!-- </div> -->
         </div>
+    </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('resource/footer.html');
+        </script>
     </div>
 </body>
 
