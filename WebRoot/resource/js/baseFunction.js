@@ -9,7 +9,7 @@ function getAddress() {
     var addressLAN = "http://192.168.1.3:" + port + "/";
     var addressWAN = "http://mctest.ultra.wang:" + port + "/";
 
-    var envAddress = addressLAN;
+    var envAddress = addressLocal;
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;

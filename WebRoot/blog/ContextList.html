@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <style>
         .modal-data {
@@ -46,13 +47,13 @@
                 parentDiv.appendChild(createNewFieldset);
                 parentDiv.children[contextFieldsetNum].className = 'contextFieldset';
                 parentDiv.children[contextFieldsetNum].innerHTML = "<p onclick='contextShow(\"" + context.uuid + "\")'>标题: " + context.title + "</p>";
-                
+
                 // var createNewBr = document.createElement('br');
                 // parentDiv.appendChild(createNewBr);
-                
+
             }
         }
-        
+
         function contextShow(uuid) {
             var resultContext = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
             contextModal(resultContext);
@@ -76,9 +77,29 @@
 
         <br>
 
+        <!-- 列表 -->
         <div id="divBody">
             <div id="targetNode"></div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">文章列表</h3>
+            </div>
+            <div class="panel-body">
+                <div class="media">
+                    <!-- <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="..." alt="...">
+                        </a>
+                    </div> -->
+                    <div class="media-body">
+                        <h4 class="media-heading">Media heading</h4>
+                        ...
+                    </div>
+                </div>
+            </div>
+          </div>
+        
     </div>
 
     <div id="modal-background" style="visibility: hidden;">

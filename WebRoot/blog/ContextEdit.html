@@ -92,12 +92,14 @@
             formData.append('context', value);
             ajax("post", "blog/context/uploadContext", false, formData);
 
-            window.location.href = '../blog/index.html';
+            window.location.href = '../blog/ContextList.html';
         }
     </script>
 </head>
 
 <body>
+    <img src="" alt="封面" hidden><br>
+    <input type="button" onclick="uploadImg" value="添加封面">
     <input type="text" id="title" placeholder="请输入标题">
     <textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea><br>
     <input type="button" id="tinyCheck" onclick="btn()" value="提交">
