@@ -2,9 +2,11 @@ package wang.ultra.my_utilities.blog.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.service.BlogContextService;
 import wang.ultra.my_utilities.blog.service.ImageUploadService;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
@@ -23,10 +25,18 @@ public class BlogController {
     BlogContextService blogContextService;
 
     @PostMapping("/uploadContext")
-    public AjaxUtils uploadContext(String title, String context) {
+    public AjaxUtils uploadContext(String title, String context, String coverImgLocation, HttpServletRequest request) {
         System.out.println("context = \n" + context);
 
-        int result = blogContextService.contextUpload(title, context);
+        HttpSession session = request.getSession();
+        String username = String.valueOf(session.getAttribute("username"));
+
+        ContextEntity contextEntity = new ContextEntity();
+        contextEntity.setTitle(title);
+        contextEntity.setCoverImgLocation(coverImgLocation);
+        contextEntity.setUser(username);
+
+        int result = blogContextService.contextUpload(contextEntity, context);
 
         return switch (result) {
             case -1 -> AjaxUtils.failed("保存失败! ");
@@ -37,9 +47,10 @@ public class BlogController {
 
     @GetMapping("/contextList")
     public AjaxUtils getContextList(HttpServletRequest request) {
-
+        HttpSession session = request.getSession();
+        String username = String.valueOf(session.getAttribute("username"));
         // 根据用户名获取文章列表
-        List<Map<String, String>> contextList = blogContextService.contextListSelectByUsername("default");
+        List<Map<String, String>> contextList = blogContextService.contextListSelectByUsername(username);
         return AjaxUtils.success(contextList);
     }
 
@@ -52,10 +63,11 @@ public class BlogController {
     @PostMapping("/uploadImage")
     public AjaxUtils upload(MultipartFile image, String imageName, HttpServletRequest request) {
 //        String imageName = image.getName();
-        String localAddr = String.valueOf(request.getLocalAddr());
-        String serverPort = String.valueOf(request.getServerPort());
+//        String localAddr = String.valueOf(request.getLocalAddr());
+//        String serverPort = String.valueOf(request.getServerPort());
         String realName = imageUploadService.imageAdd(image, imageName);
-        String downloadImageUrl = "http://" + localAddr + ":" + serverPort + "/blog/downloadImage?image=" + realName;
+//        String downloadImageUrl = "http://" + localAddr + ":" + serverPort + "/blog/context/downloadImage?image=" + realName;
+        String downloadImageUrl = "blog/context/downloadImage?image=" + realName;
         System.out.println("downloadImageUrl = " + downloadImageUrl);
         Map<String, String> map = new HashMap<>();
         map.put("location", downloadImageUrl);

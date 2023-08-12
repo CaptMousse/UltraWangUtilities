@@ -18,39 +18,23 @@
             border-radius: 5px;
             padding: 15px;
         }
+
+        .media-object {
+            width: 80px;
+            height: 80px;
+        }
     </style>
+    <script src="/resource/js/jquery-3.6.0.min.js"></script>
+    <script src="/resource/js/bootstrap.min.js"></script>
+    <script src="/resource/js/tinymce/tinymce.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
-    <script src="/resource/js/cookieUtils.js"></script>
     <script>
-        function setCookie() {
-            docCookies.setItem('username', 'default');
-        }
-
-        function getCookie() {
-            var username = docCookies.getItem('username');
-            console.log("username = " + username);
-
-
-        }
-
         function init() {
             var contextList = ajax("get", "blog/context/contextList", false);
-
-            var parentDiv = document.getElementById('targetNode').parentNode;
-            var contextFieldset = document.getElementsByClassName('contextFieldset');
-
             for (let i = 0; i < contextList.length; i++) {
                 var context = contextList[i];
-
-                var contextFieldsetNum = contextFieldset.length + 1;
-                var createNewFieldset = document.createElement('fieldset');
-                parentDiv.appendChild(createNewFieldset);
-                parentDiv.children[contextFieldsetNum].className = 'contextFieldset';
-                parentDiv.children[contextFieldsetNum].innerHTML = "<p onclick='contextShow(\"" + context.uuid + "\")'>标题: " + context.title + "</p>";
-
-                // var createNewBr = document.createElement('br');
-                // parentDiv.appendChild(createNewBr);
-
+                document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + context.cover_img_location + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>更新时间: ' + context.update_time + '</div></div>';
+                document.getElementById('contextList').innerHTML += '<br>';
             }
         }
 
@@ -68,38 +52,41 @@
 </head>
 
 <body onload="init()">
-    <div>
-        <fieldset>
-            <legend>操作</legend>
-            <input type="button" onclick="setCookie()" value="setCookie">
-            <input type="button" onclick="getCookie()" value="getCookie">
-        </fieldset>
+    <div id="divHeader">
+        <script>
+            $('#divHeader').load('../resource/header.html');
+            // var activeHeader = "idiompedia";
+        </script>
+    </div>
 
-        <br>
+    <!-- 列表 -->
+    <div id="divBody">
 
-        <!-- 列表 -->
-        <div id="divBody">
-            <div id="targetNode"></div>
-        </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title">文章列表</h3>
+                <h3 class="panel-title">文章列表</h3>
             </div>
-            <div class="panel-body">
-                <div class="media">
+            <div id="contextList" class="panel-body">
+                <!-- <div class="media"><div class="media-left"><a href="#"><img class="media-object" src="" alt="..."></a></div><div class="media-body"><h4 class="media-heading">Media heading</h4>...</div></div> -->
+                <!-- <div class="media">
                     <div class="media-left">
                         <a href="#">
-                            <img class="media-object" src="..." alt="...">
+                            <img class="media-object" src="" alt="...">
                         </a>
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">Media heading</h4>
                         ...
                     </div>
-                </div>
+                </div> -->
             </div>
-          </div>
-        
+        </div>
+    </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('../resource/footer.html');
+        </script>
     </div>
 
     <div id="modal-background" style="visibility: hidden;">

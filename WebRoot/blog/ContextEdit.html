@@ -6,16 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <script src="/resource/js/jquery-3.6.0.min.js"></script>
+    <script src="/resource/js/bootstrap.min.js"></script>
     <script src="/resource/js/tinymce/tinymce.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
     <script>
-        var imagesUploadUrl = getAddress() + "blog/context/uploadImage";
-
         // 富文本编辑器图片上传功能
         const imageUploadHandler = (blobInfo, progress) => new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.withCredentials = false;
-            xhr.open('POST', imagesUploadUrl);
+            xhr.withCredentials = true; // 携带cookie
+            xhr.open('POST', getAddress() + "blog/context/uploadImage");
             xhr.upload.onprogress = (e) => {
                 progress(e.loaded / e.total * 100);
             };
@@ -33,7 +35,7 @@
                     reject('Invalid JSON: ' + xhr.responseText);
                     return;
                 }
-                resolve(json.obj.location);
+                resolve(getAddress() + json.obj.location);
             };
             xhr.onerror = () => {
                 reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
@@ -75,9 +77,12 @@
             // quickbars_selection_toolbar: 'bold italic forecolor | link blockquote quickimage',
         });
 
-        function btn() {
+        function checkBtn() {
             var value = tinyMCE.activeEditor.getContent();
             var title = document.getElementById('title').value;
+            var brief = tinyMCE.activeEditor.getContent({ 'format': 'text' });
+            brief = brief.substring(0, 100);
+            console.log("brief = " + brief);
             var formData = new FormData();
             if (title == null || title == '') {
                 alert("请输入标题! ");
@@ -87,22 +92,65 @@
                 alert("请输入正文! ");
                 return;
             }
-            
-            formData.append('title', title);    
-            formData.append('context', value);
+
+            formData.append('title', title);                        // 标题
+            formData.append('context', value);                      // 正文
+            formData.append('coverImgLocation', coverImgLocation);  // 封面
+            formData.append('brief', brief);                        // 简介
             ajax("post", "blog/context/uploadContext", false, formData);
 
-            window.location.href = '../blog/ContextList.html';
+            // window.location.href = '../blog/ContextList.html';
+        }
+
+        var coverImgLocation;
+        function uploadImg(coverImg) {
+            if (coverImg.length <= 0) {
+                alert("选择封面图片错误! ");
+                return;
+            }
+            var coverImgFileName = coverImg[0].name;
+            var formData = new FormData();
+            formData.append('image', coverImg[0]);
+            formData.append('imageName', coverImgFileName);
+            var result = ajax("POST", "blog/context/uploadImage", false, formData);
+            coverImgLocation = result.location;
+            document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + coverImgLocation) + ' alt="封面" style="max-width: 100%;">';
+            document.getElementById("coverImgUploaderLabel").style.display = "none";
         }
     </script>
 </head>
 
 <body>
-    <img src="" alt="封面" hidden><br>
-    <input type="button" onclick="uploadImg" value="添加封面">
-    <input type="text" id="title" placeholder="请输入标题">
-    <textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea><br>
-    <input type="button" id="tinyCheck" onclick="btn()" value="提交">
+    <div id="divHeader">
+        <script>
+            $('#divHeader').load('../resource/header.html');
+            // var activeHeader = "idiompedia";
+        </script>
+    </div>
+
+    <div id="divBody">
+        <div id="divCover" style="min-height: 100px; border-radius: 10px; border: 2px dashed; border-color:lightgray;">
+            <label for="coverImgUploader" style="width: 100%; text-align: center; margin-top: 5px;">
+                <div id="divCoverImg"></div>
+                <span id="coverImgUploaderLabel" style="color: grey; font-size: x-large"><br>点击添加封面</span>
+            </label>
+            <input type="file" id="coverImgUploader" onchange="uploadImg(files)" style="display: none;">
+        </div>
+
+        <br><input type="text" id="title" placeholder="请输入标题"
+            style="border: 1px solid; border-radius: 10px; font-size: x-large; width: 100%; padding: 5px;">
+        <br><br><textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea>
+        <!-- <br><textarea id="brief" style="width: auto;"></textarea> -->
+        <br><input type="button" id="tinyCheck" onclick="checkBtn()" value="提交">
+        <br><br>
+    </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('../resource/footer.html');
+        </script>
+    </div>
+
 </body>
 
 </html>

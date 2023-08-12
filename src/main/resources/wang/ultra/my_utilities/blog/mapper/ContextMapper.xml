@@ -3,9 +3,9 @@
 <mapper namespace="wang.ultra.my_utilities.blog.mapper.ContextMapper">
 
     <insert id="contextAdd" parameterType="list">
-        insert into context_files (uuid, title, user, create_time, update_time, status) values
+        insert into context_files (uuid, title, cover_img_location, user, create_time, update_time, status) values
         <foreach collection="list" separator="," item="ContextEntity">
-            ('${ContextEntity.uuid}', '${ContextEntity.title}','${ContextEntity.user}','${ContextEntity.create_time}','${ContextEntity.update_time}','${ContextEntity.status}')
+            ('${ContextEntity.uuid}', '${ContextEntity.title}', '${ContextEntity.coverImgLocation}', '${ContextEntity.user}','${ContextEntity.create_time}','${ContextEntity.update_time}','${ContextEntity.status}')
         </foreach>
     </insert>
 
@@ -37,11 +37,11 @@
     </sql>
 
     <select id="contextSearchByUser" resultType="map">
-        select uuid, title, update_time from context_files where status = 0 and user = #{username}
+        select uuid, title, cover_img_location, user, update_time from context_files where status = 0 and user = #{username}
     </select>
 
     <select id="contextSearchByUuid" resultType="map">
-        select title, update_time from context_files where status = 0 and uuid = #{uuid}
+        select title, cover_img_location, update_time from context_files where status = 0 and uuid = #{uuid}
     </select>
 
 </mapper>

@@ -24,15 +24,12 @@ public class BlogContextService {
 
 
 
-    public int contextUpload(String title, String context) {
+    public int contextUpload(ContextEntity contextEntity, String context) {
 
         String uuid = StringUtils.getMyUUID();
 
-        // 写入数据库
-        ContextEntity contextEntity = new ContextEntity();
+        // 持久化到数据库
         contextEntity.setUuid(uuid);
-        contextEntity.setTitle(title);
-        contextEntity.setUser("default");
         String create_time = DateConverter.getTime();
         contextEntity.setCreate_time(create_time);
         contextEntity.setUpdate_time(create_time);
