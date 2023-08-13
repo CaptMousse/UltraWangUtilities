@@ -72,10 +72,11 @@ public class BlogContextService {
 
         returnMap.put("context", context);
 
-
-
         return returnMap;
+    }
 
-
+    public List<Map<String, String>> contextListRecommendIn3() {
+        List<Map<String, Object>> resultList = contextMapper.contextListRecommendIn3();
+        return ListConverter.mapValueToString(resultList);
     }
 }

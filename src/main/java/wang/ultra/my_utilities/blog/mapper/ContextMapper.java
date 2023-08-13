@@ -20,4 +20,10 @@ public interface ContextMapper {
     List<Map<String, Object>> contextSearchByUser(String username);
 
     List<Map<String, Object>> contextSearchByUuid(String uuid);
+
+    /**
+     * 获得三个推荐置顶(优先级最高)
+     * @return
+     */
+    List<Map<String, Object>> contextListRecommendIn3();
 }

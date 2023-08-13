@@ -24,9 +24,40 @@ public class BlogController {
     @Autowired
     BlogContextService blogContextService;
 
+    /**
+     *
+     * @param title             标题
+     * @param context           正文
+     * @param coverImgLocation  封面图片地址
+     * @param brief             简介
+     * @param contextPriority   优先级
+     * @param ifPrivate         私密(0公开, 1私密)
+     * @param request
+     * @return
+     */
     @PostMapping("/uploadContext")
-    public AjaxUtils uploadContext(String title, String context, String coverImgLocation, HttpServletRequest request) {
+    public AjaxUtils uploadContext(String title, String context, String coverImgLocation, String brief, String contextPriority, String ifPrivate, HttpServletRequest request) {
         System.out.println("context = \n" + context);
+
+        if (title == null || title.trim().isEmpty()) {
+            return AjaxUtils.failed("标题为空! ");
+        }
+        if (context == null || context.trim().isEmpty()) {
+            return AjaxUtils.failed("正文为空! ");
+        }
+
+        int priority;
+        try {
+            priority = Integer.parseInt(contextPriority);
+        } catch (Exception e) {
+            return AjaxUtils.failed("优先级输入错误! ");
+        }
+        int isPrivate;
+        try {
+            isPrivate = Integer.parseInt(ifPrivate);
+        } catch (Exception e) {
+            return AjaxUtils.failed("是否私密输入错误! ");
+        }
 
         HttpSession session = request.getSession();
         String username = String.valueOf(session.getAttribute("username"));
@@ -34,6 +65,9 @@ public class BlogController {
         ContextEntity contextEntity = new ContextEntity();
         contextEntity.setTitle(title);
         contextEntity.setCoverImgLocation(coverImgLocation);
+        contextEntity.setBrief(brief);
+        contextEntity.setContextPriority(priority);
+        contextEntity.setIfPrivate(isPrivate);
         contextEntity.setUser(username);
 
         int result = blogContextService.contextUpload(contextEntity, context);
@@ -77,5 +111,10 @@ public class BlogController {
     @GetMapping("/downloadImage")
     public void downloadImage(String image, HttpServletResponse response) {
         imageUploadService.imageShow(image, response);
+    }
+
+    @GetMapping("/getContextRecommend")
+    public AjaxUtils getContextRecommend() {
+        return AjaxUtils.success(blogContextService.contextListRecommendIn3());
     }
 }

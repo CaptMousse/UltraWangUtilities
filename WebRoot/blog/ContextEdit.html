@@ -77,12 +77,17 @@
             // quickbars_selection_toolbar: 'bold italic forecolor | link blockquote quickimage',
         });
 
-        function checkBtn() {
+        function submitContext() {
+            checkIsNum();   // 检查优先级
+
             var value = tinyMCE.activeEditor.getContent();
             var title = document.getElementById('title').value;
-            var brief = tinyMCE.activeEditor.getContent({ 'format': 'text' });
+            var brief = document.getElementById('brief').value;
+            if (brief == null || brief == '' || brief == 'undefined') {
+                brief = tinyMCE.activeEditor.getContent({'format' : 'text'});
+            }
             brief = brief.substring(0, 100);
-            console.log("brief = " + brief);
+
             var formData = new FormData();
             if (title == null || title == '') {
                 alert("请输入标题! ");
@@ -93,15 +98,19 @@
                 return;
             }
 
+            var ifPrivate = document.getElementById("ifPrivate").value;
             formData.append('title', title);                        // 标题
             formData.append('context', value);                      // 正文
             formData.append('coverImgLocation', coverImgLocation);  // 封面
             formData.append('brief', brief);                        // 简介
+            formData.append('contextPriority', contextPriority);    // 优先级
+            formData.append('ifPrivate', ifPrivate);                // 私密
             ajax("post", "blog/context/uploadContext", false, formData);
 
             // window.location.href = '../blog/ContextList.html';
         }
 
+        // 封面图片上传以及获取
         var coverImgLocation;
         function uploadImg(coverImg) {
             if (coverImg.length <= 0) {
@@ -118,10 +127,12 @@
             document.getElementById("coverImgUploaderLabel").style.display = "none";
         }
 
+        // 检查优先级是否为正整数
         var contextPriority = -1;
         function checkIsNum() {
             contextPriority = document.getElementById('contextPriority').value;
             if (contextPriority == '' || contextPriority == null || contextPriority == 'undefined' || contextPriority == 'null' || contextPriority == NaN) {
+                document.getElementById('contextPriority').vaule = 0;
                 contextPriority = 0;
             }
             if (!(/(^[0-9]\d*$)/.test(contextPriority))) {
@@ -129,7 +140,6 @@
                 document.getElementById('contextPriority').vaule = 0;
                 return;
             }
-            console.log("contextPriority = " + contextPriority);
         }
     </script>
 </head>
@@ -155,8 +165,9 @@
             style="border: 1px solid; border-radius: 10px; border-color:lightgray; font-size: x-large; width: 100%; padding: 5px;">
         <br><br><textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea>
         <br>摘要(限100字): <br><textarea id="brief" style="width: 100%; border-radius: 10px; border-color:lightgray;"></textarea>
-        <br><br>优先级(正整数, 越大越优先): <input id="contextPriority" type="text" style="text-align: center; width: 45px; border-radius: 10px; border: 1px solid; border-color:lightgray;" onchange="checkIsNum()" value="0">
-        <br><br><input type="button" id="tinyCheck" onclick="checkBtn()" style="border-radius: 10px; border: 1px solid;" value="提交文章">
+        <br><br><label for="contextPriority" style="font-weight: normal;">优先级(越大越优先): </label><input id="contextPriority" type="text" style="text-align: center; width: 45px; border-radius: 10px; border: 1px solid; border-color:lightgray;" onchange="checkIsNum()" value="0">
+        &nbsp;&nbsp;&nbsp;&nbsp;私密: <select id="ifPrivate" onchange="checkIfPrivate()"><option value="0">否</option><option value="1">是</option></select>
+        <br><br><input type="button" id="tinyCheck" onclick="submitContext()" style="border-radius: 10px; border: 1px solid;" value="提交文章">
         <br><br>
     </div>
 
