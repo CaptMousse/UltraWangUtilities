@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>新增文章</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
@@ -117,6 +117,20 @@
             document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + coverImgLocation) + ' alt="封面" style="max-width: 100%;">';
             document.getElementById("coverImgUploaderLabel").style.display = "none";
         }
+
+        var contextPriority = -1;
+        function checkIsNum() {
+            contextPriority = document.getElementById('contextPriority').value;
+            if (contextPriority == '' || contextPriority == null || contextPriority == 'undefined' || contextPriority == 'null' || contextPriority == NaN) {
+                contextPriority = 0;
+            }
+            if (!(/(^[0-9]\d*$)/.test(contextPriority))) {
+                alert("优先级输入错误! ");
+                document.getElementById('contextPriority').vaule = 0;
+                return;
+            }
+            console.log("contextPriority = " + contextPriority);
+        }
     </script>
 </head>
 
@@ -138,10 +152,11 @@
         </div>
 
         <br><input type="text" id="title" placeholder="请输入标题"
-            style="border: 1px solid; border-radius: 10px; font-size: x-large; width: 100%; padding: 5px;">
+            style="border: 1px solid; border-radius: 10px; border-color:lightgray; font-size: x-large; width: 100%; padding: 5px;">
         <br><br><textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea>
-        <!-- <br><textarea id="brief" style="width: auto;"></textarea> -->
-        <br><input type="button" id="tinyCheck" onclick="checkBtn()" value="提交">
+        <br>摘要(限100字): <br><textarea id="brief" style="width: 100%; border-radius: 10px; border-color:lightgray;"></textarea>
+        <br><br>优先级(正整数, 越大越优先): <input id="contextPriority" type="text" style="text-align: center; width: 45px; border-radius: 10px; border: 1px solid; border-color:lightgray;" onchange="checkIsNum()" value="0">
+        <br><br><input type="button" id="tinyCheck" onclick="checkBtn()" style="border-radius: 10px; border: 1px solid;" value="提交文章">
         <br><br>
     </div>
 
