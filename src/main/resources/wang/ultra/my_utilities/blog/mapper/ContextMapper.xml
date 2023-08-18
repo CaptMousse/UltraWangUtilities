@@ -24,7 +24,9 @@
     <update id="contextUpdate">
         update context_files set update_time = #{update_time} where uuid = #{id}
     </update>
-
+    <update id="contextAmount">
+        update context_files set amount = amount + 1 where uuid = #{id}
+    </update>
 
 
     <sql id="contextSelectSql">
@@ -40,7 +42,7 @@
     </select>
 
     <select id="contextSearchByUuid" resultType="map">
-        select title, cover_img_location, brief, context_priority, if_private, user, update_time from context_files where status = 0 and uuid = #{uuid}
+        select * from context_files where status = 0 and uuid = #{uuid}
     </select>
     <select id="contextListRecommendIn3" resultType="map">
         select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time

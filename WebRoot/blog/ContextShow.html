@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContextShow</title>
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <style>
+        .coverImg {
+            width: 100%;
+            min-height: 540px;
+            max-height: 540px;
+            object-fit: cover;
+        }
+    </style>
+    <script src="/resource/js/jquery-3.6.0.min.js"></script>
+    <script src="/resource/js/bootstrap.min.js"></script>
+    <script src="/resource/js/baseFunction.js"></script>
+    <script>
+        function init() {
+            locationSearch = location.search;
+
+            var params = new URLSearchParams(location.search);
+            var uuid = params.get("uuid");
+            if (uuid == null ||  uuid == "undefined" || uuid.trim() == "") {
+                alert("不许动! ");
+                window.location.href = "ContextList.html";
+                return;
+            }
+            var context = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
+            if (context == null) {
+                console.log("context is null");
+                return;
+            }
+            document.getElementById('coverImg').innerHTML = '<img class="coverImg" src="' + getAddress() + context.cover_img_location + '" loading="lazy">';
+            document.getElementById('contextTitle').innerText = context.title;
+            document.getElementById('contextMain').innerHTML = context.context;
+            document.getElementById('contextAuthor').innerText = context.user;
+            document.getElementById('contextTime').innerText = context.update_time;
+            document.getElementById('contextAmount').innerText = context.amount;
+        }
+    </script>
+</head>
+
+<body onload="init()">
+        <div id="divHeader">
+        <script>
+            $('#divHeader').load('../resource/header.html');
+            // var activeHeader = "idiompedia";
+        </script>
+    </div>
+
+    <div id="divBody">
+        <div class="panel panel-default">
+            <div id="coverImg"></div>
+            <div class="page-header" style="text-align: center;">
+                <h1 id="contextTitle">鸡你太美</h1>
+                <small>
+                    作者: <span id="contextAuthor">null</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    更新时间: <span id="contextTime">null</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    访问量: <span id="contextAmount">null</span>
+                </small>
+            </div>
+            <div id="contextMain" class="panel-body">
+                练习时长两年半
+            </div>
+        </div>
+    </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('../resource/footer.html');
+        </script>
+    </div>
+</body>
+
+</html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ContextList</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <style>
@@ -31,16 +31,18 @@
         }
         .imgSlide{
             width: 100%;
-            max-height: 450px;
-            min-height: 450px;
+            max-height: 540px;
+            min-height: 540px;
             /* display: inline-block;
             vertical-align: middle; */
             object-fit: cover;
         }
+        .pointerCursor {
+            cursor: pointer;
+        }
     </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
     <script src="/resource/js/bootstrap.min.js"></script>
-    <script src="/resource/js/tinymce/tinymce.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
     <script>
         function init() {
@@ -53,12 +55,12 @@
                     active = "active";
                 }
                 let innerHTML = '<div class="item ' + active + '">'
-                    + '<img class="imgSlide" src="' + getAddress() + context.cover_img_location + '" onclick="contextShow(\'' + context.uuid + '\')>'
+                    + '<img class="imgSlide" src="' + getAddress() + context.cover_img_location + '" loading="lazy">'
                     + '<div class="container">'
-                    +    '<div class="carousel-caption">'
-                    +        '<h1>' + context.title + '</h1>'
-                    +        '<p>' + context.brief + '</p>'
-                    +        '<p><a class="btn btn-lg btn-primary" href="javascript:contextShow(\'' + context.uuid + '\')" role="button">查看详情</a></p>'
+                    +    '<div class="carousel-caption" onclick="contextShow(\'' + context.uuid + '\')">'
+                    +        '<h1 class="pointerCursor">' + context.title + '</h1>'
+                    +        '<p class="pointerCursor">' + context.brief + '</p>'
+                    // +        '<p><a class="btn btn-lg btn-primary" href="javascript:contextShow(\'' + context.uuid + '\')" role="button">查看详情</a></p>'
                     +    '</div></div></div>';
                 document.getElementById('contextRecommend').innerHTML += innerHTML;
 
@@ -74,14 +76,16 @@
         }
 
         function contextShow(uuid) {
-            var resultContext = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
-            contextModal(resultContext);
+            window.location.href = "ContextShow.html?uuid=" + uuid;
+            // var resultContext = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
+            // contextModal(resultContext);
         }
 
         function contextModal(resultContext) {
-            showModal();
-            document.getElementById('modalLegend').innerText = resultContext.title;
-            document.getElementById('modalDiv').innerHTML = resultContext.context;
+            // showModal();
+            // document.getElementById('modalLegend').innerText = resultContext.title;
+            // document.getElementById('modalDiv').innerHTML = resultContext.context;
+            // window.location.href = "ContextShow.html?id=" + resultContext.uuid;
         }
     </script>
 </head>

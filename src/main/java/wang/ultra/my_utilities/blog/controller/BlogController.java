@@ -90,6 +90,9 @@ public class BlogController {
 
     @GetMapping("/contextRead")
     public AjaxUtils getContext(String contextId) {
+        if (contextId.trim().isEmpty()) {
+            return AjaxUtils.failed("uuid参数错误! ");
+        }
         Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId);
         return AjaxUtils.success(contextMap);
     }

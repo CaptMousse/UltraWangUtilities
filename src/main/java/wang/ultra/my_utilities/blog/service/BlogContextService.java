@@ -61,11 +61,9 @@ public class BlogContextService {
     }
 
     public Map<String, String> contextSelectByUuid(String uuid) {
-        List<Map<String, Object>> resultList = contextMapper.contextSearchByUuid(uuid);
+        contextMapper.contextAmount(uuid);
 
-        List<Map<String, String>> returnList = ListConverter.mapValueToString(resultList);
-
-        Map<String, String> returnMap = returnList.get(0);
+        Map<String, String> returnMap = ListConverter.mapValueToString(contextMapper.contextSearchByUuid(uuid)).get(0);
 
         String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
         String context = FileIOUtils.readFileToString(subFileFolder, uuid + ".html");
