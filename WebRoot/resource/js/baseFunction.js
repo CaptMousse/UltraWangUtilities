@@ -5,11 +5,11 @@ function getAddress() {
     var port = "8125";
 
     var addressLocal = "http://127.0.0.1:" + port + "/";
-    var addressLocalLAN = "http://192.168.31.230:" + port + "/";
+    var addressLocalLAN = "http://192.168.31.108:" + port + "/";
     var addressLAN = "http://192.168.1.3:" + port + "/";
     var addressWAN = "http://mctest.ultra.wang:" + port + "/";
 
-    var envAddress = addressLocal;
+    var envAddress = addressLocalLAN;
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;
@@ -31,15 +31,17 @@ function ajax(method, controller, async, formData) {
 
             var jsonResult = JSON.parse(result);
 
-            result = jsonResult.obj;
-
             if (jsonResult.msg != null && jsonResult.msg != "") {
                 var msg = jsonResult.msg;
-                console.log(msg);
-                // document.getElementById('divAlert').innerText = jsonResult.msg;
-                commonUtil.message(msg, 'danger', 2000);  // 调用BootStrap样式的alert框
-                // return;
+                var status = jsonResult.status;
+                if (status) {
+                    commonUtil.message(msg, 'success', 2000);
+                } else {
+                    commonUtil.message(msg, 'danger', 2000);
+                }
             }
+
+            result = jsonResult.obj;
         }
     }
     var address = getAddress() + controller;
@@ -92,46 +94,44 @@ function showModal() {
     }
 }
 
-// 显示页脚
-// function footerShow() {
-//     var mainBody = document.getElementById("divBody").parentNode;
-//     var footerDiv = document.getElementsByClassName('footerDiv');
-//     var footerDiv = mainBody.childElementCount;
-//     mainBody.appendChild(document.createElement('div'));
-//     mainBody.children[footerDiv].className = 'footerDiv';
-//     mainBody.children[footerDiv].innerHTML = "<div id='footer'><p>© 2018-" + year + " | <a href='http://ultra.wang/' target='_blank'>ultra.wang</a></p></div>";
-// }
+function checkIfLogin() {
+    if (docCookies.hasItem("username")) {
+        var result = ajax("get", "blog/user/ifLogin?username=" + docCookies.getItem("username"), false);
+        if (result) {
+           return true;
+        } else {
+            docCookies.removeItem("username");
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
 
 
-var commonUtil = {
     /**
      * 弹出消息框
      * @param msg 消息内容
      * @param type 消息框类型（参考bootstrap的alert）
      */
+var commonUtil = {
     alert: function (msg, type) {
         if (typeof (type) == "undefined") { // 未传入type则默认为success类型的消息框
             type = "success";
         }
         // 创建bootstrap的alert元素
         var divElement = $("<div></div>").addClass('alert').addClass('alert-' + type).addClass('alert-dismissible');
-        // console.log("msg.length = " + msg.length);
         var alertWidth = msg.length * 20;
         if (alertWidth < 150) {
             alertWidth = 150;
         }
         var screenWidth = window.innerWidth;
         divElement.css({ // 消息框的定位样式
-            "position": "absolute",
+            "position": "fixed",
             "width": alertWidth,
             "top": "100px",
             "left": (screenWidth - alertWidth) / 2,
-            // "right": "45%",
-            // "max-width": "200px",
             "text-align": "center",
-            // "margin": "auto",
-            // "transform": "translate(55%, 0%)"
-            // "vertical-align": "middle"
         });
         divElement.text(msg); // 设置消息框的内容
         // 消息框添加可以关闭按钮

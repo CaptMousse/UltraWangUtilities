@@ -60,6 +60,15 @@ public class BlogContextService {
         return ListConverter.mapValueToString(resultList);
     }
 
+    /**
+     * 返回所有未封禁的文章列表
+     * @return
+     */
+    public List<Map<String, String>> contextList() {
+        List<Map<String, Object>> resultList = contextMapper.contextList();
+        return ListConverter.mapValueToString(resultList);
+    }
+
     public Map<String, String> contextSelectByUuid(String uuid) {
         contextMapper.contextAmount(uuid);
 

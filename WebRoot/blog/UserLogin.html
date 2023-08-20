@@ -5,22 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>UltraWang博客登录</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <style>
+        #userNavi,
+        #userTab {
+            width: 75%;
+            margin: auto;
+        }
+
+        #userTab {
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+
         .form-signin {
             max-width: 330px;
             padding: 15px;
             margin: 0 auto;
         }
+
         .form-signin .form-signin-heading,
         .form-signin .checkbox {
             margin-bottom: 10px;
         }
+
         .form-signin .checkbox {
             font-weight: 400;
         }
+
         .form-signin .form-control {
             position: relative;
             -webkit-box-sizing: border-box;
@@ -30,14 +45,17 @@
             padding: 10px;
             font-size: 16px;
         }
+
         .form-signin .form-control:focus {
             z-index: 2;
         }
-        .form-signin input[type="email"] {
+
+        .form-signin input[id="inputUsername"] {
             margin-bottom: -1px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
         }
+
         .form-signin input[type="password"] {
             margin-bottom: 10px;
             border-top-left-radius: 0;
@@ -50,48 +68,68 @@
     <script src="/resource/js/cookieUtils.js"></script>
     <script src="/resource/js/encryptUtils.min.js"></script>
     <script>
+        var loginFrom = "ContextList.html";
+
+
+
+        function init() {
+            var params = new URLSearchParams(location.search);
+            var paramsMsg = params.get("msg");
+            if (paramsMsg != null && paramsMsg != "undefined" && paramsMsg.trim() != "") {
+                commonUtil.message(paramsMsg, 'danger', 2000);
+            }
+            var paramsFrom = params.get("from");
+            if (paramsFrom != null && paramsFrom != "undefined" && paramsFrom.trim() != "") {
+                loginFrom = paramsFrom;
+            }
+
+            if (checkIfLogin()) {
+                commonUtil.message('您已登录! ', 'danger', 2000);
+                setTimeout(function () { window.location = loginFrom; }, 3000);
+                return;
+            }
+
+            getNewCaptcha();
+        }
+
+        // 获取验证码
+        function getNewCaptcha() {
+            document.getElementById('imgCaptcha').src = getAddress() + "captcha/getNewCaptcha?t=" + Math.random();
+        }
+
         function login() {
             var username = document.getElementById('inputUsername').value;
             var password = document.getElementById('inputPassword').value;
+            var captcha = document.getElementById('inputCaptcha').value;
             if (username == null || username == '') {
                 commonUtil.message('请输入账号! ', 'danger', 2000);
                 return;
             }
             if (password == null || password == '') {
                 commonUtil.message('请输入密码! ', 'danger', 2000);
+                return;
+            }
+            if (captcha.length != 4) {
+                commonUtil.message('请输入正确的验证码! ', 'danger', 2000);
                 return;
             }
             var formData = new FormData();
             formData.append("loginInfo", encrypt(username, password));
-            ajax("post", "blog/user/login", false, formData);
-        }
-
-        function regUser() {
-            var username = document.getElementById('regUsername').value;
-            var password = document.getElementById('regPassword').value;
-            if (username == null || username == '') {
-                commonUtil.message('请输入账号! ', 'danger', 2000);
-                return;
+            formData.append("captcha", captcha);
+            var result = ajax("post", "blog/user/login", false, formData) + "";
+            console.log("result = " + result);
+            if (result === "LOGIN_SUCCESS") {
+                docCookies.setItem("username", username);
+                window.location = loginFrom;
+            } else {
+                getNewCaptcha();
             }
-            if (password == null || password == '') {
-                commonUtil.message('请输入密码! ', 'danger', 2000);
-                return;
-            }
-            var formData = new FormData();
-            formData.append("userInfo", encrypt(username, password));
-            ajax("post", "blog/user/register", false, formData);
-        }
 
-        // function encryptInfo() {
-        //     var username = "sefvdx";
-        //     var password = "SEFvdx521";
-        //     var loginInfo = encrypt(username, password);
-        //     console.log(loginInfo);
-        // }
+        }
     </script>
 </head>
 
-<body>
+<body onload="init()">
     <div id="divHeader">
         <script>
             $('#divHeader').load('../resource/header.html');
@@ -100,32 +138,45 @@
     </div>
 
     <div id="divBody">
-            <form class="form-signin" accept="#">
-              <h2 class="form-signin-heading" style="text-align: center;">用户登录</h2>
-              <label for="inputEmail" class="sr-only">用户名</label>
-              <input type="text" id="inputUsername" class="form-control" placeholder="用户名" required="" autofocus="">
-              <label for="inputPassword" class="sr-only">密码</label>
-              <input type="password" id="inputPassword" class="form-control" placeholder="密码" required="">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" value="remember-me">记住密码
-                </label>
-              </div>
-              <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">登录</button>
-            </form>
+        <ul id="userNavi" class="nav nav-tabs">
+            <li id="liLogin" class="active"><a href="#userLogin" data-toggle="tab">登录</a></li>
+            <li id="liReg"><a href="#userRegister" data-toggle="tab">注册</a></li>
+        </ul>
+        <div id="userTab" class="tab-content">
+            <div id="userLogin" class="tab-pane fade in active">
+                <form class="form-signin">
+                    <h2 class="form-signin-heading" style="text-align: center;">用户登录</h2>
+                    <label for="inputUsername" class="sr-only">用户名</label>
+                    <input type="text" id="inputUsername" class="form-control" placeholder="用户名">
+                    <label for="inputPassword" class="sr-only">密码</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="密码">
+                    <div id="divCaptcha" class="input-group">
+                        <input id="inputCaptcha" type="text" class="form-control" aria-describedby="basic-addon3"
+                            placeholder="验证码">
+                        <span class="input-group-addon" style="padding: 2px;">
+                            <img id="imgCaptcha" src="" alt="验证码" onclick="getNewCaptcha()">
+                        </span>
+                    </div>
+                    <br>
+                    <input type="button" class="btn btn-lg btn-primary btn-block" value="登录" onclick="login()">
+                </form>
+            </div>
+            <div id="userRegister" class="tab-pane fade">
+                <div style="min-height: 200px; margin: auto;">
+                    <p style="text-align: center;">
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        暂不提供注册功能
+                    </p>
+                </div>
+            </div>
+            <br>
+        </div>
+        <iframe src="" frameborder="0" name="frameName"></iframe>
     </div>
-    <!-- <fieldset>
-        <legend>登录</legend>
-        <input type="text" id="username" placeholder="账号..."><br>
-        <input type="password" id="password" placeholder="密码..."><br>
-        <input type="button" value="登录" onclick="login()">
-    </fieldset>
-    <fieldset>
-        <legend>注册</legend>
-        <input type="text" id="regUsername" placeholder="账号..."><br>
-        <input type="password" id="regPassword" placeholder="密码..."><br>
-        <input type="button" value="注册" onclick="regUser()">
-    </fieldset> -->
     <div id="divFooter">
         <script>
             $('#divFooter').load('../resource/footer.html');

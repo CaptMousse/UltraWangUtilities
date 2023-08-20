@@ -10,6 +10,8 @@ import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.SendMailUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebFilter(filterName = "tokenBucketLimitingFilter", urlPatterns = {"/*"})
 public class TokenBucketLimitingFilter implements Filter {
@@ -47,10 +49,22 @@ public class TokenBucketLimitingFilter implements Filter {
         // 携带Cookie跨域问题
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        List<String> excludedList = new ArrayList<>();
+        excludedList.add("/blog/context/downloadImage");
+
+        for (String excludedURI : excludedList) {
+            if (request.getRequestURI().contains(excludedURI)) {
+                System.out.println("URI过滤排除 = " + request.getRequestURI());
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            }
+        }
+
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Content-Type", "application/json; charset=utf-8");
-        
+
         if (tokenBucketResult) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {

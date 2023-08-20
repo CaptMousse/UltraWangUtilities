@@ -71,20 +71,42 @@
     <script src="/resource/js/cookieUtils.js"></script>
     <script src="/resource/js/encryptUtils.min.js"></script>
     <script>
+
+        function init() {
+            getNewCaptcha();
+        }
+
+        function getNewCaptcha() {
+            document.getElementById('imgCaptcha').src = getAddress() + "captcha/getNewCaptcha?t=" + Math.random();
+        }
+
         function login() {
             var username = document.getElementById('inputUsername').value;
             var password = document.getElementById('inputPassword').value;
-            // if (username == null || username == '') {
-            //     commonUtil.message('请输入账号! ', 'danger', 2000);
-            //     return;
-            // }
-            // if (password == null || password == '') {
-            //     commonUtil.message('请输入密码! ', 'danger', 2000);
-            //     return;
-            // }
+            var captcha = document.getElementById('inputCaptcha').value;
+            if (username == null || username == '') {
+                commonUtil.message('请输入账号! ', 'danger', 2000);
+                return;
+            }
+            if (password == null || password == '') {
+                commonUtil.message('请输入密码! ', 'danger', 2000);
+                return;
+            }
+            if (captcha.length != 4) {
+                commonUtil.message('请输入正确的验证码! ', 'danger', 2000);
+                return;
+            }
             var formData = new FormData();
             formData.append("loginInfo", encrypt(username, password));
-            ajax("post", "blog/user/login", false, formData);
+            formData.append("captcha", captcha);
+            var result = ajax("post", "blog/user/login", false, formData);
+            console.log("result = " + result);
+            if (result == "loginSuccess") {
+                
+            }
+            if (result == "getNewCaptcha") {
+                getNewCaptcha();
+            }
         }
 
         function regUser() {
@@ -102,18 +124,6 @@
             formData.append("userInfo", encrypt(username, password));
             ajax("post", "blog/user/register", false, formData);
         }
-
-        function init() {
-            // var img = '<img id="captcha" class="input-group-addon" src="http://127.0.0.1:8125/captcha/CheckCode.jpg">';
-            // document.getElementById('divCaptcha').innerHTML += img;
-        }
-
-        // function encryptInfo() {
-        //     var username = "sefvdx";
-        //     var password = "SEFvdx521";
-        //     var loginInfo = encrypt(username, password);
-        //     console.log(loginInfo);
-        // }
     </script>
 </head>
 
@@ -126,32 +136,27 @@
     </div>
 
     <div id="divBody">
-
-
         <ul id="userNavi" class="nav nav-tabs">
             <li id="liLogin" class="active"><a href="#userLogin" data-toggle="tab">登录</a></li>
             <li id="liReg"><a href="#userRegister" data-toggle="tab">注册</a></li>
         </ul>
         <div id="userTab" class="tab-content">
             <div id="userLogin" class="tab-pane fade in active">
-                <form class="form-signin" action="#">
+                <form class="form-signin" onsubmit="login()">
                     <h2 class="form-signin-heading" style="text-align: center;">用户登录</h2>
-                    <label for="inputEmail" class="sr-only">用户名</label>
+                    <label for="inputUsername" class="sr-only">用户名</label>
                     <input type="text" id="inputUsername" class="form-control" placeholder="用户名" required="">
                     <label for="inputPassword" class="sr-only">密码</label>
                     <input type="password" id="inputPassword" class="form-control" placeholder="密码" required="">
                     <div id="divCaptcha" class="input-group">
-                        <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3"
-                            placeholder="验证码" style="margin: auto; width: auto;">
-                        <img id="imgCaptcha" class="input-group-addon" src="http://127.0.0.1:8125/captcha/getNewCaptcha" style="padding: 0; width: auto; height: auto;">
-                        <!-- <span class="input-group-addon" id="basic-addon3">XXXX</span> -->
-
+                        <input id="inputCaptcha" type="text" class="form-control" aria-describedby="basic-addon3"
+                            placeholder="验证码" required="">
+                        <span class="input-group-addon" style="padding: 2px;">
+                            <img id="imgCaptcha" src="" alt="验证码" onclick="getNewCaptcha()">
+                        </span>
                     </div>
                     <br>
-                    <!-- <div class="checkbox">
-                        <label><input type="checkbox" value="remember-me">记住密码</label>
-                    </div> -->
-                    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">登录</button>
+                    <button class="btn btn-lg btn-primary btn-block">登录</button>
                 </form>
             </div>
             <div id="userRegister" class="tab-pane fade">
@@ -169,18 +174,6 @@
             <br>
         </div>
     </div>
-    <!-- <fieldset>
-        <legend>登录</legend>
-        <input type="text" id="username" placeholder="账号..."><br>
-        <input type="password" id="password" placeholder="密码..."><br>
-        <input type="button" value="登录" onclick="login()">
-    </fieldset>
-    <fieldset>
-        <legend>注册</legend>
-        <input type="text" id="regUsername" placeholder="账号..."><br>
-        <input type="password" id="regPassword" placeholder="密码..."><br>
-        <input type="button" value="注册" onclick="regUser()">
-    </fieldset> -->
     <div id="divFooter">
         <script>
             $('#divFooter').load('../resource/footer.html');

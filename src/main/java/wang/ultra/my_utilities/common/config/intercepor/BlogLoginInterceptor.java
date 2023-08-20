@@ -22,6 +22,8 @@ public class BlogLoginInterceptor implements HandlerInterceptor {
 
 
         HttpSession session = request.getSession();
+        String username = (String) request.getSession().getAttribute("username");
+        System.out.println("username = " + username);
         if (session == null || StringUtils.isEmpty(session.getAttribute("username"))) {
             System.out.println("未登录的路径请求: " + request.getServletPath());
             String returnStr = AjaxUtils.failedJsonString("未登录");

@@ -35,7 +35,7 @@ public class BlogController {
      * @param request
      * @return
      */
-    @PostMapping("/uploadContext")
+    @PostMapping("/upload/uploadContext")
     public AjaxUtils uploadContext(String title, String context, String coverImgLocation, String brief, String contextPriority, String ifPrivate, HttpServletRequest request) {
         System.out.println("context = \n" + context);
 
@@ -74,30 +74,12 @@ public class BlogController {
 
         return switch (result) {
             case -1 -> AjaxUtils.failed("保存失败! ");
-            case 0 -> AjaxUtils.success("保存成功! ");
+            case 0 -> AjaxUtils.success("保存成功! ", "SAVE_SUCCESS");
             default -> AjaxUtils.success("保存约等于成功! ");
         };
     }
 
-    @GetMapping("/contextList")
-    public AjaxUtils getContextList(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String username = String.valueOf(session.getAttribute("username"));
-        // 根据用户名获取文章列表
-        List<Map<String, String>> contextList = blogContextService.contextListSelectByUsername(username);
-        return AjaxUtils.success(contextList);
-    }
-
-    @GetMapping("/contextRead")
-    public AjaxUtils getContext(String contextId) {
-        if (contextId.trim().isEmpty()) {
-            return AjaxUtils.failed("uuid参数错误! ");
-        }
-        Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId);
-        return AjaxUtils.success(contextMap);
-    }
-
-    @PostMapping("/uploadImage")
+    @PostMapping("/upload/uploadImage")
     public AjaxUtils upload(MultipartFile image, String imageName, HttpServletRequest request) {
 //        String imageName = image.getName();
 //        String localAddr = String.valueOf(request.getLocalAddr());
@@ -109,6 +91,31 @@ public class BlogController {
         Map<String, String> map = new HashMap<>();
         map.put("location", downloadImageUrl);
         return AjaxUtils.success(map);
+    }
+
+    @GetMapping("/contextListByUsername")
+    public AjaxUtils getContextList(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String username = String.valueOf(session.getAttribute("username"));
+        // 根据用户名获取文章列表
+        List<Map<String, String>> contextList = blogContextService.contextListSelectByUsername(username);
+        return AjaxUtils.success(contextList);
+    }
+
+    @GetMapping("/contextList")
+    public AjaxUtils getContextList() {
+        // 根据用户名获取文章列表
+        List<Map<String, String>> contextList = blogContextService.contextList();
+        return AjaxUtils.success(contextList);
+    }
+
+    @GetMapping("/contextRead")
+    public AjaxUtils getContext(String contextId) {
+        if (contextId.trim().isEmpty()) {
+            return AjaxUtils.failed("uuid参数错误! ");
+        }
+        Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId);
+        return AjaxUtils.success(contextMap);
     }
 
     @GetMapping("/downloadImage")

@@ -27,16 +27,32 @@ public class UserController {
     UserLoginRecordService userLoginRecordService;
 
     @PostMapping("/login")
-    public AjaxUtils login(String loginInfo, HttpSession session, HttpServletRequest request) {
+    public AjaxUtils login(String loginInfo, String captcha, HttpSession session, HttpServletRequest request) {
+
+//        String recordCaptcha = (String) request.getSession().getAttribute("UserLoginCaptcha");
+        String recordCaptcha = (String) session.getAttribute("UserLoginCaptcha");
+        captcha = captcha.toUpperCase();
+
+        System.out.println("recordCaptcha = " + recordCaptcha);
+        System.out.println("captcha = " + captcha);
+
+        if (captcha.isEmpty()) {
+            return AjaxUtils.failed("请输入验证码! ");
+        } else if (!recordCaptcha.equals(captcha)) {
+            return AjaxUtils.failed("验证码错误! ");
+        }
+
 
         Map<String, String> loginInfoMap = UserLoginDecryptUtils.decryptUserInfoToMap(loginInfo);
+        if (loginInfoMap == null || loginInfoMap.isEmpty()) {
+            return AjaxUtils.failed("请输入用户名或密码! ");
+        }
         String username = loginInfoMap.get("username");
         String password = loginInfoMap.get("password");
 
 
-
         Map<String, String> userMap = userLoginInfoService.userLoginSearchByUsername(username);
-        if (userMap == null) {
+        if (userMap == null || userMap.isEmpty()) {
             return AjaxUtils.failed("用户名或密码错误! ");
         }
         if (!userMap.get("status").equals("0")) {
@@ -45,36 +61,35 @@ public class UserController {
         String salt = userMap.get("salt");
         String saltPasswordMD5 = StringUtils.makeMD5(password + salt);
         if (saltPasswordMD5.equals(userMap.get("password"))) {
-            if (session != null) {
-                // 登陆成功核心代码坐标
-                session.setAttribute("username", username);
-                session.setMaxInactiveInterval(ConstantFromFile.getSessionInactiveInterval());
+            // 登陆成功核心代码坐标
+            session.setAttribute("username", username);
+            session.setMaxInactiveInterval(ConstantFromFile.getSessionInactiveInterval());
 
-                userLoginRecordService.loginRecordAdd(new UserLoginRecordEntity(username, "用户登入", getCustomerIP(request)));
+            String originUsername = (String) request.getSession().getAttribute("username");
+            System.out.println("originUsername = " + originUsername);
 
-
-                return AjaxUtils.success("用户登陆成功! ");
-            } else {
-                return AjaxUtils.failed("用户登陆失败! ");
-            }
+            userLoginRecordService.loginRecordAdd(new UserLoginRecordEntity(username, "用户登入", getCustomerIP(request)));
+            
+            return AjaxUtils.success("用户登陆成功! ", "LOGIN_SUCCESS");
         }
         return AjaxUtils.failed("用户名或密码错误! ");
     }
 
     /**
      * 获取客户端IP
+     *
      * @param request
      * @return
      */
     private String getCustomerIP(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
         if (ip.contains(",")) {
@@ -109,5 +124,16 @@ public class UserController {
         } else {
             return AjaxUtils.failed("用户登出失败! ");
         }
+    }
+
+    @GetMapping("/ifLogin")
+    public AjaxUtils ifLogin(String username, HttpServletRequest request) {
+        String originUsername = (String) request.getSession().getAttribute("username");
+        if (originUsername.equals(username)) {
+            return AjaxUtils.success(true);
+        } else {
+            return AjaxUtils.failed(false);
+        }
+
     }
 }

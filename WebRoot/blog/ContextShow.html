@@ -20,26 +20,43 @@
     <script src="/resource/js/baseFunction.js"></script>
     <script>
         function init() {
-            locationSearch = location.search;
+            loadContext();
+        }
 
+        var createTime;
+        var updateTime;
+        function loadContext() {
             var params = new URLSearchParams(location.search);
             var uuid = params.get("uuid");
             if (uuid == null ||  uuid == "undefined" || uuid.trim() == "") {
-                alert("不许动! ");
-                window.location.href = "ContextList.html";
+                commonUtil.message('该文章不存在! ', 'danger', 2000);
+                setTimeout(function () { window.location = "Context.html"; }, 3000);
                 return;
             }
             var context = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
             if (context == null) {
-                console.log("context is null");
+                commonUtil.message('文章载入异常! ', 'danger', 2000);
+                setTimeout(function () { window.location = "Context.html"; }, 3000);
                 return;
             }
             document.getElementById('coverImg').innerHTML = '<img class="coverImg" src="' + getAddress() + context.cover_img_location + '" loading="lazy">';
             document.getElementById('contextTitle').innerText = context.title;
+            document.title = context.title;
             document.getElementById('contextMain').innerHTML = context.context;
             document.getElementById('contextAuthor').innerText = context.user;
-            document.getElementById('contextTime').innerText = context.update_time;
+            createTime = "创建时间: " + context.create_time;
+            updateTime = "更新时间: " + context.update_time;
+            document.getElementById('contextTime').innerText = updateTime;
             document.getElementById('contextAmount').innerText = context.amount;
+        }
+
+        function changeTime() {
+            var value = document.getElementById('contextTime').innerText;
+            if (value.includes("更新")) {
+                document.getElementById('contextTime').innerText = createTime;
+            } else {
+                document.getElementById('contextTime').innerText = updateTime;
+            }
         }
     </script>
 </head>
@@ -58,9 +75,9 @@
             <div class="page-header" style="text-align: center;">
                 <h1 id="contextTitle">鸡你太美</h1>
                 <small>
-                    作者: <span id="contextAuthor">null</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                    更新时间: <span id="contextTime">null</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                    访问量: <span id="contextAmount">null</span>
+                    作者: <span id="contextAuthor">超级无敌大佬王</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    <span id="contextTime" onclick="changeTime()">1970-01-01 00:00:00</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                    访问量: <span id="contextAmount">-1</span>
                 </small>
             </div>
             <div id="contextMain" class="panel-body">

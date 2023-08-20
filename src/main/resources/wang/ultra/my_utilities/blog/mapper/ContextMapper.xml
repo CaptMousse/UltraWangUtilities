@@ -37,6 +37,10 @@
         select count(*) from context_files
     </sql>
 
+    <select id="contextList" resultType="map">
+        select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time from context_files where status = 0 order by context_priority desc, update_time desc;
+    </select>
+
     <select id="contextSearchByUser" resultType="map">
         select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time from context_files where status = 0 and user = #{username} order by context_priority desc, update_time desc;
     </select>

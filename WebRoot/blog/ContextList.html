@@ -24,12 +24,13 @@
             height: 100px;
             object-fit: cover;
         }
-        
+
         .item {
             text-align: center;
             /* position: relative; */
         }
-        .imgSlide{
+
+        .imgSlide {
             width: 100%;
             max-height: 540px;
             min-height: 540px;
@@ -37,6 +38,7 @@
             vertical-align: middle; */
             object-fit: cover;
         }
+
         .pointerCursor {
             cursor: pointer;
         }
@@ -46,7 +48,11 @@
     <script src="/resource/js/baseFunction.js"></script>
     <script>
         function init() {
+            showRecommendContext();
+            showContextList();
+        }
 
+        function showRecommendContext() {
             var contextRecommend = ajax("get", "blog/context/getContextRecommend", false);
             for (let i = 0; i < contextRecommend.length; i++) {
                 let context = contextRecommend[i];
@@ -57,35 +63,26 @@
                 let innerHTML = '<div class="item ' + active + '">'
                     + '<img class="imgSlide" src="' + getAddress() + context.cover_img_location + '" loading="lazy">'
                     + '<div class="container">'
-                    +    '<div class="carousel-caption" onclick="contextShow(\'' + context.uuid + '\')">'
-                    +        '<h1 class="pointerCursor">' + context.title + '</h1>'
-                    +        '<p class="pointerCursor">' + context.brief + '</p>'
+                    + '<div class="carousel-caption" onclick="contextShow(\'' + context.uuid + '\')">'
+                    + '<h1 class="pointerCursor">' + context.title + '</h1>'
+                    + '<p class="pointerCursor">' + context.brief + '</p>'
                     // +        '<p><a class="btn btn-lg btn-primary" href="javascript:contextShow(\'' + context.uuid + '\')" role="button">查看详情</a></p>'
-                    +    '</div></div></div>';
+                    + '</div></div></div>';
                 document.getElementById('contextRecommend').innerHTML += innerHTML;
-
             }
+        }
 
+        function showContextList() {
             var contextList = ajax("get", "blog/context/contextList", false);
             for (let i = 0; i < contextList.length; i++) {
                 let context = contextList[i];
                 document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + context.cover_img_location + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>' + context.brief + '<br>更新时间: ' + context.update_time + '</div></div>';
                 document.getElementById('contextList').innerHTML += '<br>';
             }
-
         }
 
         function contextShow(uuid) {
             window.location.href = "ContextShow.html?uuid=" + uuid;
-            // var resultContext = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
-            // contextModal(resultContext);
-        }
-
-        function contextModal(resultContext) {
-            // showModal();
-            // document.getElementById('modalLegend').innerText = resultContext.title;
-            // document.getElementById('modalDiv').innerHTML = resultContext.context;
-            // window.location.href = "ContextShow.html?id=" + resultContext.uuid;
         }
     </script>
 </head>
@@ -179,18 +176,6 @@
         <script>
             $('#divFooter').load('../resource/footer.html');
         </script>
-    </div>
-
-    <div id="modal-background" style="visibility: hidden;">
-        <div class="modal-data">
-            <fieldset class="fieldset">
-                <legend id="modalLegend"></legend>
-                <div id="modalDiv">
-
-                </div>
-            </fieldset>
-            <p style="text-align: center"><a onclick="showModal()">[关闭]</a></p>
-        </div>
     </div>
 </body>
 

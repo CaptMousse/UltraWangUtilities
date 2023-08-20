@@ -22,7 +22,7 @@ public class CaptchaGenerater2 {
 
     public final String VERIFY_CODES = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
-    private final Font font = new Font("Arial Black", Font.ITALIC, 16);
+    private final Font font = new Font("Arial Black", Font.ITALIC, 8);
 
     private final Random random = new Random();
 
@@ -37,9 +37,9 @@ public class CaptchaGenerater2 {
 
         String verifyCode = generateVerifyCode();
 
-        int verifySize = verifyCode.length();
-        int captchaHeight = 43;
-        int captchaWidth = 100;
+        int verifyCodeLength = verifyCode.length();
+        int captchaHeight = 40;
+        int captchaWidth = 80;
 
         BufferedImage image = new BufferedImage(captchaWidth, captchaHeight, BufferedImage.TYPE_INT_RGB);
         Random rand = new Random();
@@ -74,36 +74,27 @@ public class CaptchaGenerater2 {
             graphics2D.drawLine(x, y, x + xl + 40, y + yl + 20);
         }
 
-        // 添加噪点
-//        float noiseRate = 0.05f;// 噪声率
-//        int area = (int) (noiseRate * captchaWidth * captchaHeight);
-//        for (int i = 0; i < area; i++) {
-//            int x = random.nextInt(captchaWidth);
-//            int y = random.nextInt(captchaWidth);
-//            int rgb = getRandomIntColor();
-//            System.out.println("X = " + x);
-//            System.out.println("Y = " + y);
-//            System.out.println("rgb = " + rgb);
-//            image.setRGB(x, y, rgb);
-//        }
-
         // 使图片扭曲
         shear(graphics2D, captchaWidth, captchaHeight, backgroundColor);
 
         graphics2D.setColor(getRandColor(100, 160));
-        int fontSize = captchaHeight - 4;
-        Font font = new Font("Algerian", Font.ITALIC, fontSize);
+        int fontSize = captchaHeight / 2;
+        Font font = new Font("Arial Black", Font.ITALIC, fontSize);
         graphics2D.setFont(font);
         char[] chars = verifyCode.toCharArray();
-        for (int i = 0; i < verifySize; i++) {
+        for (int i = 0; i < verifyCodeLength; i++) {
             AffineTransform affine = new AffineTransform();
-            affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), ((double) captchaWidth / verifySize) * i + (double) fontSize / 2, (double) captchaHeight / 2);
+            affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), ((double) captchaWidth / verifyCodeLength) * i + (double) fontSize / 2, (double) captchaHeight / 2);
             graphics2D.setTransform(affine);
-            graphics2D.drawChars(chars, i, 1, ((captchaWidth - 10) / verifySize) * i + 5, captchaHeight / 2 + fontSize / 2 - 10);
+            graphics2D.drawChars(chars, i, 1, ((captchaWidth - 10) / verifyCodeLength) * i + 5, captchaHeight / 2 + fontSize / 2 - 3);
         }
 
         graphics2D.dispose();
-        request.getSession().setAttribute("Captcha", verifyCode);
+        request.getSession().setAttribute("UserLoginCaptcha", verifyCode);
+        String recordCaptcha = (String) request.getSession().getAttribute("UserLoginCaptcha");
+        System.out.println("recordCaptcha = " + recordCaptcha);
+        System.out.println("verifyCode = " + verifyCode);
+
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0L);

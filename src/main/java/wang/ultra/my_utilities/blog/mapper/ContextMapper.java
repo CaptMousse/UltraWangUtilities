@@ -18,6 +18,8 @@ public interface ContextMapper {
     void contextUpdate(String update_time, String uuid);
     void contextAmount(String uuid);
 
+    List<Map<String, Object>> contextList();
+
     List<Map<String, Object>> contextSearchByUser(String username);
 
     List<Map<String, Object>> contextSearchByUuid(String uuid);
