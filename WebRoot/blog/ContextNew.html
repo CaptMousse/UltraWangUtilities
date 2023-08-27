@@ -8,6 +8,9 @@
     <title>新增文章</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <style>
+
+    </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
     <script src="/resource/js/bootstrap.min.js"></script>
     <script src="/resource/js/tinymce/tinymce.min.js"></script>
@@ -16,18 +19,21 @@
     <script>
 
         function init() {
+            checkLogin();
+            loadTinyMCE();
+        }
+
+        function checkLogin() {
             if (!checkIfLogin()) {
                 commonUtil.message('需要登录! ', 'danger', 2000);
                 setTimeout(function () { window.location = "UserLogin.html?from=ContextNew.html"; }, 3000);
                 return;
             }
-
-            loadTinyMCE();
         }
 
         function loadTinyMCE() {
             tinymce.init({
-                selector: '#tinyDemo', // 容器，可使用css选择器
+                selector: '#tinyEditor', // 容器，可使用css选择器
                 // language_url: '/js/tinymce/langs/zh-Hans.js',
                 language: 'zh-Hans', // 调用放在langs文件夹内的语言包
                 // toolbar: true, // 工具栏
@@ -38,8 +44,8 @@
                 menubar: false, // 菜单栏
                 branding: false, // 不显示logo
                 promotion: false, // 不显示升级按钮
-
-                plugins: ['table', 'link', 'image', 'codesample', 'code']   // 插件
+                autoresize_min_height: 500,
+                plugins: ['table', 'link', 'image', 'codesample', 'code', 'autoresize']   // 插件
                 // 选中时出现的快捷工具，与插件有依赖关系
                 // quickbars_selection_toolbar: 'bold italic forecolor | link blockquote quickimage',
             });
@@ -103,13 +109,13 @@
             }
 
             var ifPrivate = document.getElementById("ifPrivate").value;
-            formData.append('title', title);                        // 标题
-            formData.append('context', tinyContext);                // 正文
-            console.log("coverImgLocation = " + coverImgLocation);
-            formData.append('coverImgLocation', coverImgLocation);  // 封面
-            formData.append('brief', brief);                        // 简介
-            formData.append('contextPriority', contextPriority);    // 优先级
-            formData.append('ifPrivate', ifPrivate);                // 私密
+            formData.append('title', title);                                    // 标题
+            formData.append('context', tinyContext);                            // 正文
+            formData.append('coverImgLocation', coverImgLocation);              // 封面
+            formData.append('brief', brief);                                    // 简介
+            formData.append('contextPriority', contextPriority);                // 优先级
+            formData.append('ifPrivate', ifPrivate);                            // 私密
+            // formData.append('loginUsername', docCookies.getItem("username"));   // 登录用户名
             var result = ajax("post", "blog/context/upload/uploadContext", false, formData);
 
             if (result == 'SAVE_SUCCESS') {
@@ -131,9 +137,14 @@
             formData.append('image', coverImg[0]);
             formData.append('imageName', coverImgFileName);
             var result = ajax("POST", "blog/context/upload/uploadImage", false, formData);
-            coverImgLocation = result.location;
-            document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + coverImgLocation) + ' alt="封面" style="max-width: 100%;">';
-            document.getElementById("coverImgUploaderLabel").style.display = "none";
+            if (result == false || result == "false" || result.location == 'undefined') {
+                commonUtil.message('封面图片上传失败! ', 'danger', 2000);
+                checkLogin();
+            } else {
+                coverImgLocation = result.location;
+                document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + coverImgLocation) + ' alt="封面" style="max-width: 100%;">';
+                document.getElementById("coverImgUploaderLabel").style.display = "none";
+            }
         }
 
         // 检查优先级是否为正整数
@@ -172,7 +183,7 @@
 
         <br><input type="text" id="title" placeholder="请输入标题"
             style="border: 1px solid; border-radius: 10px; border-color:lightgray; font-size: x-large; width: 100%; padding: 5px;">
-        <br><br><textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea>
+        <br><br><textarea id="tinyEditor" style="width: auto;">HelloWorld</textarea>
         <br>摘要(限100字): <br><textarea id="brief"
             style="width: 100%; border-radius: 10px; border-color:lightgray;"></textarea>
         <br><br><label for="contextPriority" style="font-weight: normal;">优先级(越大越优先): </label><input

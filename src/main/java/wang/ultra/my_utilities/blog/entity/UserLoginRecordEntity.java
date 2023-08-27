@@ -11,6 +11,9 @@ public class UserLoginRecordEntity {
     private String record_context;  // 登入说明或登出说明, 例如单点登录或者到期登出
     private String login_ip;
 
+    public UserLoginRecordEntity() {
+    }
+
     public UserLoginRecordEntity(String username) {
         this.username = username;
     }

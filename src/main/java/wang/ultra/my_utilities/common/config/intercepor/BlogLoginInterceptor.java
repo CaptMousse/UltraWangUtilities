@@ -2,11 +2,12 @@ package wang.ultra.my_utilities.common.config.intercepor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import wang.ultra.my_utilities.common.sessionCache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
-import wang.ultra.my_utilities.common.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -16,21 +17,33 @@ import java.io.IOException;
 @Component
 public class BlogLoginInterceptor implements HandlerInterceptor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(BlogLoginInterceptor.class);
+
     @Override
-    // 原始方法调用前执行的内容
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 
+        String loginToken = request.getHeader("LoginToken");
 
-        HttpSession session = request.getSession();
-        String username = (String) request.getSession().getAttribute("username");
-        System.out.println("username = " + username);
-        if (session == null || StringUtils.isEmpty(session.getAttribute("username"))) {
-            System.out.println("未登录的路径请求: " + request.getServletPath());
-            String returnStr = AjaxUtils.failedJsonString("未登录");
+        if (loginToken == null) {
+            String returnStr = AjaxUtils.failedJsonString("异常请求, 请重新登录");
             response.getWriter().write(returnStr);
             return false;
         }
 
-        return true;
+        UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
+        boolean ifLogin = userLoginCacheMap.hasUsername(loginToken);
+        if (ifLogin) {
+            LOG.info("已登录的路径请求: " + request.getServletPath());
+
+            userLoginCacheMap.userLoginUpdate(loginToken);
+            userLoginCacheMap.getLoginUserList();
+
+            return true;
+        } else {
+            LOG.info("未登录的路径请求: " + request.getServletPath());
+            String returnStr = AjaxUtils.failedJsonString("未登录");
+            response.getWriter().write(returnStr);
+            return false;
+        }
     }
 }

@@ -9,7 +9,7 @@ function getAddress() {
     var addressLAN = "http://192.168.1.3:" + port + "/";
     var addressWAN = "http://mctest.ultra.wang:" + port + "/";
 
-    var envAddress = addressLocalLAN;
+    var envAddress = addressLocal;
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;
@@ -41,14 +41,29 @@ function ajax(method, controller, async, formData) {
                 }
             }
 
-            result = jsonResult.obj;
+            if (jsonResult.obj == null) {
+                result = status;
+            } else {
+                result = jsonResult.obj;
+            }
         }
     }
     var address = getAddress() + controller;
     var method = method.toUpperCase();
     xhr.open(method, address, async);
+    //带上Cookie里登录token
+    if (docCookies.hasItem("LoginToken")) {
+        xhr.setRequestHeader("LoginToken", docCookies.getItem("LoginToken"));
+    }
     xhr.send(formData);
     return result;
+}
+
+function getUuid() {
+    var temp_url = URL.createObjectURL(new Blob());
+    var uuid = temp_url.toString(); // blob:https://xxx.com/b250d159-e1b6-4a87-9002-885d90033be3
+    URL.revokeObjectURL(temp_url);
+    return uuid.substr(uuid.lastIndexOf("/") + 1);
 }
 
 // 清空表格行
@@ -95,12 +110,12 @@ function showModal() {
 }
 
 function checkIfLogin() {
-    if (docCookies.hasItem("username")) {
-        var result = ajax("get", "blog/user/ifLogin?username=" + docCookies.getItem("username"), false);
+    if (docCookies.hasItem("LoginToken")) {
+        var result = ajax("get", "blog/user/ifLogin?loginToken=" + docCookies.getItem("LoginToken"), false);
         if (result) {
-           return true;
+            return true;
         } else {
-            docCookies.removeItem("username");
+            docCookies.removeItem("LoginToken");
             return false;
         }
     } else {
@@ -109,11 +124,11 @@ function checkIfLogin() {
 }
 
 
-    /**
-     * 弹出消息框
-     * @param msg 消息内容
-     * @param type 消息框类型（参考bootstrap的alert）
-     */
+/**
+ * 弹出消息框
+ * @param msg 消息内容
+ * @param type 消息框类型（参考bootstrap的alert）
+ */
 var commonUtil = {
     alert: function (msg, type) {
         if (typeof (type) == "undefined") { // 未传入type则默认为success类型的消息框
@@ -195,3 +210,61 @@ var commonUtil = {
         }, countdownTime);
     }
 }
+
+/*\
+|*|
+|*|  :: cookies.js ::
+|*|
+|*|  A complete cookies reader/writer framework with full unicode support.
+|*|
+|*|  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+|*|
+|*|  This framework is released under the GNU Public License, version 3 or later.
+|*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+|*|
+|*|  Syntaxes:
+|*|
+|*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+|*|  * docCookies.getItem(name)
+|*|  * docCookies.removeItem(name[, path], domain)
+|*|  * docCookies.hasItem(name)
+|*|  * docCookies.keys()
+|*|
+\*/
+var docCookies = {
+    getItem: function (sKey) {
+        return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+    },
+    setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+        if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+        var sExpires = "";
+        if (vEnd) {
+            switch (vEnd.constructor) {
+                case Number:
+                    sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                    break;
+                case String:
+                    sExpires = "; expires=" + vEnd;
+                    break;
+                case Date:
+                    sExpires = "; expires=" + vEnd.toUTCString();
+                    break;
+            }
+        }
+        document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+        return true;
+    },
+    removeItem: function (sKey, sPath, sDomain) {
+        if (!sKey || !this.hasItem(sKey)) { return false; }
+        document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+        return true;
+    },
+    hasItem: function (sKey) {
+        return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+    },
+    keys: /* optional method: you can safely remove it! */ function () {
+        var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+        for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+        return aKeys;
+    }
+};

@@ -142,11 +142,11 @@ public class FileIOUtils {
      */
     public static String readFileToString(String subFileFolder, String fileName) {
 
-        String filePath = System.getProperty("user.dir") +  File.separator + subFileFolder + File.separator + fileName;
+        String filePath = System.getProperty("user.dir") + File.separator + subFileFolder + File.separator + fileName;
         File file = new File(filePath);
 
         String strText;
-        StringBuilder stringBuffer = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         if (file.exists() && file.isFile()) {
             InputStreamReader inputStreamReader = null;
             BufferedReader bufferedReader = null;
@@ -157,7 +157,7 @@ public class FileIOUtils {
                 while ((strText = bufferedReader.readLine()) != null) {
 //                    System.out.println("strText = " + strText);
                     if (!"".equals(strText)) {                          // 略过空行
-                        stringBuffer.append(strText);
+                        stringBuilder.append(strText);
                     }
                 }
             } catch (IOException e) {
@@ -182,45 +182,12 @@ public class FileIOUtils {
                 }
             }
         }
-        return stringBuffer.toString();
-    }
-
-    public static void main(String[] args) {
-        String subPath = "WabbyWabbo";
-        String fileName = "banned-players.json";
-//        String text = DateConverter.getTime() + " = " + GetMyIPv6.getIPv6();
-
-        // 创建文件夹
-//        Integer createDirResult = createDir(dirPath, subDirPath);
-//        String dirText = "文件夹 " + subDirPath;
-//        printResult(dirText, createDirResult);
-
-        // 创建文件
-//        Integer createFileResult = createFile(subPath, fileName, 1, text);
-//        fileName = "文件 " + fileName;
-//        printResult(fileName, createFileResult);
-
-        // 读文件
-//        String resultString = readFileToString(subPath, fileName);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        List<Map<String, String>> tempList = new ArrayList<>();
-//        try {
-//            tempList = objectMapper.readValue(resultString, List.class);
-//            System.out.println("tempList = " + tempList);
-//        } catch (JsonProcessingException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//
-//        for (Map<String, String> map : tempList) {
-//            System.out.println("\nuuid = " + map.get("uuid"));
-//            System.out.println("name = " + map.get("name"));
-//        }
-
+        return stringBuilder.toString();
     }
 
     /**
      * 下载文件或者打开图片
+     *
      * @param subFileFolder
      * @param fileName
      * @param response
@@ -231,47 +198,48 @@ public class FileIOUtils {
         String filePath = folder + fileName;
         File file = new File(filePath);
 
-        InputStream in = null;
-        try {
-            String type = StringUtils.getFileType(fileName);
-            List<String> imageTypeList = new ArrayList<>();
-            imageTypeList.add("jpg");
-            imageTypeList.add("jpeg");
-            imageTypeList.add("gif");
-            imageTypeList.add("png");
+        if (file.exists() && file.isFile()) {
+            InputStream in = null;
+            try {
+                String type = StringUtils.getFileType(fileName);
+                List<String> imageTypeList = new ArrayList<>();
+                imageTypeList.add("jpg");
+                imageTypeList.add("jpeg");
+                imageTypeList.add("gif");
+                imageTypeList.add("png");
 
-            if (imageTypeList.contains(type)) {
-                response.setContentType("image/jpeg");
-            } else {
-                response.setContentType("application/x-msdownload");
-            }
+                if (imageTypeList.contains(type)) {
+                    response.setContentType("image/jpeg");      // 打开图片
+                } else {
+                    response.setContentType("application/x-msdownload");    // 下载
+                }
 
-            response.setContentLength((int) file.length());
+                response.setContentLength((int) file.length());
 //            response.addHeader("Content-Disposition", "attachment;filename=" + new String(showName.getBytes(), StandardCharsets.ISO_8859_1));
 
-            System.out.println("文件开始下载...");
-            System.out.println("文件名: " + file.getName());
+                System.out.println("文件开始下载, 文件名: " + file.getName());
 
-            in = new FileInputStream(file);
+                in = new FileInputStream(file);
 
-            int b = 0;
-            byte[] buffer = new byte[1024];
-            while (b != -1) {
-                b = in.read(buffer);
-                if (b != -1) {
-                    response.getOutputStream().write(buffer, 0, b);
+                int b = 0;
+                byte[] buffer = new byte[1024];
+                while (b != -1) {
+                    b = in.read(buffer);
+                    if (b != -1) {
+                        response.getOutputStream().write(buffer, 0, b);
+                    }
                 }
-            }
-        } catch (Exception ignored) {
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
+            } catch (Exception ignored) {
+            } finally {
+                try {
+                    if (in != null) {
+                        in.close();
+                    }
+                    response.getOutputStream().flush();
+                    System.out.println("文件下载完成! ");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                response.getOutputStream().flush();
-                System.out.println("文件下载完成! ");
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -280,8 +248,7 @@ public class FileIOUtils {
         String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
 
-        System.out.println("文件开始上传...");
-        System.out.println("文件名: " + fileName);
+        System.out.println("文件开始上传, 文件名: " + fileName);
 
         InputStream inputStream = null;
         FileOutputStream fileOutputStream = null;
@@ -310,5 +277,42 @@ public class FileIOUtils {
         }
     }
 
+    public static boolean ifFileExist(String subFileFolder, String fileName) {
 
+
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+//        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String filePath = folder + fileName;
+        File file = new File(filePath);
+        return file.exists() && file.isFile();
+    }
+
+    public static boolean fileDelete(String subFileFolder, String fileName) {
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+//        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String filePath = folder + fileName;
+        File file = new File(filePath);
+
+        boolean isDeleted = false;
+        if (file.exists() && file.isFile()) {
+            isDeleted = file.delete();
+        }
+
+        return isDeleted;
+    }
+
+    public static void main(String[] args) {
+//        String fileFolder = "FileFolder/Blog/images";
+//        String fileName = "4cd6c7aaebde4b11bb16f39f345ead5a.jpg";
+//        boolean isDeleted = fileDelete(fileFolder, fileName);
+//        if (isDeleted) {
+//            System.out.println("文件 " + fileFolder + fileName + " 已被删除");
+//        } else if (!ifFileExist(fileFolder, fileName)){
+//            System.out.println("文件 " + fileFolder + fileName + " 不存在");
+//        } else {
+//            System.out.println("文件 " + fileFolder + fileName + " 删除失败");
+//        }
+
+        System.out.println(DateConverter.getNoSymbolTime(System.currentTimeMillis() - (1000 * 3600 * 24 * 7)));
+    }
 }

@@ -14,7 +14,11 @@ public interface FileTransferMapper {
 
     void fileAmountCount(@Param("amount")long amount, @Param("id")String id);
 
+    void fileDeleteById(@Param("id") String id);
+
     List<Map<String, Object>> fileSelectByShowName(@Param("showName") String showName);
 
     List<Map<String, Object>> fileSelectByRealName(@Param("realName") String realName);
+
+    List<Map<String, Object>> getFileByCleaner(@Param("createTime") String createTime);
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wang.ultra.my_utilities.common.sessionCache.captcha.CaptchaCacheMap;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -33,7 +34,7 @@ public class CaptchaGenerater2 {
      * 输出指定验证码图片流
      */
     @GetMapping("/getNewCaptcha")
-    public void outputImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void outputImage(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String verifyCode = generateVerifyCode();
 
@@ -45,20 +46,8 @@ public class CaptchaGenerater2 {
         Random rand = new Random();
         Graphics2D graphics2D = image.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        Color[] colors = new Color[5];
-//        Color[] colorSpaces = new Color[]{Color.WHITE, Color.CYAN,
-//                Color.GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE,
-//                Color.PINK, Color.YELLOW};
-//        float[] fractions = new float[colors.length];
-//        for (int i = 0; i < colors.length; i++) {
-//            colors[i] = colorSpaces[rand.nextInt(colorSpaces.length)];
-//            fractions[i] = rand.nextFloat();
-//        }
-//        Arrays.sort(fractions);
-
         graphics2D.setColor(Color.GRAY);// 设置边框色
         graphics2D.fillRect(0, 0, captchaWidth, captchaHeight);
-//        graphics2D.setFont(font);
         Color backgroundColor = getRandColor(200, 250);
         graphics2D.setColor(backgroundColor);// 设置背景色
         graphics2D.fillRect(0, 2, captchaWidth, captchaHeight - 4);
@@ -88,12 +77,13 @@ public class CaptchaGenerater2 {
             graphics2D.setTransform(affine);
             graphics2D.drawChars(chars, i, 1, ((captchaWidth - 10) / verifyCodeLength) * i + 5, captchaHeight / 2 + fontSize / 2 - 3);
         }
-
         graphics2D.dispose();
-        request.getSession().setAttribute("UserLoginCaptcha", verifyCode);
-        String recordCaptcha = (String) request.getSession().getAttribute("UserLoginCaptcha");
-        System.out.println("recordCaptcha = " + recordCaptcha);
-        System.out.println("verifyCode = " + verifyCode);
+
+//        request.getSession().setAttribute("UserLoginCaptcha", verifyCode);
+        // 把验证码存入Map
+        CaptchaCacheMap captchaCacheMap = new CaptchaCacheMap();
+        captchaCacheMap.setCaptcha(id, verifyCode);
+
 
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");

@@ -10,7 +10,8 @@ import wang.ultra.my_utilities.blog.entity.UserLoginRecordEntity;
 import wang.ultra.my_utilities.blog.service.UserLoginInfoService;
 import wang.ultra.my_utilities.blog.service.UserLoginRecordService;
 import wang.ultra.my_utilities.blog.utils.UserLoginDecryptUtils;
-import wang.ultra.my_utilities.common.constant.ConstantFromFile;
+import wang.ultra.my_utilities.common.sessionCache.captcha.CaptchaCacheMap;
+import wang.ultra.my_utilities.common.sessionCache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.common.utils.StringUtils;
 
@@ -26,16 +27,19 @@ public class UserController {
     @Autowired
     UserLoginRecordService userLoginRecordService;
 
+    public UserController() {
+//        UsernameCacheMap usernameCacheMap = new UsernameCacheMap();
+    }
+
     @PostMapping("/login")
-    public AjaxUtils login(String loginInfo, String captcha, HttpSession session, HttpServletRequest request) {
-
-//        String recordCaptcha = (String) request.getSession().getAttribute("UserLoginCaptcha");
-        String recordCaptcha = (String) session.getAttribute("UserLoginCaptcha");
+    public AjaxUtils login(String loginInfo, String captchaId, String captcha, HttpSession session, HttpServletRequest request) {
+        // 获取已保存的验证码
+        if (captchaId == null || captchaId.isEmpty()) {
+            return AjaxUtils.failed("验证码错误, 或已过期! ");
+        }
+        CaptchaCacheMap captchaCacheMap = new CaptchaCacheMap();
+        String recordCaptcha = captchaCacheMap.getCaptcha(captchaId);
         captcha = captcha.toUpperCase();
-
-        System.out.println("recordCaptcha = " + recordCaptcha);
-        System.out.println("captcha = " + captcha);
-
         if (captcha.isEmpty()) {
             return AjaxUtils.failed("请输入验证码! ");
         } else if (!recordCaptcha.equals(captcha)) {
@@ -61,16 +65,12 @@ public class UserController {
         String salt = userMap.get("salt");
         String saltPasswordMD5 = StringUtils.makeMD5(password + salt);
         if (saltPasswordMD5.equals(userMap.get("password"))) {
-            // 登陆成功核心代码坐标
-            session.setAttribute("username", username);
-            session.setMaxInactiveInterval(ConstantFromFile.getSessionInactiveInterval());
-
-            String originUsername = (String) request.getSession().getAttribute("username");
-            System.out.println("originUsername = " + originUsername);
-
-            userLoginRecordService.loginRecordAdd(new UserLoginRecordEntity(username, "用户登入", getCustomerIP(request)));
-            
-            return AjaxUtils.success("用户登陆成功! ", "LOGIN_SUCCESS");
+            // 使用用户map缓存替代session
+            UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
+            String loginToken = userLoginCacheMap.userLogin(username, getCustomerIP(request));
+            if (loginToken != null) {
+                return AjaxUtils.success("用户登陆成功! ", loginToken);
+            }
         }
         return AjaxUtils.failed("用户名或密码错误! ");
     }
@@ -127,9 +127,9 @@ public class UserController {
     }
 
     @GetMapping("/ifLogin")
-    public AjaxUtils ifLogin(String username, HttpServletRequest request) {
-        String originUsername = (String) request.getSession().getAttribute("username");
-        if (originUsername.equals(username)) {
+    public AjaxUtils ifLogin(String loginToken) {
+        UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
+        if (userLoginCacheMap.hasUsername(loginToken)) {
             return AjaxUtils.success(true);
         } else {
             return AjaxUtils.failed(false);

@@ -35,6 +35,8 @@ public class InterceptorConfig implements WebMvcConfigurer{
         // 博客登录拦截器
         List<String> blogLoginAddPathList = new ArrayList<>();
         blogLoginAddPathList.add("/blog/context/upload/**");
+        blogLoginAddPathList.add("/blog/user/ifLogin");
+        blogLoginAddPathList.add("/blog/user/logout");
         List<String> blogLoginExcludePathList = new ArrayList<>();
 //        blogLoginExcludePathList.add("/blog/login");
 //        blogLoginExcludePathList.add("/blog/logout");

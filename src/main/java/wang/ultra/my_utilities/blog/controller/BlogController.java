@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.service.BlogContextService;
 import wang.ultra.my_utilities.blog.service.ImageUploadService;
+import wang.ultra.my_utilities.common.sessionCache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 import java.util.HashMap;
@@ -59,8 +60,13 @@ public class BlogController {
             return AjaxUtils.failed("是否私密输入错误! ");
         }
 
-        HttpSession session = request.getSession();
-        String username = String.valueOf(session.getAttribute("username"));
+
+        UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
+        String username = userLoginCacheMap.getLoginUser(request.getHeader("LoginToken"));
+
+        if (username.isEmpty()) {
+            return AjaxUtils.failed("请重新登录! ");
+        }
 
         ContextEntity contextEntity = new ContextEntity();
         contextEntity.setTitle(title);
@@ -81,11 +87,9 @@ public class BlogController {
 
     @PostMapping("/upload/uploadImage")
     public AjaxUtils upload(MultipartFile image, String imageName, HttpServletRequest request) {
-//        String imageName = image.getName();
-//        String localAddr = String.valueOf(request.getLocalAddr());
-//        String serverPort = String.valueOf(request.getServerPort());
-        String realName = imageUploadService.imageAdd(image, imageName);
-//        String downloadImageUrl = "http://" + localAddr + ":" + serverPort + "/blog/context/downloadImage?image=" + realName;
+        UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
+        String username = userLoginCacheMap.getLoginUser(request.getHeader("LoginToken"));
+        String realName = imageUploadService.imageAdd(image, imageName, username);
         String downloadImageUrl = "blog/context/downloadImage?image=" + realName;
         System.out.println("downloadImageUrl = " + downloadImageUrl);
         Map<String, String> map = new HashMap<>();

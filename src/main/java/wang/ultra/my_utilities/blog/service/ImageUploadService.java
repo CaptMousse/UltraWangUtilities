@@ -1,6 +1,7 @@
 package wang.ultra.my_utilities.blog.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,9 +23,9 @@ public class ImageUploadService {
     @Autowired
     FileTransferMapper fileTransferMapper;
 
-    private final String subFileFolder = "Blog" + File.separator + "images";
+    public static String subFileFolder = "Blog" + File.separator + "images";
 
-    public String imageAdd(MultipartFile image, String imageName) {
+    public String imageAdd(MultipartFile image, String imageName, String username) {
 
         FileTransferEntity entity = new FileTransferEntity();
         String uuid = StringUtils.getMyUUID();
@@ -33,7 +34,7 @@ public class ImageUploadService {
         entity.setReal_name(realName);
         entity.setShow_name(imageName);
         entity.setCreate_time(DateConverter.getNoSymbolTime());
-        entity.setCreator("tiny");
+        entity.setCreator(username);
         entity.setStatus(1);
         List<FileTransferEntity> entityList = new ArrayList<>();
         entityList.add(entity);

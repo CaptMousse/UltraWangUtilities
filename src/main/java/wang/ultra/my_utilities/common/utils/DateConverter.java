@@ -1,5 +1,6 @@
 package wang.ultra.my_utilities.common.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,5 +65,19 @@ public class DateConverter {
             }
         }
         return String.valueOf(weekday);
+    }
+
+    /**
+     *
+     * @param date 限定格式: 2023-08-23 21:32:49
+     * @return
+     */
+    public static long getMillis(String date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            return simpleDateFormat.parse(date).getTime();
+        } catch (ParseException e) {
+            return 0;
+        }
     }
 }

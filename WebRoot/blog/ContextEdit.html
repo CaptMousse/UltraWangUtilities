@@ -22,12 +22,37 @@
                 return;
             }
 
+            loadContext()
+
             loadTinyMCE();
+        }
+        function loadContext() {
+            var params = new URLSearchParams(location.search);
+            var uuid = params.get("uuid");
+            if (uuid == null || uuid == "undefined" || uuid.trim() == "") {
+                commonUtil.message('该文章不存在! ', 'danger', 2000);
+                setTimeout(function () { window.location = "Context.html"; }, 3000);
+                return;
+            }
+            var context = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);
+            if (context == null) {
+                commonUtil.message('文章载入异常! ', 'danger', 2000);
+                setTimeout(function () { window.location = "Context.html"; }, 3000);
+                return;
+            }
+            
+            document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + context.cover_img_location) + ' alt="封面" style="max-width: 100%;">';
+            document.getElementById("title").value = context.title;
+            document.getElementById("tinyEditor").value = context.context;
+            document.getElementById("brief").value = context.brief;
+            document.getElementById("contextPriority").value = context.context_priority;
+            document.getElementById("ifPrivate").value = context.if_private;
+
         }
 
         function loadTinyMCE() {
             tinymce.init({
-                selector: '#tinyDemo', // 容器，可使用css选择器
+                selector: '#tinyEditor', // 容器，可使用css选择器
                 // language_url: '/js/tinymce/langs/zh-Hans.js',
                 language: 'zh-Hans', // 调用放在langs文件夹内的语言包
                 // toolbar: true, // 工具栏
@@ -165,14 +190,14 @@
         <div id="divCover" style="min-height: 100px; border-radius: 10px; border: 2px dashed; border-color:lightgray;">
             <label for="coverImgUploader" style="width: 100%; text-align: center; margin-top: 5px;">
                 <div id="divCoverImg"></div>
-                <span id="coverImgUploaderLabel" style="color: grey; font-size: x-large"><br>点击添加封面</span>
+                <!-- <span id="coverImgUploaderLabel" style="color: grey; font-size: x-large"><br>点击添加封面</span> -->
             </label>
             <input type="file" id="coverImgUploader" onchange="uploadImg(files)" style="display: none;">
         </div>
 
         <br><input type="text" id="title" placeholder="请输入标题"
             style="border: 1px solid; border-radius: 10px; border-color:lightgray; font-size: x-large; width: 100%; padding: 5px;">
-        <br><br><textarea id="tinyDemo" style="width: auto;">HelloWorld</textarea>
+        <br><br><textarea id="tinyEditor" style="width: auto;">HelloWorld</textarea>
         <br>摘要(限100字): <br><textarea id="brief"
             style="width: 100%; border-radius: 10px; border-color:lightgray;"></textarea>
         <br><br><label for="contextPriority" style="font-weight: normal;">优先级(越大越优先): </label><input

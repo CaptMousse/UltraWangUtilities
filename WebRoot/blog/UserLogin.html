@@ -92,9 +92,11 @@
             getNewCaptcha();
         }
 
+        var captchaId;
         // 获取验证码
         function getNewCaptcha() {
-            document.getElementById('imgCaptcha').src = getAddress() + "captcha/getNewCaptcha?t=" + Math.random();
+            captchaId = getUuid().replaceAll("-", "");
+            document.getElementById('imgCaptcha').src = getAddress() + "captcha/getNewCaptcha?id=" + captchaId;
         }
 
         function login() {
@@ -115,11 +117,12 @@
             }
             var formData = new FormData();
             formData.append("loginInfo", encrypt(username, password));
+            formData.append("captchaId", captchaId);
             formData.append("captcha", captcha);
-            var result = ajax("post", "blog/user/login", false, formData) + "";
+            var result = ajax("post", "blog/user/login", false, formData);
             console.log("result = " + result);
-            if (result === "LOGIN_SUCCESS") {
-                docCookies.setItem("username", username);
+            if (result != null && result != "undefined") {
+                docCookies.setItem("LoginToken", result);
                 window.location = loginFrom;
             } else {
                 getNewCaptcha();
