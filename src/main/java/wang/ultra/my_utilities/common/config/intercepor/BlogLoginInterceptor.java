@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import wang.ultra.my_utilities.common.sessionCache.username.UserLoginCacheMap;
+import wang.ultra.my_utilities.common.cache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 import java.io.IOException;

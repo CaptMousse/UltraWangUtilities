@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.service.BlogContextService;
 import wang.ultra.my_utilities.blog.service.ImageUploadService;
-import wang.ultra.my_utilities.common.sessionCache.username.UserLoginCacheMap;
+import wang.ultra.my_utilities.common.cache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 import java.util.HashMap;
@@ -114,11 +114,12 @@ public class BlogController {
     }
 
     @GetMapping("/contextRead")
-    public AjaxUtils getContext(String contextId) {
+    public AjaxUtils getContext(String contextId, HttpServletRequest request) {
+        String visitId = request.getHeader("VisitId");
         if (contextId.trim().isEmpty()) {
             return AjaxUtils.failed("uuid参数错误! ");
         }
-        Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId);
+        Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId, visitId);
         return AjaxUtils.success(contextMap);
     }
 

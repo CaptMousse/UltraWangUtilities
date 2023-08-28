@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import wang.ultra.my_utilities.common.sessionCache.captcha.CaptchaCacheMap;
+import wang.ultra.my_utilities.common.cache.captcha.CaptchaCacheMap;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,6 +35,9 @@ public class CaptchaGenerater2 {
      */
     @GetMapping("/getNewCaptcha")
     public void outputImage(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String browser = request.getHeader("User-Agent");
+
 
         String verifyCode = generateVerifyCode();
 

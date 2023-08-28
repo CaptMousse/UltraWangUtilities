@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.sessionCache.captcha;
+package wang.ultra.my_utilities.common.cache.captcha;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,17 +9,17 @@ import java.util.Map;
  */
 public class CaptchaCacheMap {
 
-    private static final Map<String, CaptchaCache> cacheMap = new HashMap<>();
+    private static final Map<String, CaptchaCacheEntity> cacheMap = new HashMap<>();
 
     public CaptchaCacheMap() {
         // 清理过期的验证码
         long cleanMillis = System.currentTimeMillis() - 60000;
         // 不能用for遍历删除符合条件的验证码
-        Iterator<Map.Entry<String, CaptchaCache>> iterator = cacheMap.entrySet().iterator();
+        Iterator<Map.Entry<String, CaptchaCacheEntity>> iterator = cacheMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<String, CaptchaCache> entry = iterator.next();
-            CaptchaCache captchaCache = entry.getValue();
-            long captchaMillis = captchaCache.getExpireMillis();
+            Map.Entry<String, CaptchaCacheEntity> entry = iterator.next();
+            CaptchaCacheEntity captchaCacheEntity = entry.getValue();
+            long captchaMillis = captchaCacheEntity.getExpireMillis();
             if (captchaMillis < cleanMillis) {
                 iterator.remove();
             }
@@ -28,11 +28,11 @@ public class CaptchaCacheMap {
 
     public CaptchaCacheMap(String uuid, String captcha) {
         long expireMillis = System.currentTimeMillis();
-        CaptchaCache captchaCache = new CaptchaCache(uuid, captcha, expireMillis);
-        cacheMap.put(uuid, captchaCache);
+        CaptchaCacheEntity captchaCacheEntity = new CaptchaCacheEntity(uuid, captcha, expireMillis);
+        cacheMap.put(uuid, captchaCacheEntity);
     }
 
-    public Map<String, CaptchaCache> getAll() {
+    public Map<String, CaptchaCacheEntity> getAll() {
         return cacheMap;
     }
 
@@ -43,7 +43,7 @@ public class CaptchaCacheMap {
 
     public void setCaptcha(String uuid, String captcha) {
         long expireMillis = System.currentTimeMillis();
-        CaptchaCache captchaCache = new CaptchaCache(uuid, captcha, expireMillis);
-        cacheMap.put(uuid, captchaCache);
+        CaptchaCacheEntity captchaCacheEntity = new CaptchaCacheEntity(uuid, captcha, expireMillis);
+        cacheMap.put(uuid, captchaCacheEntity);
     }
 }

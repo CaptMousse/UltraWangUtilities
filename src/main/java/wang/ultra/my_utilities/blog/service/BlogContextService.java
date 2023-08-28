@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.mapper.ContextMapper;
+import wang.ultra.my_utilities.common.cache.blogContextVisits.BlogContextVisitsMap;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.FileIOUtils;
@@ -69,13 +70,18 @@ public class BlogContextService {
         return ListConverter.mapValueToString(resultList);
     }
 
-    public Map<String, String> contextSelectByUuid(String uuid) {
-        contextMapper.contextAmount(uuid);
+    public Map<String, String> contextSelectByUuid(String contextId, String visitId) {
 
-        Map<String, String> returnMap = ListConverter.mapValueToString(contextMapper.contextSearchByUuid(uuid)).get(0);
+        BlogContextVisitsMap blogContextVisitsMap = new BlogContextVisitsMap();
+        if (!blogContextVisitsMap.availableVisits(contextId, visitId)) {
+            blogContextVisitsMap.setVisits(contextId, visitId);
+            contextMapper.contextAmount(contextId);
+        }
+
+        Map<String, String> returnMap = ListConverter.mapValueToString(contextMapper.contextSearchByUuid(contextId)).get(0);
 
         String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
-        String context = FileIOUtils.readFileToString(subFileFolder, uuid + ".html");
+        String context = FileIOUtils.readFileToString(subFileFolder, contextId + ".html");
 
         returnMap.put("context", context);
 

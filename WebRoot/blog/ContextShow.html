@@ -27,7 +27,7 @@
         var updateTime;
         function loadContext() {
             var params = new URLSearchParams(location.search);
-            var uuid = params.get("uuid");
+            var uuid = params.get("id");
             if (uuid == null ||  uuid == "undefined" || uuid.trim() == "") {
                 commonUtil.message('该文章不存在! ', 'danger', 2000);
                 setTimeout(function () { window.location = "Context.html"; }, 3000);

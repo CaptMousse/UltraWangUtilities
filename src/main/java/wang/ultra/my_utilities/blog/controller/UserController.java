@@ -10,8 +10,8 @@ import wang.ultra.my_utilities.blog.entity.UserLoginRecordEntity;
 import wang.ultra.my_utilities.blog.service.UserLoginInfoService;
 import wang.ultra.my_utilities.blog.service.UserLoginRecordService;
 import wang.ultra.my_utilities.blog.utils.UserLoginDecryptUtils;
-import wang.ultra.my_utilities.common.sessionCache.captcha.CaptchaCacheMap;
-import wang.ultra.my_utilities.common.sessionCache.username.UserLoginCacheMap;
+import wang.ultra.my_utilities.common.cache.captcha.CaptchaCacheMap;
+import wang.ultra.my_utilities.common.cache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.common.utils.StringUtils;
 

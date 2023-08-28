@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.sessionCache.username;
+package wang.ultra.my_utilities.common.cache.username;
 
 import wang.ultra.my_utilities.blog.entity.UserLoginRecordEntity;
 import wang.ultra.my_utilities.blog.service.UserLoginRecordService;
