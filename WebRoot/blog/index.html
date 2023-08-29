@@ -51,6 +51,7 @@
         function init() {
             showRecommendContext();
             showContextList();
+            // pageAction("init");
         }
 
         function showRecommendContext() {
@@ -73,18 +74,73 @@
             }
         }
 
+        var pageSize = 10;  // 当前条数
+        var pageTotal;      // 总条数
+        var pageNum = 1;    // 当前页数
+        var pagePages;      // 总页数
         function showContextList() {
-            var contextList = ajax("get", "blog/context/contextList", false);
-            for (let i = 0; i < contextList.length; i++) {
+            var pages = "pageNum=" + pageNum + "&pageSize=" + pageSize;
+            var controller = "blog/context/getContextList?" + pages;
+            var contextList = ajax("get", controller, false);
+
+            // pageSize = contextList[0].pageSize;     // 当前条数
+            pageTotal = contextList[0].pageTotal;   // 总条数
+            pageNum = contextList[0].pageNum;       // 当前页数
+            pagePages = contextList[0].pagePages;   // 总页数
+            pageRefresh();
+            $('#contextList').empty();
+            for (let i = 1; i < contextList.length; i++) {
                 let context = contextList[i];
-                document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + context.cover_img_location + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>' + context.brief + '<br>更新时间: ' + context.update_time + '</div></div>';
+                document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + context.cover_img_location + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>' + context.brief + '<br><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' + context.user + '&nbsp;&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' + context.update_time + '</div></div>';
                 document.getElementById('contextList').innerHTML += '<br>';
             }
         }
 
-        function contextShow(uuid) {
-            window.location.href = "ContextShow.html?id=" + uuid;
+        function pageRefresh() {
+            // document.getElementById("pagePrevious").className += "disabled";
+            // document.getElementById("pageNext").className += "disabled";
+
+            // $("#pagePrevious").addClass("disable")
+            // $("#pageNext").addClass("disable")
+            if (pagePages == 1) {
+                document.getElementById("pagePrevious").classList.add("disabled");
+                document.getElementById("pageNext").classList.add("disabled");
+            } else if (pageNum == 1) {
+                document.getElementById("pagePrevious").classList.add("disabled");
+            } else if (pageNum == pagePages) {
+                document.getElementById("pageNext").classList.add("disabled");
+            } else {
+                document.getElementById("pagePrevious").classList.remove("disabled");
+                document.getElementById("pageNext").classList.remove("disabled");
+            }
+            // window.location.reload("#pagePrevious");
+            // window.location.reload("#pageNext");
         }
+
+        function pageAction(action) {
+            if (action.includes("p")) {
+                if (pageNum > 1) {
+                    document.getElementById("pagePrevious").classList.remove("disabled");
+                    pageNum--;
+                }
+            } else if (action.includes("n")) {
+                if (pageNum < pagePages) {
+                    document.getElementById("pageNext").classList.remove("disabled");
+                    pageNum++;
+                }
+            }
+            // window.location.reload("#pagePrevious");
+            // window.location.reload("#pageNext");
+            showContextList();
+            
+        }
+
+        function contextShow(uuid) {
+            // window.location.href = "ContextShow.html?id=" + uuid;
+            window.open("ContextShow.html?id=" + uuid);
+        }
+
+
     </script>
 </head>
 
@@ -92,7 +148,7 @@
     <div id="divHeader">
         <script>
             $('#divHeader').load('../resource/header.html');
-            // var activeHeader = "idiompedia";
+            var activeHeader = "blog";
         </script>
     </div>
 
@@ -107,40 +163,6 @@
                 <li data-target="#myCarousel" data-slide-to="2" class=""></li>
             </ol>
             <div id="contextRecommend" class="contextSlide carousel-inner" role="listbox">
-                <!-- <div class="item active">
-                    <img class="imgSlide" src="http://127.0.0.1:8125/blog/context/downloadImage?image=e6282c1c9b9d47d49fbfba35f167236a.jpg">
-                    <div class="container">
-                        <div class="carousel-caption">
-                            <h1>Example headline.</h1>
-                            <p>Note: If you're viewing this page via a <code>file://</code> URL, the "next" and
-                                "previous" Glyphicon buttons on the left and right might not load/display properly due
-                                to web browser security rules.</p>
-                            <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <img class="imgSlide" src="http://127.0.0.1:8125/blog/context/downloadImage?image=e162f382ee5b4985af2817cc9b78b707.jpg">
-                    <div class="container">
-                        <div class="carousel-caption">
-                            <h1>Another example headline.</h1>
-                            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta
-                                gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                            <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <img class="imgSlide" src="http://127.0.0.1:8125/blog/context/downloadImage?image=8cded001c93d4c488cdf9c6124585d61.jpg">
-                    <div class="container">
-                        <div class="carousel-caption">
-                            <h1>One more for good measure.</h1>
-                            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta
-                                gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                            <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
-                        </div>
-                    </div>
-                </div> -->
             </div>
             <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -153,23 +175,25 @@
         </div>
 
         <div class="panel panel-default">
+            <div id="contextSearch">
+
+            </div>
             <div class="panel-heading">
                 <h3 class="panel-title">文章列表</h3>
             </div>
             <div id="contextList" class="panel-body">
-                <!-- <div class="media"><div class="media-left"><a href="#"><img class="media-object" src="" alt="..."></a></div><div class="media-body"><h4 class="media-heading">Media heading</h4>...</div></div> -->
-                <!-- <div class="media">
-                    <div class="media-left">
-                        <a href="#">
-                            <img class="media-object" src="" alt="...">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">Media heading</h4>
-                        ...
-                    </div>
-                </div> -->
             </div>
+            <div style="text-align: center;">
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li id="pagePrevious" class="previous"><a href="javascript:pageAction('previous');">&laquo;&nbsp;上一页</a></li>
+                        <li id="pageNext" class="next"><a href="javascript:pageAction('next');">下一页&nbsp;&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
         </div>
     </div>
 

@@ -10,7 +10,7 @@
     <style>
         .coverImg {
             width: 100%;
-            min-height: 540px;
+            /* min-height: 90px; */
             max-height: 540px;
             object-fit: cover;
         }
@@ -20,6 +20,11 @@
     <script src="/resource/js/baseFunction.js"></script>
     <script>
         function init() {
+
+            if(!docCookies.hasItem("VisitId")) {
+                docCookies.setItem("VisitId", getUuid());
+            }
+
             loadContext();
         }
 
@@ -44,8 +49,8 @@
             document.title = context.title;
             document.getElementById('contextMain').innerHTML = context.context;
             document.getElementById('contextAuthor').innerText = context.user;
-            createTime = "创建时间: " + context.create_time;
-            updateTime = "更新时间: " + context.update_time;
+            createTime = context.create_time;
+            updateTime = context.update_time;
             document.getElementById('contextTime').innerText = updateTime;
             document.getElementById('contextAmount').innerText = context.amount;
         }
@@ -65,7 +70,7 @@
         <div id="divHeader">
         <script>
             $('#divHeader').load('../resource/header.html');
-            // var activeHeader = "idiompedia";
+            var activeHeader = "blog";
         </script>
     </div>
 
@@ -75,9 +80,9 @@
             <div class="page-header" style="text-align: center;">
                 <h1 id="contextTitle">鸡你太美</h1>
                 <small>
-                    作者: <span id="contextAuthor">超级无敌大佬王</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                    <span id="contextTime" onclick="changeTime()">1970-01-01 00:00:00</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                    访问量: <span id="contextAmount">-1</span>
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <span id="contextAuthor">超级无敌大佬王</span>&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span> <span id="contextTime" onclick="changeTime()">1970-01-01 00:00:00</span>&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <span id="contextAmount">-1</span>
                 </small>
             </div>
             <div id="contextMain" class="panel-body">

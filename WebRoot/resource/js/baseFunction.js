@@ -9,7 +9,7 @@ function getAddress() {
     var addressLAN = "http://192.168.1.3:" + port + "/";
     var addressWAN = "http://mctest.ultra.wang:" + port + "/";
 
-    var envAddress = addressLocal;
+    var envAddress = addressLAN;
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;
@@ -54,6 +54,9 @@ function ajax(method, controller, async, formData) {
     //带上Cookie里登录token
     if (docCookies.hasItem("LoginToken")) {
         xhr.setRequestHeader("LoginToken", docCookies.getItem("LoginToken"));
+    }
+    if (docCookies.hasItem("VisitId")) {
+        xhr.setRequestHeader("VisitId", docCookies.getItem("VisitId"));
     }
     xhr.send(formData);
     return result;
