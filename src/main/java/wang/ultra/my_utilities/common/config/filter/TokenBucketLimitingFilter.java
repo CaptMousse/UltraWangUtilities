@@ -29,7 +29,7 @@ public class TokenBucketLimitingFilter implements Filter {
 
         // 原理
         // 每次调用的时候, 通过时间间隔获取总共要添加多少令牌
-        // 然后比对 容量 和 剩余令牌+添加多少令牌 取最小值就是当前剩余令牌
+        // 然后在 容量 和 剩余令牌+添加多少令牌 之间取最小值 就是当前剩余令牌
         long generateToken = (currentTime - refreshTime) / 1000 * qps;
         currentRemaining = Math.min(peak, currentRemaining + generateToken);
         refreshTime = currentTime; // 记录访问时间
