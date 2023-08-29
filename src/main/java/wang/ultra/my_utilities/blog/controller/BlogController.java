@@ -7,6 +7,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
 import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.service.BlogContextService;
 import wang.ultra.my_utilities.blog.service.ImageUploadService;
@@ -14,6 +18,7 @@ import wang.ultra.my_utilities.common.cache.blogContextVisits.BlogContextVisitsM
 import wang.ultra.my_utilities.common.cache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,11 +113,27 @@ public class BlogController {
         return AjaxUtils.success(contextList);
     }
 
-    @GetMapping("/contextList")
-    public AjaxUtils getContextList() {
+    @GetMapping("/getContextList")
+    public AjaxUtils getContextList(int pageNum, int pageSize) {
+
+        // 测序不能乱, startPage这一行一定要在service前面
+        PageHelper.startPage(pageNum, pageSize);
+
         // 根据用户名获取文章列表
-        List<Map<String, String>> contextList = blogContextService.contextList();
-        return AjaxUtils.success(contextList);
+        List<Map<String, Object>> contextList = blogContextService.contextList();
+
+        PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(contextList);
+        Map<String, String> pageMap = new HashMap<>();
+        pageMap.put("pageSize", String.valueOf(pageInfo.getSize()));
+        pageMap.put("pageTotal", String.valueOf(pageInfo.getTotal()));
+        pageMap.put("pageNum", String.valueOf(pageInfo.getPageNum()));
+        pageMap.put("pagePages", String.valueOf(pageInfo.getPages()));
+
+        List<Object> returnList = new ArrayList<>();
+        returnList.add(pageMap);
+        returnList.addAll(contextList);
+        
+        return AjaxUtils.success(returnList);
     }
 
     @GetMapping("/contextRead")

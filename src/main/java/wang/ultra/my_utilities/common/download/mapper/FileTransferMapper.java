@@ -12,7 +12,7 @@ public interface FileTransferMapper {
 
     void fileUpdate(FileTransferEntity fileTransferEntity);
 
-    void fileAmountCount(@Param("amount")long amount, @Param("id")String id);
+    void fileAmountCount(@Param("id")String id);
 
     void fileDeleteById(@Param("id") String id);
 

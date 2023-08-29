@@ -45,10 +45,9 @@ public class FileTransferService {
         Map<String, String> resultMap = ListConverter.mapValueToString(resultList).get(0);
         String id = resultMap.get("id");
         String realName = resultMap.get("real_name");
-        long amount = Long.parseLong(resultMap.get("amount"));
-        amount++;
+        
         // 更新访问量
-        fileTransferMapper.fileAmountCount(amount, id);
+        fileTransferMapper.fileAmountCount(id);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
         fileIOUtils.downloadFile("transferFiles", realName, response);
