@@ -2,19 +2,21 @@ var date = new Date();
 var year = date.getFullYear();
 
 function getAddress() {
-    var port = "8125";
+    
+    var addressLocal = "127.0.0.1";
+    var addressLocalLAN = "192.168.31.108";
+    var addressLAN = "192.168.1.3";
+    var addressIPv6 = "mctest.ultra.wang";
+    var addressIPv4 = "121.41.75.41";
 
-    var addressLocal = "http://127.0.0.1:" + port + "/";
-    var addressLocalLAN = "http://192.168.31.108:" + port + "/";
-    var addressLAN = "http://192.168.1.3:" + port + "/";
-    var addressWAN = "http://mctest.ultra.wang:" + port + "/";
+    var port = "8124";
 
-    var envAddress = addressLAN;
+    var envAddress = "http://" + addressLAN + ":" + port + "/";
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;
     if (hostname.includes("ultra.wang")) {
-        envAddress = addressWAN;
+        envAddress = "http://" + addressIPv4 + ":" + port + "/";
     }
 
     return envAddress;
