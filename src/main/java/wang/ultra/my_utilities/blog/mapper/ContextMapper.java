@@ -11,7 +11,7 @@ public interface ContextMapper {
 
     void contextDelete(String uuid);
 
-    void contextAmountCount(String amount, String uuid);
+    // void contextAmountCount(String amount, String uuid);
 
     void contextTitleUpdate(String title, String update_time, String uuid);
 

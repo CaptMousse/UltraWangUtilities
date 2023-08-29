@@ -44,30 +44,30 @@ public class TokenBucketLimitingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-        boolean tokenBucketResult = tokenBucketCore();
-
         // 携带Cookie跨域问题
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        List<String> excludedList = new ArrayList<>();
-        excludedList.add("/blog/context/downloadImage");
-
-        for (String excludedURI : excludedList) {
-            if (request.getRequestURI().contains(excludedURI)) {
+        List<String> excludedUriList = new ArrayList<>();
+        excludedUriList.add("/blog/context/downloadImage");
+        for (String excludedUri : excludedUriList) {
+            if (request.getRequestURI().contains(excludedUri)) {
                 System.out.println("URI过滤排除 = " + request.getRequestURI());
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
         }
+        List<String> excludedMethodList = new ArrayList<>();
+        excludedMethodList.add("OPTIONS");
+        for (String excludedMethod : excludedMethodList) {
+            if (request.getMethod().contains(excludedMethod)) {
+                System.out.println("Method过滤排除 = " + request.getMethod());
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            }
+        }
 
-        // response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        // response.setHeader("Access-Control-Allow-Credentials", "true");
-        // response.setHeader("Access-Control-Allow-Headers", "LoginToken");   // 登录token
-        // response.setHeader("Access-Control-Allow-Headers", "VisitId");      // 访客ID
-        // response.setHeader("Content-Type", "application/json; charset=utf-8");
-
-        if (tokenBucketResult) {
+        if (tokenBucketCore()) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String returnStr = AjaxUtils.failedJsonString("当前访问过多, 请稍后再试! ");

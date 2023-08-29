@@ -43,8 +43,8 @@ logging:
         wang.ultra.my_utilities.zbhd_scheduler.mapper: trace
         wang.ultra.my_utilities.idiompedia.mapper: trace
         wang.ultra.my_utilities.common.monitor.mapper: trace
-        wang.ultra.my_utilities.common.download.mapper: trace
-        wang.ultra.my_utilities.blog.mapper: trace
+        # wang.ultra.my_utilities.common.download.mapper: trace
+        # wang.ultra.my_utilities.blog.mapper: trace
 
 
     # mybatis:

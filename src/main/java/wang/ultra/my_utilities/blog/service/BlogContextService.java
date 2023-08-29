@@ -63,9 +63,8 @@ public class BlogContextService {
      * 
      * @return
      */
-    public List<Map<String, String>> contextList() {
-        List<Map<String, Object>> resultList = contextMapper.contextList();
-        return ListConverter.mapValueToString(resultList);
+    public List<Map<String, Object>> contextList() {
+        return contextMapper.contextList();
     }
 
     /**

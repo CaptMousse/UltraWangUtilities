@@ -17,7 +17,7 @@
     </insert>
 
     <update id="fileAmountCount">
-        update file_info set amount = #{amount} where id = #{id}
+        update file_info set amount = amount + 1 where id = #{id}
     </update>
 
     <delete id="fileDeleteById">
