@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.mapper.ContextMapper;
-import wang.ultra.my_utilities.common.cache.blogContextVisits.BlogContextVisitsMap;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.FileIOUtils;
@@ -22,8 +21,6 @@ public class BlogContextService {
 
     @Autowired
     ContextMapper contextMapper;
-
-
 
     public int contextUpload(ContextEntity contextEntity, String context) {
 
@@ -50,9 +47,9 @@ public class BlogContextService {
 
     }
 
-
     /**
      * 返回用户文章列表
+     * 
      * @param username
      * @return
      */
@@ -63,6 +60,7 @@ public class BlogContextService {
 
     /**
      * 返回所有未封禁的文章列表
+     * 
      * @return
      */
     public List<Map<String, String>> contextList() {
@@ -70,15 +68,17 @@ public class BlogContextService {
         return ListConverter.mapValueToString(resultList);
     }
 
-    public Map<String, String> contextSelectByUuid(String contextId, String visitId) {
+    /**
+     * 根据文章id返回文章
+     * 
+     * @param contextId
+     * @param visitId   访客id, 用来判断是否要加访问量
+     * @return
+     */
+    public Map<String, String> contextSelectByUuid(String contextId) {
 
-        BlogContextVisitsMap blogContextVisitsMap = new BlogContextVisitsMap();
-        if (!blogContextVisitsMap.availableVisits(contextId, visitId)) {
-            blogContextVisitsMap.setVisits(contextId, visitId);
-            contextMapper.contextAmount(contextId);
-        }
-
-        Map<String, String> returnMap = ListConverter.mapValueToString(contextMapper.contextSearchByUuid(contextId)).get(0);
+        Map<String, String> returnMap = ListConverter.mapValueToString(contextMapper.contextSearchByUuid(contextId))
+                .get(0);
 
         String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
         String context = FileIOUtils.readFileToString(subFileFolder, contextId + ".html");
@@ -87,7 +87,19 @@ public class BlogContextService {
 
         return returnMap;
     }
+    
+    /**
+     * 增加访问量
+     * @param contextId
+     */
+    public void contextAmount(String contextId) {
+        contextMapper.contextAmount(contextId);
+    }
 
+    /**
+     * 推荐3个文章
+     * @return
+     */
     public List<Map<String, String>> contextListRecommendIn3() {
         List<Map<String, Object>> resultList = contextMapper.contextListRecommendIn3();
         return ListConverter.mapValueToString(resultList);

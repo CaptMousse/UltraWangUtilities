@@ -23,21 +23,13 @@ public class CaptchaGenerater2 {
 
     public final String VERIFY_CODES = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
-    private final Font font = new Font("Arial Black", Font.ITALIC, 8);
-
     private final Random random = new Random();
-
-
-
 
     /**
      * 输出指定验证码图片流
      */
     @GetMapping("/getNewCaptcha")
     public void outputImage(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String browser = request.getHeader("User-Agent");
-
 
         String verifyCode = generateVerifyCode();
 
@@ -82,7 +74,6 @@ public class CaptchaGenerater2 {
         }
         graphics2D.dispose();
 
-//        request.getSession().setAttribute("UserLoginCaptcha", verifyCode);
         // 把验证码存入Map
         CaptchaCacheMap captchaCacheMap = new CaptchaCacheMap();
         captchaCacheMap.setCaptcha(id, verifyCode);
@@ -127,26 +118,26 @@ public class CaptchaGenerater2 {
         return new Color(r, g, b);
     }
 
-    private int getRandomIntColor() {
-        int[] rgb = getRandomRgb();
-        int color = 0;
-        for (int c : rgb) {
-            color = color << 8;
-            color = color | c;
-        }
-        return color;
-    }
+//    private int getRandomIntColor() {
+//        int[] rgb = getRandomRgb();
+//        int color = 0;
+//        for (int c : rgb) {
+//            color = color << 8;
+//            color = color | c;
+//        }
+//        return color;
+//    }
 
     /**
      * 生成随机的RGB颜色
      */
-    private int[] getRandomRgb() {
-        int[] rgb = new int[3];
-        for (int i = 0; i < 3; i++) {
-            rgb[i] = random.nextInt(255);
-        }
-        return rgb;
-    }
+//    private int[] getRandomRgb() {
+//        int[] rgb = new int[3];
+//        for (int i = 0; i < 3; i++) {
+//            rgb[i] = random.nextInt(255);
+//        }
+//        return rgb;
+//    }
 
     private void shear(Graphics graphics2D, int captchaWidth, int captchaHeight, Color color) {
         int periodX = random.nextInt(2);
@@ -173,31 +164,30 @@ public class CaptchaGenerater2 {
         }
     }
 
-    private void shearX(Graphics graphics2D, int captchaWidth, int captchaHeight, Color color) {
-        int periodX = random.nextInt(2);
-        int framesX = 1;
-        int phaseX = random.nextInt(2);
-        for (int i = 0; i < captchaHeight; i++) {
-            double d = (double) (0) * Math.sin((double) i / (double) periodX + (6.2831853071795862D * (double) phaseX) / (double) framesX);
-            graphics2D.copyArea(0, i, captchaWidth, 1, (int) d, 0);
-            graphics2D.setColor(color);
-            graphics2D.drawLine((int) d, i, 0, i);
-            graphics2D.drawLine((int) d + captchaWidth, i, captchaWidth, i);
-        }
+//    private void shearX(Graphics graphics2D, int captchaWidth, int captchaHeight, Color color) {
+//        int periodX = random.nextInt(2);
+//        int framesX = 1;
+//        int phaseX = random.nextInt(2);
+//        for (int i = 0; i < captchaHeight; i++) {
+//            double d = (double) (0) * Math.sin((double) i / (double) periodX + (6.2831853071795862D * (double) phaseX) / (double) framesX);
+//            graphics2D.copyArea(0, i, captchaWidth, 1, (int) d, 0);
+//            graphics2D.setColor(color);
+//            graphics2D.drawLine((int) d, i, 0, i);
+//            graphics2D.drawLine((int) d + captchaWidth, i, captchaWidth, i);
+//        }
+//    }
 
-    }
+//    private void shearY(Graphics graphics2D, int captchaWidth, int captchaHeight, Color color) {
+//        int periodY = random.nextInt(40) + 10; // 50;
+//        int framesY = 20;
+//        int phaseY = 7;
+//        for (int i = 0; i < captchaWidth; i++) {
+//            double d = (double) (periodY >> 1) * Math.sin((double) i / (double) periodY + (6.2831853071795862D * (double) phaseY) / (double) framesY);
+//            graphics2D.copyArea(i, 0, 1, captchaHeight, 0, (int) d);
+//            graphics2D.setColor(color);
+//            graphics2D.drawLine(i, (int) d, i, 0);
+//            graphics2D.drawLine(i, (int) d + captchaHeight, i, captchaHeight);
+//        }
+//    }
 
-    private void shearY(Graphics graphics2D, int captchaWidth, int captchaHeight, Color color) {
-        int periodY = random.nextInt(40) + 10; // 50;
-        int framesY = 20;
-        int phaseY = 7;
-        for (int i = 0; i < captchaWidth; i++) {
-            double d = (double) (periodY >> 1) * Math.sin((double) i / (double) periodY + (6.2831853071795862D * (double) phaseY) / (double) framesY);
-            graphics2D.copyArea(i, 0, 1, captchaHeight, 0, (int) d);
-            graphics2D.setColor(color);
-            graphics2D.drawLine(i, (int) d, i, 0);
-            graphics2D.drawLine(i, (int) d + captchaHeight, i, captchaHeight);
-
-        }
-    }
 }

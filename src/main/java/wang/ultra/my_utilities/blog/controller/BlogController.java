@@ -3,12 +3,14 @@ package wang.ultra.my_utilities.blog.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import wang.ultra.my_utilities.blog.entity.ContextEntity;
 import wang.ultra.my_utilities.blog.service.BlogContextService;
 import wang.ultra.my_utilities.blog.service.ImageUploadService;
+import wang.ultra.my_utilities.common.cache.blogContextVisits.BlogContextVisitsMap;
 import wang.ultra.my_utilities.common.cache.username.UserLoginCacheMap;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
@@ -119,7 +121,15 @@ public class BlogController {
         if (contextId.trim().isEmpty()) {
             return AjaxUtils.failed("uuid参数错误! ");
         }
-        Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId, visitId);
+        Map<String, String> contextMap = blogContextService.contextSelectByUuid(contextId);
+
+        // 判断是否要增加访问量
+        BlogContextVisitsMap blogContextVisitsMap = new BlogContextVisitsMap();
+        if (!blogContextVisitsMap.availableVisits(contextId, visitId)) {
+            blogContextVisitsMap.setVisits(contextId, visitId);
+            blogContextService.contextAmount(contextId);
+        }
+
         return AjaxUtils.success(contextMap);
     }
 

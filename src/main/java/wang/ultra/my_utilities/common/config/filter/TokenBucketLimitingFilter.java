@@ -61,10 +61,11 @@ public class TokenBucketLimitingFilter implements Filter {
             }
         }
 
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "LoginToken");   // 登录token
-        response.setHeader("Content-Type", "application/json; charset=utf-8");
+        // response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        // response.setHeader("Access-Control-Allow-Credentials", "true");
+        // response.setHeader("Access-Control-Allow-Headers", "LoginToken");   // 登录token
+        // response.setHeader("Access-Control-Allow-Headers", "VisitId");      // 访客ID
+        // response.setHeader("Content-Type", "application/json; charset=utf-8");
 
         if (tokenBucketResult) {
             filterChain.doFilter(servletRequest, servletResponse);

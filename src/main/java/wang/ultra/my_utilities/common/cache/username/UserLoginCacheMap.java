@@ -29,7 +29,6 @@ public class UserLoginCacheMap {
             if (recordTime < cleanMillis) {
 
                 String username = entry.getValue().getUsername();
-                String uuid = entry.getValue().getUsername();
 
                 System.out.println("用户 " + entry.getValue().getUsername() + " 登录已过期. ");
 
