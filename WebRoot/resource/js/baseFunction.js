@@ -2,16 +2,16 @@ var date = new Date();
 var year = date.getFullYear();
 
 function getAddress() {
-    
+
     var addressLocal = "127.0.0.1";
     var addressLocalLAN = "192.168.31.108";
     var addressLAN = "192.168.1.3";
     var addressIPv6 = "mctest.ultra.wang";
     var addressIPv4 = "121.41.75.41";
 
-    var port = "8124";
+    var port = "8125";
 
-    var envAddress = "http://" + addressLAN + ":" + port + "/";
+    var envAddress = "http://" + addressLocalLAN + ":" + port + "/";
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;
@@ -271,5 +271,19 @@ var docCookies = {
         var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
         for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
         return aKeys;
+    }
+};
+
+var Base64 = {
+    encode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+            function toSolidBytes(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+    },
+    decode(str) {
+        return decodeURIComponent(atob(str).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
     }
 };

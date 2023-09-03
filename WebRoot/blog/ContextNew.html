@@ -8,14 +8,10 @@
     <title>新增文章</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
-    <style>
-
-    </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
     <script src="/resource/js/bootstrap.min.js"></script>
     <script src="/resource/js/tinymce/tinymce.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
-    <script src="/resource/js/cookieUtils.js"></script>
     <script>
 
         function init() {
@@ -109,6 +105,9 @@
             }
 
             var ifPrivate = document.getElementById("ifPrivate").value;
+
+            tinyContext =  Base64.encode(tinyContext);                          // Base64加密
+
             formData.append('title', title);                                    // 标题
             formData.append('context', tinyContext);                            // 正文
             formData.append('coverImgLocation', coverImgLocation);              // 封面
@@ -121,8 +120,6 @@
             if (result == 'SAVE_SUCCESS') {
                 window.location.href = "index.html";
             }
-
-
         }
 
         // 封面图片上传以及获取

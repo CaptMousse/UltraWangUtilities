@@ -75,4 +75,4 @@ LimitingQPS = 1
 FileFolder = FileFolder
 
 # 用户登陆过期时间(秒)
-SessionInactiveInterval = 60
+SessionInactiveInterval = 3600

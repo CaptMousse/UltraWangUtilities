@@ -21,10 +21,11 @@ public class CommonFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+//        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "LoginToken"); // 登录token
-        response.setHeader("Access-Control-Allow-Headers", "VisitId"); // 访客ID
+        response.setHeader("Access-Control-Allow-Headers", "LoginToken, VisitId"); // 登录token 和 访客ID
+//        response.setHeader("Access-Control-Allow-Headers", "VisitId"); // 访客ID
         response.setHeader("Content-Type", "application/json; charset=utf-8");
 
         filterChain.doFilter(servletRequest, servletResponse);

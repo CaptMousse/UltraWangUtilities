@@ -6,23 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>博客</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/prism.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <style>
         .coverImg {
             width: 100%;
             /* min-height: 90px; */
             max-height: 540px;
-            object-fit: cover;
+            object-fit: contain;
+        }
+
+        pre {
+
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
     </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
     <script src="/resource/js/bootstrap.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
-    <script src="/resource/js/cookieUtils.js"></script>
     <script>
         function init() {
 
-            if(!docCookies.hasItem("VisitId")) {
+            if (!docCookies.hasItem("VisitId")) {
                 docCookies.setItem("VisitId", getUuid());
             }
 
@@ -34,7 +40,7 @@
         function loadContext() {
             var params = new URLSearchParams(location.search);
             var uuid = params.get("id");
-            if (uuid == null ||  uuid == "undefined" || uuid.trim() == "") {
+            if (uuid == null || uuid == "undefined" || uuid.trim() == "") {
                 commonUtil.message('该文章不存在! ', 'danger', 2000);
                 setTimeout(function () { window.location = "Context.html"; }, 3000);
                 return;
@@ -48,12 +54,23 @@
             document.getElementById('coverImg').innerHTML = '<img class="coverImg" src="' + getAddress() + context.cover_img_location + '" loading="lazy">';
             document.getElementById('contextTitle').innerText = context.title;
             document.title = context.title;
-            document.getElementById('contextMain').innerHTML = context.context;
+
+            var showContext = context.context;
+            if (!showContext.includes("<") && !showContext.includes(">")) {
+                showContext = Base64.decode(showContext);   // Base64解密
+            }
+            document.getElementById('contextMain').innerHTML = showContext;
             document.getElementById('contextAuthor').innerText = context.user;
             createTime = context.create_time;
             updateTime = context.update_time;
             document.getElementById('contextTime').innerText = updateTime;
             document.getElementById('contextAmount').innerText = context.amount;
+
+
+            // $('pre').addClass('line-numbers');
+
+            // 延迟加载prism显示代码的脚本
+            prismDelayLoad();
         }
 
         function changeTime() {
@@ -64,11 +81,17 @@
                 document.getElementById('contextTime').innerText = updateTime;
             }
         }
+
+        function prismDelayLoad() {
+            var script = document.createElement('script');
+            script.src = "/resource/js/prism.js";
+            document.body.appendChild(script);
+        }
     </script>
 </head>
 
 <body onload="init()">
-        <div id="divHeader">
+    <div id="divHeader">
         <script>
             $('#divHeader').load('../resource/header.html');
             var activeHeader = "blog";
@@ -81,9 +104,12 @@
             <div class="page-header" style="text-align: center;">
                 <h1 id="contextTitle">鸡你太美</h1>
                 <small>
-                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <span id="contextAuthor">超级无敌大佬王</span>&nbsp;&nbsp;
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span> <span id="contextTime" onclick="changeTime()">1970-01-01 00:00:00</span>&nbsp;&nbsp;
-                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <span id="contextAmount">-1</span>
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <span
+                        id="contextAuthor">超级无敌大佬王</span>&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span> <span id="contextTime"
+                        onclick="changeTime()">1970-01-01 00:00:00</span>&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <span
+                        id="contextAmount">-1</span>
                 </small>
             </div>
             <div id="contextMain" class="panel-body">
