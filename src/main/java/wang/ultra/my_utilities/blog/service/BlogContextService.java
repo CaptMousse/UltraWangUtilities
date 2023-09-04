@@ -71,13 +71,16 @@ public class BlogContextService {
      * 根据文章id返回文章
      * 
      * @param contextId
-     * @param visitId   访客id, 用来判断是否要加访问量
      * @return
      */
     public Map<String, String> contextSelectByUuid(String contextId) {
 
-        Map<String, String> returnMap = ListConverter.mapValueToString(contextMapper.contextSearchByUuid(contextId))
-                .get(0);
+        List<Map<String, Object>> returnList = contextMapper.contextSearchByUuid(contextId);
+        if (returnList.isEmpty()) {
+            return null;
+        }
+
+        Map<String, String> returnMap = ListConverter.mapValueToString(returnList).get(0);
 
         String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
         String context = FileIOUtils.readFileToString(subFileFolder, contextId + ".html");

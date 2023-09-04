@@ -26,13 +26,10 @@ function getAddress() {
 function ajax(method, controller, async, formData) {
     var result;
     var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             result = this.responseText;
-
             var jsonResult = JSON.parse(result);
-
             if (jsonResult.msg != null && jsonResult.msg != "") {
                 var msg = jsonResult.msg;
                 var status = jsonResult.status;
@@ -42,7 +39,6 @@ function ajax(method, controller, async, formData) {
                     commonUtil.message(msg, 'danger', 2000);
                 }
             }
-
             if (jsonResult.obj == null) {
                 result = status;
             } else {
@@ -53,6 +49,8 @@ function ajax(method, controller, async, formData) {
     var address = getAddress() + controller;
     var method = method.toUpperCase();
     xhr.open(method, address, async);
+
+    xhr.withCredentials = true;
     //带上Cookie里登录token
     if (docCookies.hasItem("LoginToken")) {
         xhr.setRequestHeader("LoginToken", docCookies.getItem("LoginToken"));
@@ -127,6 +125,7 @@ function checkIfLogin() {
         return false;
     }
 }
+
 
 
 /**
@@ -216,6 +215,8 @@ var commonUtil = {
     }
 }
 
+
+
 /*\
 |*|
 |*|  :: cookies.js ::
@@ -273,6 +274,8 @@ var docCookies = {
         return aKeys;
     }
 };
+
+
 
 var Base64 = {
     encode(str) {

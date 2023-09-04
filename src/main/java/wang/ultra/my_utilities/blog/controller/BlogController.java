@@ -75,7 +75,7 @@ public class BlogController {
         }
 
         Map<String, String> uuidMap = blogContextService.contextSelectByUuid(contextId);
-        if (!uuidMap.isEmpty()) {
+        if (uuidMap != null && !uuidMap.isEmpty()) {
             return AjaxUtils.failed("您已提交过, 请勿重复提交! ");
         }
 
