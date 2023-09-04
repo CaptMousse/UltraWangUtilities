@@ -44,8 +44,7 @@ public class BlogController {
      * @return
      */
     @PostMapping("/upload/uploadContext")
-    public AjaxUtils uploadContext(String title, String context, String coverImgLocation, String brief, String contextPriority, String ifPrivate, HttpServletRequest request) {
-        System.out.println("context = \n" + context);
+    public AjaxUtils uploadContext(String contextId, String title, String context, String coverImgLocation, String brief, String contextPriority, String ifPrivate, HttpServletRequest request) {
 
         if (title == null || title.trim().isEmpty()) {
             return AjaxUtils.failed("标题为空! ");
@@ -68,14 +67,20 @@ public class BlogController {
         }
 
 
+        
         UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
         String username = userLoginCacheMap.getLoginUser(request.getHeader("LoginToken"));
-
-        if (username.isEmpty()) {
+        if (username == null || username.isEmpty()) {
             return AjaxUtils.failed("请重新登录! ");
         }
 
+        Map<String, String> uuidMap = blogContextService.contextSelectByUuid(contextId);
+        if (!uuidMap.isEmpty()) {
+            return AjaxUtils.failed("您已提交过, 请勿重复提交! ");
+        }
+
         ContextEntity contextEntity = new ContextEntity();
+        contextEntity.setUuid(contextId);
         contextEntity.setTitle(title);
         contextEntity.setCoverImgLocation(coverImgLocation);
         contextEntity.setBrief(brief);

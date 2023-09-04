@@ -24,10 +24,11 @@ public class BlogContextService {
 
     public int contextUpload(ContextEntity contextEntity, String context) {
 
-        String uuid = StringUtils.getMyUUID();
+        
 
-        // 持久化到数据库
-        contextEntity.setUuid(uuid);
+        // 为了防止重复提交, UUID由前台提供
+        // String uuid = StringUtils.getMyUUID();
+        // contextEntity.setUuid(uuid);
         String create_time = DateConverter.getTime();
         contextEntity.setCreate_time(create_time);
         contextEntity.setUpdate_time(create_time);
@@ -37,14 +38,13 @@ public class BlogContextService {
         contextMapper.contextAdd(contextEntityList);
 
         // 写入文件
-        String fileName = uuid + ".html";
+        String fileName = contextEntity.getUuid() + ".html";
 
         String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
         int intFlag = FileIOUtils.createFile(subFileFolder, fileName, 1, context);
         System.out.println("intFlag = " + intFlag);
 
         return intFlag;
-
     }
 
     /**
