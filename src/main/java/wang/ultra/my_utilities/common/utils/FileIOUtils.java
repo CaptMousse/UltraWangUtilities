@@ -4,12 +4,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FileIOUtils {
 
@@ -244,6 +243,50 @@ public class FileIOUtils {
         }
     }
 
+    public File getImageFile(String fileFolder, String fileName) throws IOException {
+        String folder = System.getProperty("user.dir") + File.separator + fileFolder + File.separator;
+        String filePath = folder + fileName;
+        String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+        File file = new File(filePath);
+        BufferedImage bufferedImage = ImageIO.read(file);
+//        File returnFile = new File(StringUtils.getMyUUID() + "." + formatName);
+        ImageIO.write(bufferedImage, formatName, file);
+        return file;
+    }
+
+    public void uploadFile(String subFileFolder, String fileName, File file) {
+        String folder = System.getProperty("user.dir") + File.separator + subFileFolder + File.separator;
+        String filePath = folder + fileName;
+
+        System.out.println("文件开始上传, 文件名: " + fileName);
+
+        InputStream inputStream = null;
+        FileOutputStream fileOutputStream = null;
+        try {
+            inputStream = new DataInputStream(new FileInputStream(file));
+            fileOutputStream = new FileOutputStream(filePath);
+
+            int length;
+            byte[] bytes = new byte[1024];
+            while ((length = inputStream.read(bytes)) != -1) {
+                fileOutputStream.write(bytes, 0, length);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+                System.out.println("文件上传完成! ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void uploadFile(String subFileFolder, String fileName, MultipartFile multipartFile) {
         String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
@@ -302,8 +345,8 @@ public class FileIOUtils {
     }
 
     public static void main(String[] args) {
-//        String fileFolder = "FileFolder/Blog/images";
-//        String fileName = "4cd6c7aaebde4b11bb16f39f345ead5a.jpg";
+        String fileFolder = "WabbyWabbo";
+        String fileName = "Alley.JPG";
 //        boolean isDeleted = fileDelete(fileFolder, fileName);
 //        if (isDeleted) {
 //            System.out.println("文件 " + fileFolder + fileName + " 已被删除");

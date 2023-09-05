@@ -16,10 +16,11 @@
             object-fit: contain;
         }
 
-        pre {
-
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        #contextMain img {
+            object-fit: contain;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
         }
     </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
@@ -86,6 +87,10 @@
             var script = document.createElement('script');
             script.src = "/resource/js/prism.js";
             document.body.appendChild(script);
+
+            var style = document.createElement('style');
+            style.innerHTML = "";
+            document.body.appendChild(style);
         }
     </script>
 </head>
