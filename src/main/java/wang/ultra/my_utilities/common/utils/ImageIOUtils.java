@@ -1,5 +1,7 @@
 package wang.ultra.my_utilities.common.utils;
 
+import wang.ultra.my_utilities.common.constant.ConstantFromFile;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,12 +13,12 @@ public class ImageIOUtils {
     /**
      * 裁剪图片
      * 
-     * @param srcImage
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param newImage
+     * @param srcImageFile  原图
+     * @param x         X坐标位置
+     * @param y         Y坐标位置
+     * @param width     新图片宽度
+     * @param height    新图片高度
+     * @param newImageFile  新图片对象
      * @return
      */
     public static boolean cut(File srcImageFile, int x, int y, int width, int height, File newImageFile) {
@@ -28,7 +30,7 @@ public class ImageIOUtils {
             // 获取到文件的后缀名, 用ImageIO输出
             String fileName = srcImageFile.getName();
             String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
-            ImageIO.write(newBufferedImage, formatName, srcImageFile);
+            ImageIO.write(newBufferedImage, formatName, newImageFile);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -86,12 +88,13 @@ public class ImageIOUtils {
     /**
      * 生成缩略图
      * 
-     * @param imageFile
-     * @param scalePixel
+     * @param imageFile     原图
+     * @param scalePixel    缩略图边长
      * @return
      */
-    public static boolean createThumbnailImage(File imageFile, int scalePixel) {
-
+    public static void createThumbnailImage(File imageFile, int scalePixel, String thumbnailSubFileFolder) {
+        String thumbnailFileFolder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
+                + File.separator + thumbnailSubFileFolder + File.separator;
         int width = 0;
         int height = 0;
         // 获取图片长宽
@@ -102,14 +105,14 @@ public class ImageIOUtils {
             height = imageInfo.getHeight();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return;
         }
         if (width == 0 || height == 0) {
-            return false;
+            return;
         }
 
-        String newImageFileName = "thumbnail_" + scalePixel + "_" + scalePixel + "_" + imageFile.getName();
-        File thumbnailImageFile = new File("WabbyWabbo", newImageFileName);
+        String thumbnailImageFileName = "thumbnail_" + scalePixel + "_" + scalePixel + "_" + imageFile.getName();
+        File thumbnailImageFile = new File(thumbnailFileFolder, thumbnailImageFileName);
 
         // 获取裁剪坐标
         int minSide = Math.min(width, height);
@@ -130,15 +133,21 @@ public class ImageIOUtils {
         boolean result;
         result = ImageIOUtils.cut(imageFile, x, y, minSide, minSide, thumbnailImageFile);
         if (!result) {
-            return result;
+            System.out.println("Thumbnail cut fail! ");
+            return;
         }
-        return ImageIOUtils.scale(thumbnailImageFile, scalePixel, thumbnailImageFile);
+        result = ImageIOUtils.scale(thumbnailImageFile, scalePixel, thumbnailImageFile);
+        if (result) {
+            System.out.println("Create thumbnail success! ");
+        } else {
+            System.out.println("Thumbnail scale fail! ");
+        }
     }
 
     public static void main(String[] args) {
 
-        String fileFolder = "WabbyWabbo";
-        String fileName = "Alley.JPG";
+        String fileFolder = "FileFolder" + File.separator + "blog" + File.separator + "images";
+        String fileName = "8cded001c93d4c488cdf9c6124585d61.jpg";
 
         FileIOUtils fileIOUtils = new FileIOUtils();
         File imageFile = null;
@@ -153,12 +162,9 @@ public class ImageIOUtils {
             return;
         }
 
-        boolean result = createThumbnailImage(imageFile, 100);
-        if (result) {
-            System.out.println("Create thumbnail success! ");
-        } else {
-            System.out.println("Create thumbnail fail! ");
-        }
+        String thumbnailFileFolder = fileFolder + File.separator + "thumbnail";
+
+        createThumbnailImage(imageFile, 200, thumbnailFileFolder);
 
         // String fileFolder = "WabbyWabbo";
         // String fileName = "LAN.jpg";

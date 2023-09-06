@@ -107,7 +107,6 @@ public class BlogController {
         String realName = imageUploadService.imageAdd(image, imageName, username);
         
         String downloadImageUrl = "blog/context/downloadImage?image=" + realName;
-        System.out.println("downloadImageUrl = " + downloadImageUrl);
         Map<String, String> map = new HashMap<>();
         map.put("location", downloadImageUrl);
         return AjaxUtils.success(map);

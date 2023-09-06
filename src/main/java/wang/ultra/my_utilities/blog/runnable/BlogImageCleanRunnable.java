@@ -44,10 +44,11 @@ public class BlogImageCleanRunnable implements Runnable {
             String blogImgFolder = ImageUploadService.subFileFolder;
 
             boolean isDeleted = FileIOUtils.fileDelete(blogImgFolder, realName);
+            FileIOUtils fileIOUtils = new FileIOUtils();
             if (isDeleted) {
                 System.out.println("文件 " + realName + " 已被删除");
                 fileTransferMapper.fileDeleteById(id);
-            } else if (!FileIOUtils.ifFileExist(blogImgFolder, realName)) {
+            } else if (!fileIOUtils.ifFileExist(blogImgFolder, realName)) {
                 System.out.println("文件 " + realName + " 不存在");
                 fileTransferMapper.fileDeleteById(id);
             } else {

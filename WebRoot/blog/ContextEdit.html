@@ -150,7 +150,7 @@
                 commonUtil.message('选择封面图片错误! ', 'danger', 2000);
                 return;
             }
-            var coverImgFileName = coverImg[0].name;
+            var coverImgFileName = "coverImg_" + coverImg[0].name;
             var formData = new FormData();
             formData.append('image', coverImg[0]);
             formData.append('imageName', coverImgFileName);

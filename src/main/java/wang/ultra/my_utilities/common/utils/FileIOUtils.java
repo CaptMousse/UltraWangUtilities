@@ -245,16 +245,18 @@ public class FileIOUtils {
 
     /**
      * 获取图片文件
-     * @param fileFolder
+     * @param subFileFolder
      * @param fileName
      * @return
      * @throws IOException
      */
-    public File getImageFile(String fileFolder, String fileName) throws IOException {
-        String folder = System.getProperty("user.dir") + File.separator + fileFolder + File.separator;
+    public File getImageFile(String subFileFolder, String fileName) throws IOException {
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
+                + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
         String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
         File file = new File(filePath);
+
         BufferedImage bufferedImage = ImageIO.read(file);
         ImageIO.write(bufferedImage, formatName, file);
         return file;
@@ -371,7 +373,7 @@ public class FileIOUtils {
         return file;
     }
 
-    public static boolean ifFileExist(String subFileFolder, String fileName) {
+    public boolean ifFileExist(String subFileFolder, String fileName) {
 
         String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
                 + File.separator + subFileFolder + File.separator;

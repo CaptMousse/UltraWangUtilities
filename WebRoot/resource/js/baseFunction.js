@@ -9,9 +9,9 @@ function getAddress() {
     var addressIPv6 = "mctest.ultra.wang";
     var addressIPv4 = "121.41.75.41";
 
-    var port = "8124";
+    var port = "8125";
 
-    var envAddress = "http://" + addressLAN + ":" + port + "/";
+    var envAddress = "http://" + addressLocal + ":" + port + "/";
 
     // WAN环境自动切换地址
     var hostname = window.location.hostname;
@@ -124,6 +124,10 @@ function checkIfLogin() {
     } else {
         return false;
     }
+}
+
+function insertStr(srcStr, start, insertStr) {
+    return srcStr.slice(0, start) + insertStr + srcStr.slice(start);
 }
 
 

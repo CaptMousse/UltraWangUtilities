@@ -90,7 +90,8 @@
             $('#contextList').empty();
             for (let i = 1; i < contextList.length; i++) {
                 let context = contextList[i];
-                document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + context.cover_img_location + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>' + context.brief + '<br><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' + context.user + '&nbsp;&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' + context.update_time + '</div></div>';
+                var thumbnail = insertStr(context.cover_img_location, 33, "thumbnail_");    // 缩略图
+                document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + thumbnail + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>' + context.brief + '<br><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' + context.user + '&nbsp;&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' + context.update_time + '</div></div>';
                 document.getElementById('contextList').innerHTML += '<br>';
             }
         }
