@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="0">
     <title>新增文章</title>
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
@@ -39,7 +42,7 @@
                 setTimeout(function () { window.location = "Context.html"; }, 3000);
                 return;
             }
-            
+
             document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + context.cover_img_location) + ' alt="封面" style="max-width: 100%;">';
             document.getElementById("title").value = context.title;
             document.getElementById("tinyEditor").value = context.context;
