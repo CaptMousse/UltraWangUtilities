@@ -1,7 +1,5 @@
 package wang.ultra.my_utilities.common.utils;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,6 +10,7 @@ public class ImageIOUtils {
 
     /**
      * 裁剪图片
+     * 
      * @param srcImage
      * @param x
      * @param y
@@ -20,115 +19,200 @@ public class ImageIOUtils {
      * @param newImage
      * @return
      */
-    public static boolean cut(File srcImage, int x, int y, int width, int height, File newImage) {
+    public static boolean cut(File srcImageFile, int x, int y, int width, int height, File newImageFile) {
         try {
-            // 使用ImageIO的read方法读取图片
-            BufferedImage srcBufferedImage = ImageIO.read(srcImage);
-            // 调用裁剪方法
+            // 使用ImageIO的read方法读取图片, 然后裁剪
+            BufferedImage srcBufferedImage = ImageIO.read(srcImageFile);
             BufferedImage newBufferedImage = srcBufferedImage.getSubimage(x, y, width, height);
-            // 获取到文件的后缀名
-            String fileName = srcImage.getName();
-            String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
-            // 使用ImageIOd的write方法进行输出
-            ImageIO.write(newBufferedImage, formatName, newImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 
-
-    public static boolean scale(File srcImageFile, File destImageFile, float scale) {
-
-
-
-
-
-        return false;
-    }
-
-    public static boolean scale(File srcImageFile, File destImageFile, int side) {
-        return scale(srcImageFile, destImageFile, side, side);
-    }
-
-    public static boolean scale(File srcImageFile, File destImageFile, int width, int height) {
-
-        try {
-            // 使用ImageIO的read方法读取图片
-            BufferedImage read = ImageIO.read(srcImageFile);
-            // 调用缩放方法获取缩放后的图片
-            Image img = read.getScaledInstance(width, height, Image.SCALE_DEFAULT);
-            // 创建一个新的缓存图片
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            // 获取画笔
-            Graphics2D graphics = image.createGraphics();
-            // 将Image对象画在画布上, 最后一个参数, ImageObserver: 接收有关Image信息同步的异步更新接口, 没用到直接传null
-            graphics.drawImage(img, 0, 0, null);
-            // 一定要释放资源
-            graphics.dispose();
-            // 获取到文件的后缀名
+            // 获取到文件的后缀名, 用ImageIO输出
             String fileName = srcImageFile.getName();
             String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
-            // 使用ImageIO的write方法进行输出
-            ImageIO.write(image, formatName, destImageFile);
+            ImageIO.write(newBufferedImage, formatName, srcImageFile);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
         return true;
+    }
+
+    /**
+     * 正方形缩放
+     * 
+     * @param srcImageFile 原图
+     * @param newImageFile 新图
+     * @param side         边长
+     * @return
+     */
+    public static boolean scale(File srcImageFile, int side, File newImageFile) {
+        return scale(srcImageFile, side, side, newImageFile);
+    }
+
+    /**
+     * 长方形缩放
+     * 
+     * @param srcImageFile 原图
+     * @param newImageFile 新图
+     * @param width        宽度
+     * @param height       高度
+     * @return
+     */
+
+    public static boolean scale(File srcImageFile, int width, int height, File newImageFile) {
+
+        try {
+            // 使用ImageIO的read方法读取图片, 然后缩放
+            BufferedImage srcBufferedImage = ImageIO.read(srcImageFile);
+            Image newImage = srcBufferedImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+
+            // 创建一个新的缓存图片
+            BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics = newBufferedImage.createGraphics();
+            graphics.drawImage(newImage, 0, 0, null);
+            graphics.dispose(); // 释放资源
+
+            // 输出
+            String fileName = srcImageFile.getName();
+            String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+            ImageIO.write(newBufferedImage, formatName, newImageFile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 生成缩略图
+     * 
+     * @param imageFile
+     * @param scalePixel
+     * @return
+     */
+    public static boolean createThumbnailImage(File imageFile, int scalePixel) {
+
+        int width = 0;
+        int height = 0;
+        // 获取图片长宽
+        FastImageInfo imageInfo = null;
+        try {
+            imageInfo = new FastImageInfo(imageFile);
+            width = imageInfo.getWidth();
+            height = imageInfo.getHeight();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (width == 0 || height == 0) {
+            return false;
+        }
+
+        String newImageFileName = "thumbnail_" + scalePixel + "_" + scalePixel + "_" + imageFile.getName();
+        File thumbnailImageFile = new File("WabbyWabbo", newImageFileName);
+
+        // 获取裁剪坐标
+        int minSide = Math.min(width, height);
+        int x, y;
+        if (width == height) {
+            x = 0;
+            y = 0;
+        } else {
+            if (width < height) {
+                x = 0;
+                y = (height - width) / 2;
+            } else {
+                x = (width - height) / 2;
+                y = 0;
+            }
+        }
+
+        boolean result;
+        result = ImageIOUtils.cut(imageFile, x, y, minSide, minSide, thumbnailImageFile);
+        if (!result) {
+            return result;
+        }
+        return ImageIOUtils.scale(thumbnailImageFile, scalePixel, thumbnailImageFile);
     }
 
     public static void main(String[] args) {
+
         String fileFolder = "WabbyWabbo";
-        String fileName = "LAN.jpg";
-        String newFileName = "thumbnail_100x100_" + fileName;
+        String fileName = "Alley.JPG";
 
-        String folder = System.getProperty("user.dir") + File.separator + fileFolder + File.separator;
-        File file = new File(folder + fileName);
-
-
-        // 获取图片尺寸
-        FastImageInfo imageInfo;
+        FileIOUtils fileIOUtils = new FileIOUtils();
+        File imageFile = null;
         try {
-            imageInfo = new FastImageInfo(file);
+            imageFile = fileIOUtils.getImageFile(fileFolder, fileName);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        int width = imageInfo.getWidth();
-        int height = imageInfo.getHeight();
+        if (imageFile == null) {
+            System.out.println("File is not exist! ");
+            return;
+        }
 
-        int minSide = Math.min(width, height);
-        int x, y;
-        if (width < height) {
-            x = 0;
-            y = (height - width) / 2;
+        boolean result = createThumbnailImage(imageFile, 100);
+        if (result) {
+            System.out.println("Create thumbnail success! ");
         } else {
-            x = (width - height) / 2;
-            y = 0;
+            System.out.println("Create thumbnail fail! ");
         }
 
-        try {
-            FileIOUtils fileIOUtils = new FileIOUtils();
-            File imageFile = fileIOUtils.getImageFile(fileFolder, fileName);
+        // String fileFolder = "WabbyWabbo";
+        // String fileName = "LAN.jpg";
+        // String folder = System.getProperty("user.dir") + File.separator + fileFolder
+        // + File.separator;
+        // File file = new File(folder + fileName);
 
-            File thumbnail = new File(folder + newFileName);
-            // 裁剪图片
-            ImageIOUtils.cut(imageFile, x, y, minSide, minSide, thumbnail);
-            // 缩放图片
-            ImageIOUtils.scale(thumbnail, thumbnail, 100);
+        // int width = 0;
+        // int height = 0;
+        // // 获取图片尺寸
+        // FastImageInfo imageInfo = null;
+        // try {
+        // imageInfo = new FastImageInfo(file);
+        // width = imageInfo.getWidth();
+        // height = imageInfo.getHeight();
+        // } catch (IOException e) {
+        // e.printStackTrace();
+        // }
 
-//            fileIOUtils.uploadFile(fileFolder, newFileName, imageFileScale);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // if (width == 0 || height == 0) {
+        // return;
+        // }
 
+        // try {
+        // FileIOUtils fileIOUtils = new FileIOUtils();
+        // File imageFile = fileIOUtils.getImageFile(fileFolder, fileName);
+        // String newFileName = "thumbnail_100x100_" + fileName;
+        // File thumbnailImageFile = new File(folder + newFileName);
 
+        // // 获取裁剪坐标
+        // int minSide = Math.min(width, height);
+        // int x, y;
+        // if (width == height) {
+        // x = 0;
+        // y = 0;
+        // } else {
+        // if (width < height) {
+        // x = 0;
+        // y = (height - width) / 2;
+        // } else {
+        // x = (width - height) / 2;
+        // y = 0;
+        // }
+        // }
 
+        // // 裁剪成正方形
+        // ImageIOUtils.cut(imageFile, x, y, minSide, minSide, thumbnailImageFile);
+        // // 缩放
+        // ImageIOUtils.scale(thumbnailImageFile, thumbnailImageFile, 100);
 
-
-
-
+        // // fileIOUtils.uploadFile(fileFolder, newFileName, imageFileScale);
+        // } catch (IOException e) {
+        // throw new RuntimeException(e);
+        // }
 
     }
 }

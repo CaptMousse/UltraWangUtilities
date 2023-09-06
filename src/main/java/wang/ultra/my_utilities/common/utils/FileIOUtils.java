@@ -32,9 +32,9 @@ public class FileIOUtils {
                 file.getParentFile().mkdirs();
             }
             file.mkdirs();
-            return 0;   // 不存在, 新建成功
+            return 0; // 不存在, 新建成功
         } else {
-            return 1;   // 存在
+            return 1; // 存在
         }
     }
 
@@ -59,9 +59,9 @@ public class FileIOUtils {
                 file.createNewFile();
                 flag = 0;
             }
-            FileOutputStream fileOutputStream = new FileOutputStream(file, true);   // true代表追加
+            FileOutputStream fileOutputStream = new FileOutputStream(file, true); // true代表追加
             if (method == 1) {
-                fileOutputStream = new FileOutputStream(file, false);               // false代表覆盖
+                fileOutputStream = new FileOutputStream(file, false); // false代表覆盖
                 if (flag != 0) {
                     flag = 12;
                 }
@@ -72,12 +72,12 @@ public class FileIOUtils {
             fileOutputStream.close();
 
             if (flag == 0) {
-                return flag;    // 新建成功
+                return flag; // 新建成功
             }
             if (flag == 12) {
-                return flag;    // 已存在并覆盖
+                return flag; // 已存在并覆盖
             } else {
-                return 11;      // 已存在并追加
+                return 11; // 已存在并追加
             }
         } catch (IOException e) {
             return -1;
@@ -105,10 +105,10 @@ public class FileIOUtils {
                 inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
                 bufferedReader = new BufferedReader(inputStreamReader);
                 while ((strText = bufferedReader.readLine()) != null) {
-//                    System.out.println("strText = " + strText);
-                    if (!"".equals(strText)) {                          // 略过空行
+                    // System.out.println("strText = " + strText);
+                    if (!"".equals(strText)) { // 略过空行
                         String strSubString = strText.substring(0, 1);
-                        if (!"#".equals(strSubString)) {                // 略过注释符号
+                        if (!"#".equals(strSubString)) { // 略过注释符号
                             String[] strArr = strText.split(" = ");
                             stringMap.put(strArr[0], strArr[1]);
                         }
@@ -154,20 +154,20 @@ public class FileIOUtils {
                 inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
                 bufferedReader = new BufferedReader(inputStreamReader);
                 while ((strText = bufferedReader.readLine()) != null) {
-//                    System.out.println("strText = " + strText);
-                    if (!"".equals(strText)) {                          // 略过空行
+                    // System.out.println("strText = " + strText);
+                    if (!"".equals(strText)) { // 略过空行
                         stringBuilder.append(strText);
                     }
                 }
             } catch (IOException e) {
-//                throw new RuntimeException(e);
+                // throw new RuntimeException(e);
                 return String.valueOf(e);
             } finally {
                 if (inputStreamReader != null) {
                     try {
                         inputStreamReader.close();
                     } catch (IOException e) {
-//                        throw new RuntimeException(e);
+                        // throw new RuntimeException(e);
                         return String.valueOf(e);
                     }
                 }
@@ -175,7 +175,7 @@ public class FileIOUtils {
                     try {
                         bufferedReader.close();
                     } catch (IOException e) {
-//                        throw new RuntimeException(e);
+                        // throw new RuntimeException(e);
                         return String.valueOf(e);
                     }
                 }
@@ -193,7 +193,8 @@ public class FileIOUtils {
      */
     public void downloadFile(String subFileFolder, String fileName, HttpServletResponse response) {
 
-        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
+                + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
         File file = new File(filePath);
 
@@ -208,13 +209,12 @@ public class FileIOUtils {
                 imageTypeList.add("png");
 
                 if (imageTypeList.contains(type)) {
-                    response.setContentType("image/jpeg");      // 打开图片
+                    response.setContentType("image/jpeg"); // 打开图片
                 } else {
-                    response.setContentType("application/x-msdownload");    // 下载
+                    response.setContentType("application/x-msdownload"); // 下载
                 }
 
                 response.setContentLength((int) file.length());
-//            response.addHeader("Content-Disposition", "attachment;filename=" + new String(showName.getBytes(), StandardCharsets.ISO_8859_1));
 
                 System.out.println("文件开始下载, 文件名: " + file.getName());
 
@@ -243,17 +243,29 @@ public class FileIOUtils {
         }
     }
 
+    /**
+     * 获取图片文件
+     * @param fileFolder
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
     public File getImageFile(String fileFolder, String fileName) throws IOException {
         String folder = System.getProperty("user.dir") + File.separator + fileFolder + File.separator;
         String filePath = folder + fileName;
         String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
         File file = new File(filePath);
         BufferedImage bufferedImage = ImageIO.read(file);
-//        File returnFile = new File(StringUtils.getMyUUID() + "." + formatName);
         ImageIO.write(bufferedImage, formatName, file);
         return file;
     }
 
+    /**
+     * 上传文件
+     * @param subFileFolder
+     * @param fileName
+     * @param file
+     */
     public void uploadFile(String subFileFolder, String fileName, File file) {
         String folder = System.getProperty("user.dir") + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
@@ -287,8 +299,16 @@ public class FileIOUtils {
         }
     }
 
+    /**
+     * 上传MultipartFile文件
+     * 
+     * @param subFileFolder
+     * @param fileName
+     * @param multipartFile
+     */
     public void uploadFile(String subFileFolder, String fileName, MultipartFile multipartFile) {
-        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
+                + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
 
         System.out.println("文件开始上传, 文件名: " + fileName);
@@ -320,19 +340,55 @@ public class FileIOUtils {
         }
     }
 
+    /**
+     * MultipartFile 2 File
+     * @param multipartFile
+     * @return
+     */
+    public File multipartFile2File(MultipartFile multipartFile) {
+        
+        String fileName = multipartFile.getOriginalFilename();
+        File file = new File(fileName);
+        OutputStream outputStream = null;
+        try {
+            // 获取文件流，以文件流的方式输出到新文件
+            outputStream = new FileOutputStream(file);
+            byte[] byteArr = multipartFile.getBytes();
+            for (int i = 0; i < byteArr.length; i++) {
+                outputStream.write(byteArr[i]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return file;
+    }
+
     public static boolean ifFileExist(String subFileFolder, String fileName) {
 
-
-        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
-//        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
+                + File.separator + subFileFolder + File.separator;
+        // String folder = System.getProperty("user.dir") + File.separator +
+        // ConstantFromFile.getFileFolder() + File.separator + subFileFolder +
+        // File.separator;
         String filePath = folder + fileName;
         File file = new File(filePath);
         return file.exists() && file.isFile();
     }
 
     public static boolean fileDelete(String subFileFolder, String fileName) {
-        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
-//        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder() + File.separator + subFileFolder + File.separator;
+        String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
+                + File.separator + subFileFolder + File.separator;
+        // String folder = System.getProperty("user.dir") + File.separator +
+        // ConstantFromFile.getFileFolder() + File.separator + subFileFolder +
+        // File.separator;
         String filePath = folder + fileName;
         File file = new File(filePath);
 
@@ -347,14 +403,14 @@ public class FileIOUtils {
     public static void main(String[] args) {
         String fileFolder = "WabbyWabbo";
         String fileName = "Alley.JPG";
-//        boolean isDeleted = fileDelete(fileFolder, fileName);
-//        if (isDeleted) {
-//            System.out.println("文件 " + fileFolder + fileName + " 已被删除");
-//        } else if (!ifFileExist(fileFolder, fileName)){
-//            System.out.println("文件 " + fileFolder + fileName + " 不存在");
-//        } else {
-//            System.out.println("文件 " + fileFolder + fileName + " 删除失败");
-//        }
+        // boolean isDeleted = fileDelete(fileFolder, fileName);
+        // if (isDeleted) {
+        // System.out.println("文件 " + fileFolder + fileName + " 已被删除");
+        // } else if (!ifFileExist(fileFolder, fileName)){
+        // System.out.println("文件 " + fileFolder + fileName + " 不存在");
+        // } else {
+        // System.out.println("文件 " + fileFolder + fileName + " 删除失败");
+        // }
 
         System.out.println(DateConverter.getNoSymbolTime(System.currentTimeMillis() - (1000 * 3600 * 24 * 7)));
     }

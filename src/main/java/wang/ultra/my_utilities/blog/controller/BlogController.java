@@ -34,6 +34,7 @@ public class BlogController {
 
     /**
      *
+     * @param contextId         文章ID
      * @param title             标题
      * @param context           正文
      * @param coverImgLocation  封面图片地址
@@ -99,9 +100,12 @@ public class BlogController {
 
     @PostMapping("/upload/uploadImage")
     public AjaxUtils upload(MultipartFile image, String imageName, HttpServletRequest request) {
+        // 根据LoginToken获取用户名
         UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
         String username = userLoginCacheMap.getLoginUser(request.getHeader("LoginToken"));
+        
         String realName = imageUploadService.imageAdd(image, imageName, username);
+        
         String downloadImageUrl = "blog/context/downloadImage?image=" + realName;
         System.out.println("downloadImageUrl = " + downloadImageUrl);
         Map<String, String> map = new HashMap<>();

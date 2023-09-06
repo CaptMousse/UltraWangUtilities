@@ -44,6 +44,9 @@ public class ImageUploadService {
         FileIOUtils fileIOUtils = new FileIOUtils();
         fileIOUtils.uploadFile(subFileFolder, realName, image);
 
+        File imageFile = fileIOUtils.multipartFile2File(image);
+        
+
         return realName;
     }
 
