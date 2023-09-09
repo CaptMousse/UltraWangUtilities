@@ -1,25 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <script src="/resource/js/jquery-3.6.0.min.js"></script>
+    <script src="/resource/js/bootstrap.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
     <script>
-        function init() {
-            // Base64.encode(str);
-            var str = document.getElementById("input").value;
-            document.getElementById("output").value = Base64.encode(str);
+
+
+
+        $(function () {
+            $('[data-toggle="popover"]').popover({
+                animation: true,
+                html: true,
+                container: "body",
+                content: "<div id='popUserInfoPreview'></div>",
+                placement: "bottom"
+            });
+
+        });
+
+        function popUserInfoPreview (str) {
+            document.getElementById('popUserInfoPreview').innerHTML += "<span>" + str + "</span>";
         }
     </script>
 </head>
-<body onload="">
-    <textarea id="input" onchange="init()">
 
-    </textarea>
+<body>
 
-    <textarea id="output"></textarea>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <div>
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        &nbsp;&nbsp;
+        <span tabindex="0" data-toggle="popover" data-trigger="focus" title="Dismissible popover" onclick="popUserInfoPreview(123456)">CaptMousse</span>
+    </div>
+
+
+    <br>
+    <br>
+    <br>
+
+    <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Dismissible popover">CaptMousse</a>
+
+    <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Dismissible popover"
+        data-content="And here's some amazing content. It's very engaging. Right?">可消失的弹出框</a>
+
 
 </body>
+
 </html>

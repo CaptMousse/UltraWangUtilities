@@ -22,10 +22,22 @@
             padding: 15px;
         }
 
+        .media {
+            max-height: 100px;
+        }
+
         .media-object {
             width: 100px;
             height: 100px;
             object-fit: cover;
+        }
+
+        .media-heading {
+            margin-bottom: 0;
+        }
+
+        .media-body {
+            position: relative;
         }
 
         .item {
@@ -45,16 +57,35 @@
         .pointerCursor {
             cursor: pointer;
         }
+
+        .contextInfo {
+            position: absolute;
+            bottom: 0;
+            margin-bottom: 0;
+        }
     </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
     <script src="/resource/js/bootstrap.min.js"></script>
     <script src="/resource/js/baseFunction.js"></script>
     <script>
-        function init() {
+
+
+        $(function () {
+
             showRecommendContext();
             showContextList();
-            // pageAction("init");
-        }
+
+            // 用户信息弹出框
+            $('[data-toggle="popover"]').popover({
+                animation: true,
+                html: true,
+                container: "body",
+                content: "<div id='popUserInfoPreview'></div>",
+                placement: "bottom"
+            });
+
+
+        });
 
         function showRecommendContext() {
             var contextRecommend = ajax("get", "blog/context/getContextRecommend", false);
@@ -74,6 +105,8 @@
                     + '</div></div></div>';
                 document.getElementById('contextRecommend').innerHTML += innerHTML;
             }
+
+            
         }
 
         var pageSize = 10;  // 当前条数
@@ -94,7 +127,24 @@
             for (let i = 1; i < contextList.length; i++) {
                 let context = contextList[i];
                 var thumbnail = insertStr(context.cover_img_location, 33, "thumbnail_");    // 缩略图
-                document.getElementById('contextList').innerHTML += '<div class="media" onclick="contextShow(\'' + context.uuid + '\')"><div class="media-left"><a><img class="media-object" src="' + getAddress() + thumbnail + '" alt="' + context.title + '"></a></div><div class="media-body"><h4 class="media-heading">' + context.title + '</h4>' + context.brief + '<br><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ' + context.user + '&nbsp;&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' + context.update_time + '</div></div>';
+                document.getElementById('contextList').innerHTML +=
+                    '<div class="media">' +
+                    '<div class="media-left">' +
+                    '<a><img class="media-object img-thumbnail pointerCursor" src="' + getAddress() + thumbnail + '" alt="' + context.title + '" onclick="contextShow(\'' + context.uuid + '\')"></a>' +
+                    '</div>' +
+                    '<div class="media-body">' +
+                    '<h4 class="media-heading"><span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.title + '</span></h4>' +
+                    '<span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.brief + '</span>' +
+                    '<p class="contextInfo">' +
+                    '<span><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;' +
+                    '<span tabindex="0" data-toggle="popover" data-trigger="focus" title="Dismissible popover" onclick="popUserInfoPreview(\'' + context.user + '\')">' + context.user +  '</span>' + 
+                    '</span>' +
+                    '&nbsp;&nbsp;' +
+                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;' +
+                    context.update_time +
+                    '</p>' +
+                    '</div>' +
+                    '</div>';
                 document.getElementById('contextList').innerHTML += '<br>';
             }
         }
@@ -143,11 +193,15 @@
             window.open("ContextShow.html?id=" + uuid);
         }
 
+        function popUserInfoPreview(str) {
+                console.log(str);
+                document.getElementById('popUserInfoPreview').innerHTML = "<span>" + str + "</span>";
+            }
 
     </script>
 </head>
 
-<body onload="init()">
+<body>
     <div id="divHeader">
         <script>
             $('#divHeader').load('../resource/header.html');

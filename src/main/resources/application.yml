@@ -9,30 +9,33 @@ spring:
     datasource:
         zbhdscheduler:
             username: phpmyadmin
-            password: SEFvdx521`
-            jdbc-url: jdbc:mysql://192.168.1.3:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-#           url: jdbc:mysql://127.0.0.1:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            password: SEFvdx521`121.41.75.41
+#            jdbc-url: jdbc:mysql://192.168.1.3:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://121.41.75.41:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
         idiompedia:
             username: phpmyadmin
             password: SEFvdx521`
-            jdbc-url: jdbc:mysql://192.168.1.3:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-#           url: jdbc:mysql://127.0.0.1:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+#            jdbc-url: jdbc:mysql://192.168.1.3:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://121.41.75.41:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
         monitor:
             username: phpmyadmin
             password: SEFvdx521`
-            jdbc-url: jdbc:mysql://192.168.1.3:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+#            jdbc-url: jdbc:mysql://192.168.1.3:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://121.41.75.41:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
         filetransfer:
             username: phpmyadmin
             password: SEFvdx521`
-            jdbc-url: jdbc:mysql://192.168.1.3:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+#            jdbc-url: jdbc:mysql://192.168.1.3:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://121.41.75.41:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
         blog:
             username: phpmyadmin
             password: SEFvdx521`
-            jdbc-url: jdbc:mysql://192.168.1.3:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+#            jdbc-url: jdbc:mysql://192.168.1.3:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+            jdbc-url: jdbc:mysql://121.41.75.41:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
             driver-class-name: com.mysql.cj.jdbc.Driver
 
 
