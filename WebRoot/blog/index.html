@@ -69,23 +69,16 @@
     <script src="/resource/js/baseFunction.js"></script>
     <script>
 
-
+        // 初始化方法
         $(function () {
-
             showRecommendContext();
             showContextList();
-
-            // 用户信息弹出框
-            $('[data-toggle="popover"]').popover({
-                animation: true,
-                html: true,
-                container: "body",
-                content: "<div id='popUserInfoPreview'></div>",
-                placement: "bottom"
-            });
-
-
         });
+
+        // 全局点击方法
+        function bodyClick() {
+            hidePopover();
+        }
 
         function showRecommendContext() {
             var contextRecommend = ajax("get", "blog/context/getContextRecommend", false);
@@ -106,7 +99,7 @@
                 document.getElementById('contextRecommend').innerHTML += innerHTML;
             }
 
-            
+
         }
 
         var pageSize = 10;  // 当前条数
@@ -127,6 +120,7 @@
             for (let i = 1; i < contextList.length; i++) {
                 let context = contextList[i];
                 var thumbnail = insertStr(context.cover_img_location, 33, "thumbnail_");    // 缩略图
+                var ran = Math.random() + "";
                 document.getElementById('contextList').innerHTML +=
                     '<div class="media">' +
                     '<div class="media-left">' +
@@ -137,7 +131,7 @@
                     '<span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.brief + '</span>' +
                     '<p class="contextInfo">' +
                     '<span><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;' +
-                    '<span tabindex="0" data-toggle="popover" data-trigger="focus" title="Dismissible popover" onclick="popUserInfoPreview(\'' + context.user + '\')">' + context.user +  '</span>' + 
+                    '<span id="popUser' + ran.substring(2) + context.user + '" class="popoverFocus" tabindex="0" data-toggle="popover" onclick="popUserInfoPreview(this)">' + context.user + '</span>' +
                     '</span>' +
                     '&nbsp;&nbsp;' +
                     '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;' +
@@ -150,11 +144,6 @@
         }
 
         function pageRefresh() {
-            // document.getElementById("pagePrevious").className += "disabled";
-            // document.getElementById("pageNext").className += "disabled";
-
-            // $("#pagePrevious").addClass("disable")
-            // $("#pageNext").addClass("disable")
             if (pagePages == 1) {
                 document.getElementById("pagePrevious").classList.add("disabled");
                 document.getElementById("pageNext").classList.add("disabled");
@@ -166,8 +155,6 @@
                 document.getElementById("pagePrevious").classList.remove("disabled");
                 document.getElementById("pageNext").classList.remove("disabled");
             }
-            // window.location.reload("#pagePrevious");
-            // window.location.reload("#pageNext");
         }
 
         function pageAction(action) {
@@ -182,26 +169,57 @@
                     pageNum++;
                 }
             }
-            // window.location.reload("#pagePrevious");
-            // window.location.reload("#pageNext");
             showContextList();
 
         }
 
         function contextShow(uuid) {
-            // window.location.href = "ContextShow.html?id=" + uuid;
             window.open("ContextShow.html?id=" + uuid);
         }
 
-        function popUserInfoPreview(str) {
-                console.log(str);
-                document.getElementById('popUserInfoPreview').innerHTML = "<span>" + str + "</span>";
-            }
+        // 显示名片弹出框
+        function popUserInfoPreview(obj) {
+            if ($('body').find('.popover').length <= 0) {
+                // 动态调节弹出框的方向
+                var screenHeight = document.documentElement.clientHeight;
+                var clientY = event.clientY;
+                var popoverPlacement = clientY > screenHeight / 2 ? "top" : "bottom";
 
+                // 弹出框显示的内容
+                var spanStr = "<span>" + obj.innerText + "</span>";
+
+                // 弹出框初始化并显示
+                $('#' + obj.id + '').popover({
+                    animation: true,
+                    html: true,
+                    container: "body",
+                    content: "<div id='popUserInfoPreview'>" + spanStr + "</div>",
+                    placement: popoverPlacement,
+                    trigger: "manual"   // 手动trigger
+                }).popover('show');
+            }
+        }
+
+        // 隐藏名片弹出框
+        function hidePopover() {
+            var popover = $('body').find('.popover'); // 获取popover弹出框元素
+            var target = $(event.target);   // 获取当前点击的元素
+            var bool = true;
+            for (var i = 0; i < popover.length; i++) {
+                if (popover[i] === event.target) { // 判断点击的元素是否在popover中
+                    bool = false;
+                } else if (target.hasClass('popoverFocus')) {   // 判断点击的元素是不是自身
+                    bool = false;
+                }
+            }
+            if (bool && popover.length > 0) {
+                $('body').find('.popover').popover('destroy');  // 直接销毁, 反正还会再初始化
+            }
+        }
     </script>
 </head>
 
-<body>
+<body onclick="bodyClick()">
     <div id="divHeader">
         <script>
             $('#divHeader').load('../resource/header.html');
