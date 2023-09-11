@@ -63,6 +63,33 @@
             bottom: 0;
             margin-bottom: 0;
         }
+
+        /* #popUserInfoPreview {
+            min-width: 600px;
+        } */
+
+        .popover {
+            max-width: 300px;
+        }
+
+        .imgAvatar {
+            width: 50px;
+            height: 50px;
+            /* max-height: 540px;
+            min-height: 540px; */
+            /* display: inline-block;
+            vertical-align: middle; */
+            object-fit: cover;
+        }
+
+        .userInfoTitle {
+            min-height: 30px;
+            line-height: 30px;
+        }
+
+        .userInfoDashboard {
+            text-align: right;
+        }
     </style>
     <script src="/resource/js/jquery-3.6.0.min.js"></script>
     <script src="/resource/js/bootstrap.min.js"></script>
@@ -131,10 +158,10 @@
                     '<span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.brief + '</span>' +
                     '<p class="contextInfo">' +
                     '<span><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;' +
-                    '<span id="popUser' + ran.substring(2) + context.user + '" class="popoverFocus" tabindex="0" data-toggle="popover" onclick="popUserInfoPreview(this)">' + context.user + '</span>' +
+                    '<span id="popUser' + ran.substring(2) + '" class="popoverShow" tabindex="0" data-toggle="popover" onclick="popUserInfoPreview(this)">' + context.user + '</span>' +
                     '</span>' +
                     '&nbsp;&nbsp;' +
-                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;' +
+                    '<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>&nbsp;' +
                     context.update_time +
                     '</p>' +
                     '</div>' +
@@ -186,14 +213,35 @@
                 var popoverPlacement = clientY > screenHeight / 2 ? "top" : "bottom";
 
                 // 弹出框显示的内容
-                var spanStr = "<span>" + obj.innerText + "</span>";
+                var spanStr = '<img class="img-circle imgAvatar" src="http://mctest.ultra.wang:8124/blog/context/downloadImage?image=thumbnail_e7ef20004d784a8f8230b0ef13164576.jpg" alt="头像">' +
+                    "<span>" + obj.innerText + "</span>";
 
+                var userInfoInnerHtml = '<div id="popUserInfoPreview" class="media">' +
+                    '<div class="media-left">' +
+                    // '<a href="#">' +
+                    '<img class="img-circle imgAvatar" src="http://mctest.ultra.wang:8124/blog/context/downloadImage?image=thumbnail_e7ef20004d784a8f8230b0ef13164576.jpg" alt="头像">' +
+                    // '</a>' +
+                    '</div>' +
+                    '<div class="media-body">' +
+                    '<h4 class="media-heading userInfoTitle">sefvdx</h4>' +
+                    '<span>山外青山楼外楼 唱跳Rap打篮球</span>' +
+                    '</div>' +
+                    '</div>' +
+
+                    '<h3 class="userInfoDashboard"><small>' +
+                    // '<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;sefvdx@ultra.wang&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;29&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;昨天' +
+                    '</small></h3> ' +
+
+
+                    '';
                 // 弹出框初始化并显示
                 $('#' + obj.id + '').popover({
                     animation: true,
                     html: true,
                     container: "body",
-                    content: "<div id='popUserInfoPreview'>" + spanStr + "</div>",
+                    content: userInfoInnerHtml,
                     placement: popoverPlacement,
                     trigger: "manual"   // 手动trigger
                 }).popover('show');
@@ -202,19 +250,22 @@
 
         // 隐藏名片弹出框
         function hidePopover() {
-            var popover = $('body').find('.popover'); // 获取popover弹出框元素
-            var target = $(event.target);   // 获取当前点击的元素
-            var bool = true;
-            for (var i = 0; i < popover.length; i++) {
-                if (popover[i] === event.target) { // 判断点击的元素是否在popover中
-                    bool = false;
-                } else if (target.hasClass('popoverFocus')) {   // 判断点击的元素是不是自身
-                    bool = false;
+            // 获取当前点击的元素, 如果点击的是弹出框名字就不管
+            var target = $(event.target);
+            if (target.hasClass('popoverShow')) {
+                return;
+            }
+
+            // 获取点击元素的父亲爷爷, 如果有popover就不管
+            var targetParents = target.parents();
+            for (var i = 0; i < targetParents.length; i++) {
+                if (targetParents[i].className.includes('popover')) {
+                    return;
                 }
             }
-            if (bool && popover.length > 0) {
-                $('body').find('.popover').popover('destroy');  // 直接销毁, 反正还会再初始化
-            }
+
+            // 直接销毁, 反正还会再初始化
+            $('body').find('.popover').popover('destroy');
         }
     </script>
 </head>
