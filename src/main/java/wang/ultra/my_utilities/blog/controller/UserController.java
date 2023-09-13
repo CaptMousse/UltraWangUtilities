@@ -27,10 +27,6 @@ public class UserController {
     @Autowired
     UserLoginRecordService userLoginRecordService;
 
-    public UserController() {
-//        UsernameCacheMap usernameCacheMap = new UsernameCacheMap();
-    }
-
     @PostMapping("/login")
     public AjaxUtils login(String loginInfo, String captchaId, String captcha, HttpSession session, HttpServletRequest request) {
         // 获取已保存的验证码
@@ -134,6 +130,5 @@ public class UserController {
         } else {
             return AjaxUtils.failed(false);
         }
-
     }
 }

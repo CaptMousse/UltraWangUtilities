@@ -37,7 +37,7 @@ public class UserLoginInfoService {
     public Map<String, String> userLoginSearchByUsername(String username) {
         List<Map<String, Object>> userList = userLoginInfoMapper.userLoginSearchByUsername(username);
 
-        if (userList.size() < 1) {
+        if (userList.isEmpty()) {
             return null;
         }
 

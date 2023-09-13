@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.blog.mapper.UserPersonalInfoMapper">
+    <select id="getUserInfoByUsername" resultType="map">
+        select info.*, record.record_time from user_login_record record
+        left join user_personal_info info on info.username = record.username
+        where 1 = 1
+        and record.username = #{username}
+        order by record_time desc
+        limit 1
+    </select>
+
+</mapper>

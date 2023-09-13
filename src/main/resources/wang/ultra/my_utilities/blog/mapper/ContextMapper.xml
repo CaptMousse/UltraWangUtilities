@@ -55,5 +55,8 @@
         order by context_priority desc, update_time desc
         limit 3
     </select>
+    <select id="getUserContexts" resultType="String">
+        select count(*) from context_files where user = #{username}
+    </select>
 
 </mapper>

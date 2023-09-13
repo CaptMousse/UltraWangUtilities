@@ -29,4 +29,6 @@ public interface ContextMapper {
      * @return
      */
     List<Map<String, Object>> contextListRecommendIn3();
+
+    String getUserContexts(String username);
 }

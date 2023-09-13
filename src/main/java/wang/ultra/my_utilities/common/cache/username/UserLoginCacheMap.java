@@ -47,6 +47,21 @@ public class UserLoginCacheMap {
         return cacheMap.containsKey(loginToken);
     }
 
+    /**
+     * 检查用户名是否在线
+     * @param username
+     * @return
+     */
+    public boolean hasLogon(String username) {
+        for (String uuid : cacheMap.keySet()) {
+            UserLoginRecordEntity entity = cacheMap.get(uuid);
+            if (username.equals(entity.getUsername())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String userLogin(String username, String ipAddress) {
         String loginToken = StringUtils.getMyUUID();
         UserLoginRecordEntity entity = new UserLoginRecordEntity(username, "用户登入", ipAddress);

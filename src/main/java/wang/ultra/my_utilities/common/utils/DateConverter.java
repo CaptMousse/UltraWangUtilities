@@ -68,7 +68,6 @@ public class DateConverter {
     }
 
     /**
-     *
      * @param date 限定格式: 2023-08-23 21:32:49
      * @return
      */
@@ -79,5 +78,30 @@ public class DateConverter {
         } catch (ParseException e) {
             return 0;
         }
+    }
+
+    /**
+     * 获取x天前, x小时前
+     * @param time
+     * @return
+     */
+    public static String getTimeAgo(String time) {
+        long millisTimeAgo = (System.currentTimeMillis() - getMillis(time)) / 1000;
+
+        String timeAgo;
+        if (millisTimeAgo > 365 * 24 * 60 * 60) {
+            timeAgo = (int) (millisTimeAgo / (365 * 24 * 60 * 60)) + "年前";
+        } else if (millisTimeAgo > 24 * 60 * 60) {
+            timeAgo = (int) (millisTimeAgo / (24 * 60 * 60)) + "天前";
+        } else if (millisTimeAgo > 60 * 60) {
+            timeAgo = (int) (millisTimeAgo / (60 * 60)) + "小时前";
+        } else if (millisTimeAgo > 60) {
+            timeAgo = (int) (millisTimeAgo / (60)) + "分前";
+        } else if (millisTimeAgo > 1) {
+            timeAgo = millisTimeAgo + "秒前";
+        } else {
+            timeAgo = "1秒前";
+        }
+        return timeAgo;
     }
 }
