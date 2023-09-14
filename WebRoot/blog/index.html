@@ -206,35 +206,29 @@
 
         // 显示名片弹出框
         function popUserInfoPreview(obj) {
+            var userInfo = ajax('GET', 'blog/user/getUserInfo?username=' + obj.innerText, false);
+            var thumbnail = insertStr(userInfo.avatar_img_location, 33, "thumbnail_");    // 缩略图
+            
             if ($('body').find('.popover').length <= 0) {
                 // 动态调节弹出框的方向
                 var screenHeight = document.documentElement.clientHeight;
                 var clientY = event.clientY;
                 var popoverPlacement = clientY > screenHeight / 2 ? "top" : "bottom";
 
-                // 弹出框显示的内容
-                var spanStr = '<img class="img-circle imgAvatar" src="http://mctest.ultra.wang:8124/blog/context/downloadImage?image=thumbnail_e7ef20004d784a8f8230b0ef13164576.jpg" alt="头像">' +
-                    "<span>" + obj.innerText + "</span>";
-
+                // 弹出框正文
                 var userInfoInnerHtml = '<div id="popUserInfoPreview" class="media">' +
                     '<div class="media-left">' +
-                    // '<a href="#">' +
-                    '<img class="img-circle imgAvatar" src="http://mctest.ultra.wang:8124/blog/context/downloadImage?image=thumbnail_e7ef20004d784a8f8230b0ef13164576.jpg" alt="头像">' +
-                    // '</a>' +
+                    '<img class="img-circle imgAvatar" src="' + getAddress() + thumbnail + '" alt="头像">' +
                     '</div>' +
                     '<div class="media-body">' +
-                    '<h4 class="media-heading userInfoTitle">sefvdx</h4>' +
-                    '<span>山外青山楼外楼 唱跳Rap打篮球</span>' +
+                    '<h4 class="media-heading userInfoTitle">' + userInfo.username + '</h4>' +
+                    '<span>' + userInfo.brief + '</span>' +
                     '</div>' +
                     '</div>' +
-
                     '<h3 class="userInfoDashboard"><small>' +
-                    // '<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;sefvdx@ultra.wang&nbsp;&nbsp;&nbsp;&nbsp;' +
-                    '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;29&nbsp;&nbsp;&nbsp;&nbsp;' +
-                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;昨天' +
+                    '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;' + userInfo.contexts_count + '&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;' + userInfo.record_time + 
                     '</small></h3> ' +
-
-
                     '';
                 // 弹出框初始化并显示
                 $('#' + obj.id + '').popover({
