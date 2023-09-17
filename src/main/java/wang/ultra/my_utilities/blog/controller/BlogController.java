@@ -98,6 +98,55 @@ public class BlogController {
         };
     }
 
+    @PostMapping("/upload/updateContext")
+    public AjaxUtils upgradeContext(String contextId, String title, String context, String coverImgLocation, String brief, String contextPriority, String ifPrivate, HttpServletRequest request) {
+        if (title == null || title.trim().isEmpty()) {
+            return AjaxUtils.failed("标题为空! ");
+        }
+        if (context == null || context.trim().isEmpty()) {
+            return AjaxUtils.failed("正文为空! ");
+        }
+
+        int priority;
+        try {
+            priority = Integer.parseInt(contextPriority);
+        } catch (Exception e) {
+            return AjaxUtils.failed("优先级输入错误! ");
+        }
+        int isPrivate;
+        try {
+            isPrivate = Integer.parseInt(ifPrivate);
+        } catch (Exception e) {
+            return AjaxUtils.failed("是否私密输入错误! ");
+        }
+
+
+
+        UserLoginCacheMap userLoginCacheMap = new UserLoginCacheMap();
+        String username = userLoginCacheMap.getLoginUser(request.getHeader("LoginToken"));
+        if (username == null || username.isEmpty()) {
+            return AjaxUtils.failed("请重新登录! ");
+        }
+
+        ContextEntity contextEntity = new ContextEntity();
+        contextEntity.setUuid(contextId);
+        contextEntity.setTitle(title);
+        contextEntity.setCoverImgLocation(coverImgLocation);
+        contextEntity.setBrief(brief);
+        contextEntity.setContextPriority(priority);
+        contextEntity.setIfPrivate(isPrivate);
+        contextEntity.setUser(username);
+
+        int result = blogContextService.contextUpgrade(contextEntity, context);
+
+        return switch (result) {
+            case -1 -> AjaxUtils.failed("保存失败! ");
+            case 0 -> AjaxUtils.success("保存成功! ", "UPDATE_SUCCESS");
+            default -> AjaxUtils.success("保存约等于成功! ");
+        };
+
+    }
+
     @PostMapping("/upload/uploadImage")
     public AjaxUtils upload(MultipartFile image, String imageName, HttpServletRequest request) {
         // 根据LoginToken获取用户名

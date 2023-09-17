@@ -24,8 +24,6 @@ public class BlogContextService {
 
     public int contextUpload(ContextEntity contextEntity, String context) {
 
-        
-
         // 为了防止重复提交, UUID由前台提供
         // String uuid = StringUtils.getMyUUID();
         // contextEntity.setUuid(uuid);
@@ -39,12 +37,18 @@ public class BlogContextService {
 
         // 写入文件
         String fileName = contextEntity.getUuid() + ".html";
-
         String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
-        int intFlag = FileIOUtils.createFile(subFileFolder, fileName, 1, context);
-        System.out.println("intFlag = " + intFlag);
+        return FileIOUtils.createFile(subFileFolder, fileName, 1, context);
+    }
 
-        return intFlag;
+    public int contextUpgrade(ContextEntity entity, String context) {
+        entity.setUpdate_time(DateConverter.getTime());
+        contextMapper.contextUpgrade(entity);
+
+        // 写入文件
+        String fileName = entity.getUuid() + ".html";
+        String subFileFolder = ConstantFromFile.getFileFolder() + File.separator + "Blog" + File.separator + "contexts";
+        return FileIOUtils.createFile(subFileFolder, fileName, 1, context);
     }
 
     /**

@@ -20,7 +20,7 @@
         function init() {
             if (!checkIfLogin()) {
                 commonUtil.message('需要登录! ', 'danger', 2000);
-                setTimeout(function () { window.location = "UserLogin.html?from=ContextNew.html"; }, 3000);
+                setTimeout(function () { window.location = "UserLogin.html?from=index.html"; }, 3000);
                 return;
             }
 
@@ -28,9 +28,11 @@
 
             loadTinyMCE();
         }
+        
+        var uuid;
         function loadContext() {
             var params = new URLSearchParams(location.search);
-            var uuid = params.get("uuid");
+            uuid = params.get("id");
             if (uuid == null || uuid == "undefined" || uuid.trim() == "") {
                 commonUtil.message('该文章不存在! ', 'danger', 2000);
                 setTimeout(function () { window.location = "Context.html"; }, 3000);
@@ -45,7 +47,7 @@
 
             document.getElementById("divCoverImg").innerHTML = '<img id="coverImgShow" src=' + (getAddress() + context.cover_img_location) + ' alt="封面" style="max-width: 100%;">';
             document.getElementById("title").value = context.title;
-            document.getElementById("tinyEditor").value = context.context;
+            document.getElementById("tinyEditor").value = Base64.decode(context.context);
             document.getElementById("brief").value = context.brief;
             document.getElementById("contextPriority").value = context.context_priority;
             document.getElementById("ifPrivate").value = context.if_private;
@@ -130,14 +132,14 @@
             }
 
             var ifPrivate = document.getElementById("ifPrivate").value;
+            formData.append('contextId', uuid);   
             formData.append('title', title);                        // 标题
-            formData.append('context', tinyContext);                // 正文
-            console.log("coverImgLocation = " + coverImgLocation);
+            formData.append('context', Base64.encode(tinyContext)); // 正文
             formData.append('coverImgLocation', coverImgLocation);  // 封面
             formData.append('brief', brief);                        // 简介
             formData.append('contextPriority', contextPriority);    // 优先级
             formData.append('ifPrivate', ifPrivate);                // 私密
-            var result = ajax("post", "blog/context/upload/uploadContext", false, formData);
+            var result = ajax("post", "blog/context/upload/updateContext", false, formData);
 
             if (result == 'SAVE_SUCCESS') {
                 window.location.href = "index.html";

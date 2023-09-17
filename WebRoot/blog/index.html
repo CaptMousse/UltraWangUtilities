@@ -170,13 +170,15 @@
             if (pagePages == 1) {
                 document.getElementById("pagePrevious").classList.add("disabled");
                 document.getElementById("pageNext").classList.add("disabled");
-            } else if (pageNum == 1) {
-                document.getElementById("pagePrevious").classList.add("disabled");
-            } else if (pageNum == pagePages) {
-                document.getElementById("pageNext").classList.add("disabled");
             } else {
-                document.getElementById("pagePrevious").classList.remove("disabled");
-                document.getElementById("pageNext").classList.remove("disabled");
+                if (pageNum == 1) {
+                    document.getElementById("pagePrevious").classList.add("disabled");
+                } else if (pageNum == pagePages) {
+                    document.getElementById("pageNext").classList.add("disabled");
+                } else {
+                    document.getElementById("pagePrevious").classList.remove("disabled");
+                    document.getElementById("pageNext").classList.remove("disabled");
+                }
             }
         }
 
@@ -203,8 +205,8 @@
         // 显示名片弹出框
         function popUserInfoPreview(obj) {
             var userInfo = ajax('GET', 'blog/user/getUserInfo?username=' + obj.innerText, false);
-            var thumbnail = insertStr(userInfo.avatar_img_location, 33, "thumbnail_");    // 缩略图
-            
+            var thumbnail = insertStr(userInfo.avatar_img_location, 33, "thumbnail_");    // 头像缩略图
+
             if ($('body').find('.popover').length <= 0) {
                 // 动态调节弹出框的方向
                 var screenHeight = document.documentElement.clientHeight;
@@ -223,7 +225,7 @@
                     '</div>' +
                     '<h3 class="userInfoDashboard"><small>' +
                     '<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;' + userInfo.contexts_count + '&nbsp;&nbsp;&nbsp;&nbsp;' +
-                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;' + userInfo.record_time + 
+                    '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>&nbsp;' + userInfo.record_time +
                     '</small></h3> ' +
                     '';
                 // 弹出框初始化并显示

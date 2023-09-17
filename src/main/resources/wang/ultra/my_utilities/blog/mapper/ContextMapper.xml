@@ -9,6 +9,18 @@
         </foreach>
     </insert>
 
+    <update id="contextUpgrade" parameterType="wang.ultra.my_utilities.blog.entity.ContextEntity">
+        update context_files set
+        title = '${title}',
+        cover_img_location = '${coverImgLocation}',
+        brief = '${brief}',
+        context_priority = '${contextPriority}',
+        if_private = '${ifPrivate}',
+        update_time = '${update_time}',
+        status = '${status}'
+        where uuid = '${uuid}'
+    </update>
+
     <delete id="contextDelete">
         delete from context_files where uuid = #{uuid}
     </delete>
@@ -56,7 +68,7 @@
         limit 3
     </select>
     <select id="getUserContexts" resultType="String">
-        select count(*) from context_files where user = #{username}
+        select count(*) from context_files where status = 0 and user = #{username}
     </select>
 
 </mapper>

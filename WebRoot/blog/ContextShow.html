@@ -116,7 +116,7 @@
             var uuid = params.get("id");
             if (uuid == null || uuid == "undefined" || uuid.trim() == "") {
                 commonUtil.message('该文章不存在! ', 'danger', 2000);
-                setTimeout(function () { window.location = "Context.html"; }, 3000);
+                setTimeout(function () { window.location = "index.html"; }, 3000);
                 return;
             }
             var context = ajax("get", "blog/context/contextRead?contextId=" + uuid, false);

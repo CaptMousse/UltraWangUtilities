@@ -9,6 +9,8 @@ public interface ContextMapper {
 
     void contextAdd(List<ContextEntity> list);
 
+    void contextUpgrade(ContextEntity entity);
+
     void contextDelete(String uuid);
 
     // void contextAmountCount(String amount, String uuid);
@@ -16,6 +18,7 @@ public interface ContextMapper {
     void contextTitleUpdate(String title, String update_time, String uuid);
 
     void contextUpdate(String update_time, String uuid);
+
     void contextAmount(String uuid);
 
     List<Map<String, Object>> contextList();
@@ -26,6 +29,7 @@ public interface ContextMapper {
 
     /**
      * 获得三个推荐置顶(优先级最高)
+     *
      * @return
      */
     List<Map<String, Object>> contextListRecommendIn3();
