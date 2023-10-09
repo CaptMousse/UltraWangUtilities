@@ -122,7 +122,7 @@
             var result = ajax("post", "blog/user/login", false, formData);
             console.log("result = " + result);
             if (result != null && result != "undefined") {
-                docCookies.setItem("LoginToken", result);
+                docCookies.setItem("LoginToken", result, null, "/", null, null);
                 window.location = loginFrom;
             } else {
                 getNewCaptcha();

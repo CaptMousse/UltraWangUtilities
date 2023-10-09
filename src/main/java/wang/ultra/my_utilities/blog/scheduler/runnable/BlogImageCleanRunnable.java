@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.blog.runnable;
+package wang.ultra.my_utilities.blog.scheduler.runnable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class BlogImageCleanRunnable implements Runnable {
          */
 
         String createTime = DateConverter.getNoSymbolTime(System.currentTimeMillis() - (1000 * 3600 * 24 * 7));
-        System.out.println("createTime = " + createTime);
+//        System.out.println("createTime = " + createTime);
 
         FileTransferMapper fileTransferMapper = SpringBeanUtils.getBean(FileTransferMapper.class);
         List<Map<String, Object>> resultList = fileTransferMapper.getFileByCleaner(createTime);

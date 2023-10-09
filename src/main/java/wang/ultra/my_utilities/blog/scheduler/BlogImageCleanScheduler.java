@@ -1,6 +1,6 @@
 package wang.ultra.my_utilities.blog.scheduler;
 
-import wang.ultra.my_utilities.blog.runnable.BlogImageCleanRunnable;
+import wang.ultra.my_utilities.blog.scheduler.runnable.BlogImageCleanRunnable;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

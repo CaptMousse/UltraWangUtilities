@@ -61,15 +61,17 @@
     <script>
         var date = new Date();
         var month = date.getMonth() + 1;
-        if (month.length = 1) {
+        if (month.length == 1) {
             month = "0" + month;
         }
         var day = date.getDay() + 1;
-        if (day.length = 1) {
+        if (day.length == 1) {
             day = "0" + day;
         }
         var dateBegin = (date.getFullYear() - 1) + "-" + month + "-" + day;
+        console.log("dateBegin = " + dateBegin);
         var dateEnd = date.getFullYear() + "-" + month + "-" + day;
+        console.log("dateEnd = " + dateEnd);
         $('#dateBegin').val(dateBegin);
         $('#dateEnd').val(dateEnd);
         var stockNo = $("input[name='exchange']:checked").val() + $('#stockNo').val();

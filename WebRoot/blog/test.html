@@ -1,64 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
-    <script src="/resource/js/jquery-3.6.0.min.js"></script>
-    <script src="/resource/js/bootstrap.min.js"></script>
-    <script>
-        function popShow(obj) {
-
-            if ($('body').find('.popover').length > 0) {
-                $('#' + obj.id + '').popover('destroy');
-            }
-
-            if ($('body').find('.popover').length <= 0) {
-                var foods = document.getElementsByName('food');
-                var foodsChecked = 0;
-                for (var i in foods) {
-                    if (foods[i].checked) {
-                        foodsChecked++;
-                    }
-                }
-                var result = "可以选择√";
-                if (foodsChecked == 0) {
-                    result = "至少选择一个! ";
-                } else if (foodsChecked > 1) {
-                    result = "只能选择一个! ";
-                }
-                var popContext = "<div>" + result + "</div>";
-                $('#' + obj.id + '').popover({
-                    animation: true,
-                    html: true,
-                    container: "body",
-                    content: popContext,
-                    placement: "bottom",
-                    trigger: "manual"
-                }).popover('show');
-            }
-        }
-    </script>
 </head>
-
 <body>
-    <div style="text-align: center;">
-        <br>
-        <br>
-        <br>
-        <div>
-            <input type="checkbox" id="mifan" name="food" /><label for="mifan">米饭</label>
-            <input type="checkbox" id="mantou" name="food" /><label for="mantou">馒头</label>
-            <input type="checkbox" id="miantiao" name="food" /><label for="miantiao">面条</label>
-        </div>
-        <div>
-            <input type="button" id="selectBtn" class="popFocus" tabindex="0" data-toggle="popover" title="选择提示"
-                value="选择提示" onclick="popShow(this)">
-        </div>
-    </div>
+    <input type="button" value="启动" onclick="startTask()">
 </body>
-
 </html>

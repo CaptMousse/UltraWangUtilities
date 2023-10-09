@@ -114,6 +114,7 @@ function showModal() {
 
 function checkIfLogin() {
     if (docCookies.hasItem("LoginToken")) {
+        // 从Cookie中获取token去比对
         var result = ajax("get", "blog/user/ifLogin?loginToken=" + docCookies.getItem("LoginToken"), false);
         if (result) {
             return true;

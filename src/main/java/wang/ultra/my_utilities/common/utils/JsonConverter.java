@@ -37,4 +37,20 @@ public class JsonConverter {
         }
         return tempMap;
     }
+
+    public static Map<String, Object> JsonStringToMapObject(String jsonString) throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<String, Object> tempMap = objectMapper.readValue(jsonString, Map.class);
+        return tempMap;
+    }
+
+    public static List<Object> JsonStringToListObject(String jsonString) throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        return objectMapper.readValue(jsonString, List.class);
+    }
 }

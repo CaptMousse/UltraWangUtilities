@@ -1,73 +1,80 @@
 server:
-    port: 8125
+  port: 8125
 
 spring:
-    servlet:
-        multipart:
-            max-file-size: 100MB
-            max-request-size: 100MB
-    datasource:
-        zbhdscheduler:
-            username: phpmyadmin
-            password: SEFvdx521`121.41.75.41
-#            jdbc-url: jdbc:mysql://192.168.1.3:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            driver-class-name: com.mysql.cj.jdbc.Driver
-        idiompedia:
-            username: phpmyadmin
-            password: SEFvdx521`
-#            jdbc-url: jdbc:mysql://192.168.1.3:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            driver-class-name: com.mysql.cj.jdbc.Driver
-        monitor:
-            username: phpmyadmin
-            password: SEFvdx521`
-#            jdbc-url: jdbc:mysql://192.168.1.3:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            driver-class-name: com.mysql.cj.jdbc.Driver
-        filetransfer:
-            username: phpmyadmin
-            password: SEFvdx521`
-#            jdbc-url: jdbc:mysql://192.168.1.3:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            driver-class-name: com.mysql.cj.jdbc.Driver
-        blog:
-            username: phpmyadmin
-            password: SEFvdx521`
-#            jdbc-url: jdbc:mysql://192.168.1.3:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            jdbc-url: jdbc:mysql://121.41.75.41:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-            driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    zbhdscheduler:
+      username: phpmyadmin
+      password: SEFvdx521`
+      #            jdbc-url: jdbc:mysql://192.168.1.3:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://121.41.75.41:3306/ZBHD_Scheduler?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    idiompedia:
+      username: phpmyadmin
+      password: SEFvdx521`
+      #            jdbc-url: jdbc:mysql://192.168.1.3:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://121.41.75.41:3306/idiompedia?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    monitor:
+      username: phpmyadmin
+      password: SEFvdx521`
+      #            jdbc-url: jdbc:mysql://192.168.1.3:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://121.41.75.41:3306/monitor?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    filetransfer:
+      username: phpmyadmin
+      password: SEFvdx521`
+      #            jdbc-url: jdbc:mysql://192.168.1.3:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://121.41.75.41:3306/file_transfer?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    blog:
+      username: phpmyadmin
+      password: SEFvdx521`
+      #            jdbc-url: jdbc:mysql://192.168.1.3:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://121.41.75.41:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    stockexchange:
+      username: phpmyadmin
+      password: SEFvdx521`
+      #            jdbc-url: jdbc:mysql://192.168.1.3:3306/stock_trading_data?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://121.41.75.41:3306/stock_trading_data?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
 
 
 
 
 logging:
-    level:
-        wang.ultra.my_utilities.zbhd_scheduler.mapper: trace
-        wang.ultra.my_utilities.idiompedia.mapper: trace
-        wang.ultra.my_utilities.common.monitor.mapper: trace
-        # wang.ultra.my_utilities.common.download.mapper: trace
-        # wang.ultra.my_utilities.blog.mapper: trace
+  level:
+    wang.ultra.my_utilities.zbhd_scheduler.mapper: trace
+    wang.ultra.my_utilities.idiompedia.mapper: trace
+    wang.ultra.my_utilities.common.monitor.mapper: trace
+    # wang.ultra.my_utilities.common.download.mapper: trace
+    # wang.ultra.my_utilities.blog.mapper: trace
+    wang.ultra.my_utilities.stock_exchange.mapper: trace
 
 
-    # mybatis:
-    # mapper-locations: classpath:wang.ultra.utilities.zbhd_scheduler.mapper/*Mapper.xml
-    # type-aliases-package: wang.ultra.utilities.zbhd_scheduler.entity
+  # mybatis:
+  # mapper-locations: classpath:wang.ultra.utilities.zbhd_scheduler.mapper/*Mapper.xml
+  # type-aliases-package: wang.ultra.utilities.zbhd_scheduler.entity
 
 PageHelper:
-    helper-dialect: mysql
- 
-    # 分页参数合理化
-    # 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页；
-    # 禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据
-    reasonable: true
- 
-    # 支持通过 Mapper接口参数来传递分页参数
-    support-methods-arguments: true
- 
-    # 为了支持startPage(Object params)方法，增加了该参数来配置参数映射，用于从对象中根据属性名取值
-    params: countSql
+  helper-dialect: mysql
 
-    # 默认值为 false，当该参数设置为 true 时，如果 pageSize=0 或者 RowBounds.limit = 0 就会查询出全部的结果（相当于没有执行分页查询，但是返回结果仍然是 Page 类型）
-    page-size-zero: true
+  # 分页参数合理化
+  # 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页；
+  # 禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据
+  reasonable: true
+
+  # 支持通过 Mapper接口参数来传递分页参数
+  support-methods-arguments: true
+
+  # 为了支持startPage(Object params)方法，增加了该参数来配置参数映射，用于从对象中根据属性名取值
+  params: countSql
+
+  # 默认值为 false，当该参数设置为 true 时，如果 pageSize=0 或者 RowBounds.limit = 0 就会查询出全部的结果（相当于没有执行分页查询，但是返回结果仍然是 Page 类型）
+  page-size-zero: true
 

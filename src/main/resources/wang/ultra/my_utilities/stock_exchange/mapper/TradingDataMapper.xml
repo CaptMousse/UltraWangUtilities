@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.stock_exchange.mapper.TradingDataMapper">
+
+    <insert id="macdAdd" parameterType="list">
+        insert ignore into indicator_macd (id, stock_id, indicator_date, dea, diff, macd ) values
+        <foreach collection="list" separator="," item="MacdEntity">
+            (
+                '${MacdEntity.id}',
+                '${MacdEntity.stockId}',
+                '${MacdEntity.indicatorDate}',
+                '${MacdEntity.dea}',
+                '${MacdEntity.diff}',
+                '${MacdEntity.macd}'
+            )
+        </foreach>
+    </insert>
+
+    <insert id="maAdd" parameterType="list">
+        insert ignore into indicator_ma (id, stock_id, indicator_date, ma3, ma5, ma10, ma15, ma20, ma30, ma60, ma120, ma200, ma250) values
+        <foreach collection="list" separator="," item="MaEntity">
+            (
+            '${MaEntity.id}',
+            '${MaEntity.stockId}',
+            '${MaEntity.indicatorDate}',
+            '${MaEntity.ma3}',
+            '${MaEntity.ma5}',
+            '${MaEntity.ma10}',
+            '${MaEntity.ma15}',
+            '${MaEntity.ma20}',
+            '${MaEntity.ma30}',
+            '${MaEntity.ma60}',
+            '${MaEntity.ma120}',
+            '${MaEntity.ma200}',
+            '${MaEntity.ma250}'
+            )
+        </foreach>
+    </insert>
+
+    <select id="getStockSyncList" resultType="map" >
+        select * from stock_data where if_sync = '1'
+    </select>
+</mapper>

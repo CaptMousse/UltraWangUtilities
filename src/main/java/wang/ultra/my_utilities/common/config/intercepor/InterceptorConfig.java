@@ -37,6 +37,7 @@ public class InterceptorConfig implements WebMvcConfigurer{
         blogLoginAddPathList.add("/blog/context/upload/**");
         blogLoginAddPathList.add("/blog/user/ifLogin");
         blogLoginAddPathList.add("/blog/user/logout");
+        blogLoginAddPathList.add("/common/scheduler/quartz/**");
         List<String> blogLoginExcludePathList = new ArrayList<>();
 //        blogLoginExcludePathList.add("/blog/login");
 //        blogLoginExcludePathList.add("/blog/logout");

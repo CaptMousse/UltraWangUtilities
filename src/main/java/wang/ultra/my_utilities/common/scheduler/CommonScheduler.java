@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.schedules;
+package wang.ultra.my_utilities.common.scheduler;
 
 import wang.ultra.my_utilities.aliyun_ddns_update.runnable.DdnsMonitorRunnable;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
