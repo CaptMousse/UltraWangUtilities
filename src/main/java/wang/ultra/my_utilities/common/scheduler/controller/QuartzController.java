@@ -1,20 +1,27 @@
-package wang.ultra.my_utilities.common.scheduler.quartz;
+package wang.ultra.my_utilities.common.scheduler.controller;
 
+import org.quartz.Job;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wang.ultra.my_utilities.common.scheduler.service.QuartzService;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
-import wang.ultra.my_utilities.stock_exchange.service.StockTradingDataService;
-import wang.ultra.my_utilities.stock_exchange.tasks.StockNowTask;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/common/scheduler/quartz")
 public class QuartzController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(QuartzController.class);
 
     @Autowired
     QuartzService quartzService;
@@ -58,6 +65,31 @@ public class QuartzController {
         }
 
         return AjaxUtils.success(returnList);
+    }
+
+    @GetMapping("manualStart")
+    public AjaxUtils manualStart(String jobName) {
+        Map<String, String> jobMap = quartzService.getJob(jobName);
+        if (jobName == null || jobName.isEmpty() || jobMap == null || jobMap.isEmpty()) {
+            return AjaxUtils.failed("任务名错误! ");
+        }
+
+        Thread thread = new Thread(() -> {
+            Class<Job> clazz;
+            try {
+                String jobClass = jobMap.get("job_class");
+                clazz = (Class<Job>) Class.forName(jobClass);
+                Method method = clazz.getMethod("runJob");
+                method.invoke(clazz.newInstance());
+            } catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException |
+                     InstantiationException | NoSuchMethodException e) {
+            LOG.info("手动执行 " + jobName + " 发生错误!!! ");
+            }
+        });
+        thread.setName("手动执行 " + jobName + " 的多线程入口");
+        thread.start();
+
+        return AjaxUtils.success("手动执行" + jobName + " 已开始... ");
     }
 
     @GetMapping("start")

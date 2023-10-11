@@ -2,22 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="wang.ultra.my_utilities.stock_exchange.mapper.TradingDataMapper">
 
+    <insert id="stockAdd" parameterType="list">
+        insert ignore into stock_data(stock_id, stock_name, exchange_id, if_sync) values
+        <foreach collection="list" separator="," item="StockEntity">
+            (
+            '${StockEntity.stockId}',
+            '${StockEntity.stockName}',
+            '${StockEntity.exchangeId}',
+            '${StockEntity.ifSync}'
+            )
+        </foreach>
+    </insert>
+
+    <insert id="priceAdd" parameterType="list">
+        insert ignore into indicator_price(id, stock_id, indicator_date, kpj, zgj, zdj, spj, cjl, cje, zf, hsl, zdf, zde) values
+        <foreach collection="list" separator="," item="PriceEntity">
+            (
+            '${PriceEntity.id}',
+            '${PriceEntity.stockId}',
+            '${PriceEntity.indicatorDate}',
+            '${PriceEntity.kpj}',
+            '${PriceEntity.zgj}',
+            '${PriceEntity.zdj}',
+            '${PriceEntity.spj}',
+            '${PriceEntity.cjl}',
+            '${PriceEntity.cje}',
+            '${PriceEntity.zf}',
+            '${PriceEntity.hsl}',
+            '${PriceEntity.zdf}',
+            '${PriceEntity.zde}'
+            )
+        </foreach>
+    </insert>
+
     <insert id="macdAdd" parameterType="list">
         insert ignore into indicator_macd (id, stock_id, indicator_date, dea, diff, macd ) values
         <foreach collection="list" separator="," item="MacdEntity">
             (
-                '${MacdEntity.id}',
-                '${MacdEntity.stockId}',
-                '${MacdEntity.indicatorDate}',
-                '${MacdEntity.dea}',
-                '${MacdEntity.diff}',
-                '${MacdEntity.macd}'
+            '${MacdEntity.id}',
+            '${MacdEntity.stockId}',
+            '${MacdEntity.indicatorDate}',
+            '${MacdEntity.dea}',
+            '${MacdEntity.diff}',
+            '${MacdEntity.macd}'
             )
         </foreach>
     </insert>
 
     <insert id="maAdd" parameterType="list">
-        insert ignore into indicator_ma (id, stock_id, indicator_date, ma3, ma5, ma10, ma15, ma20, ma30, ma60, ma120, ma200, ma250) values
+        insert ignore into indicator_ma (id, stock_id, indicator_date, ma3, ma5, ma10, ma15, ma20, ma30, ma60, ma120,
+        ma200, ma250) values
         <foreach collection="list" separator="," item="MaEntity">
             (
             '${MaEntity.id}',
@@ -37,7 +71,22 @@
         </foreach>
     </insert>
 
-    <select id="getStockSyncList" resultType="map" >
+    <select id="getStockSyncList" resultType="map">
         select * from stock_data where if_sync = '1'
+    </select>
+
+    <select id="getAbstractMa" resultType="map">
+        SELECT indicator_date, spj
+        FROM indicator_price
+        WHERE stock_id = #{stockId}
+        AND indicator_date &lt; #{today}
+        ORDER BY indicator_date DESC LIMIT 9
+    </select>
+    <select id="getYesterdayMa" resultType="map">
+        SELECT ma5, ma10 FROM indicator_ma
+        WHERE stock_id = #{stockId}
+        AND indicator_date &lt; #{today}
+        ORDER BY indicator_date DESC
+        LIMIT 1
     </select>
 </mapper>

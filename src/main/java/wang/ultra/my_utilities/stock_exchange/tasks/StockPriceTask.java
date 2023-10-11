@@ -11,17 +11,14 @@ import wang.ultra.my_utilities.stock_exchange.service.StockTradingDataService;
 import wang.ultra.my_utilities.stock_exchange.utils.TradingDaysUtils;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-public class Stock10DaysMACDTask implements BaseJobService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Stock10DaysMACDTask.class);
+public class StockPriceTask implements BaseJobService {
+    private static final Logger LOG = LoggerFactory.getLogger(StockPriceTask.class);
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
         if (!TradingDaysUtils.getTradingDay()) {
-            LOG.info("今天不是交易日, 不获取近10日的MACD数据... ");
+            LOG.info("今天不是交易日, 不获取今日价格数据... ");
         }
 
         runJob();
@@ -32,14 +29,9 @@ public class Stock10DaysMACDTask implements BaseJobService {
         StockTradingDataService service = SpringBeanUtils.getBean(StockTradingDataService.class);
         List<String> syncStockIdList = service.getSyncStockIdList();
         for (String stockId : syncStockIdList) {
-            LOG.info("获取" + stockId + "近10日的MACD开始...");
-            service.getStockMacdInTenDays(stockId);
-            LOG.info("获取" + stockId + "近10日的MACD结束...");
-            try {   // 接口每分钟限制10次访问
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            LOG.info("获取" + stockId + "的今日价格开始...");
+            service.getPrice(stockId);
+            LOG.info("获取" + stockId + "的今日价格结束...");
         }
     }
 }

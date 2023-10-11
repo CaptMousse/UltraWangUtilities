@@ -9,7 +9,7 @@ function getAddress() {
     var addressIPv6 = "mctest.ultra.wang";
     var addressIPv4 = "121.41.75.41";
 
-    var port = "8125";
+    var port = "8124";
 
     var envAddress = "http://" + addressLocal + ":" + port + "/";
 

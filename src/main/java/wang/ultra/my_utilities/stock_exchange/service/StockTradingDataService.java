@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.ListConverter;
+import wang.ultra.my_utilities.common.utils.StringUtils;
 import wang.ultra.my_utilities.stock_exchange.apis.MairuiApi;
 import wang.ultra.my_utilities.stock_exchange.apis.QtGtimgApi;
 import wang.ultra.my_utilities.stock_exchange.apis.SlzBssJyjlApi;
 import wang.ultra.my_utilities.stock_exchange.entity.MaEntity;
 import wang.ultra.my_utilities.stock_exchange.entity.MacdEntity;
+import wang.ultra.my_utilities.stock_exchange.entity.PriceEntity;
+import wang.ultra.my_utilities.stock_exchange.entity.StockEntity;
 import wang.ultra.my_utilities.stock_exchange.mapper.TradingDataMapper;
 
 import java.util.ArrayList;
@@ -106,8 +109,6 @@ public class StockTradingDataService {
         MairuiApi mairui = new MairuiApi(stockId);
         Map<String, Object> dayMAMap = mairui.getMA("dn");
 
-        System.out.println("dayMAMap = " + dayMAMap);
-
         String maStatus = String.valueOf(dayMAMap.get("status"));
         if ("1".equals(maStatus)) {
             Map<String, Object> dayMADataMap = (Map<String, Object>) dayMAMap.get("data");
@@ -134,9 +135,14 @@ public class StockTradingDataService {
         }
     }
 
-    public void getStockNow(String stockId) {
+    public Map<String, String> getStockNow(String stockId) {
         QtGtimgApi qtApi = new QtGtimgApi(stockId);
         String stockNow = qtApi.getStockNow();
+
+        if (stockNow.contains("none")) {
+            return null;
+        }
+
         stockNow = stockNow.substring(0, stockNow.lastIndexOf("\""));
         stockNow = stockNow.substring(stockNow.lastIndexOf("\"") + 1);
         String[] stockNowArr = stockNow.split("~");
@@ -144,9 +150,9 @@ public class StockTradingDataService {
             交易所
             股票名字
             股票代码
-            当前价格
+            收盘价
             昨收
-            开盘
+            开盘价
             成交量
             外盘
             内盘
@@ -174,8 +180,8 @@ public class StockTradingDataService {
             请求时间
             涨跌
             涨跌%
-            最高
-            最低
+            最高价
+            最低价
             最新价/成交量(手)/成交额
             成交量
             成交额
@@ -197,16 +203,150 @@ public class StockTradingDataService {
             stockNowMap.put(keyArr[i], stockNowArr[i]);
         }
 
-        System.out.println(stockNowMap);
+        return stockNowMap;
     }
 
     /**
      * 获取需要同步的股票的列表
+     * 包含代码, 名称, 交易所等内容
      *
      * @return
      */
     public List<Map<String, String>> getStockSyncList() {
         List<Map<String, Object>> getSyncStockIdList = tradingDataMapper.getStockSyncList();
         return ListConverter.mapValueToString(getSyncStockIdList);
+    }
+
+    /**
+     * 获取需要同步的股票的列表
+     * 只包含股票代码
+     * @return
+     */
+    public List<String> getSyncStockIdList() {
+        List<Map<String, String>> preStockMapList = getStockSyncList();
+        List<String> preStockList = new ArrayList<>();
+        for (Map<String, String> map : preStockMapList) {
+            preStockList.add(map.get("stock_id"));
+        }
+        return preStockList;
+    }
+
+    /**
+     * 持久化股票列表
+     * 默认ifSync=0
+     */
+    public List<String> syncStockList() {
+
+        // 获取已有的列表
+        List<String> syncStockIdList = getSyncStockIdList();
+
+        MairuiApi api = new MairuiApi();
+        List<Map<String, String>> hsList = api.getHSList();
+        List<StockEntity> stockList = new ArrayList<>();
+        List<String> syncList = new ArrayList<>();
+        for (Map<String, String> stockMap : hsList) {
+            String stockId = stockMap.get("dm");
+            // 排除掉已有的股票
+            if (!syncStockIdList.contains(stockId)) {
+                StockEntity entity = new StockEntity();
+                entity.setStockId(stockId);
+                entity.setStockName(stockMap.get("mc"));
+                entity.setExchangeId(stockMap.get("jys"));
+                entity.setIfSync("0");
+                stockList.add(entity);
+                syncList.add(stockId);
+            }
+        }
+        tradingDataMapper.stockAdd(stockList);
+
+        return syncList;
+    }
+
+    /**
+     * 获取历史每日价格
+     * @param stockId
+     */
+    public int getHistoryPrice(String stockId) {
+        LOG.info("获取" + stockId + "的历史价格开始");
+
+        MairuiApi api = new MairuiApi(stockId);
+        List<Map<String, String>> historyPriceList = api.getHistoryPrice("dn");
+
+        if (historyPriceList == null) {
+            return -1;
+        }
+
+        List<PriceEntity> priceList = new ArrayList<>();
+        for (Map<String, String> map : historyPriceList) {
+            PriceEntity entity = new PriceEntity();
+            String indicatorDate = map.get("d").replaceAll("-", "");
+            entity.setId(stockId + indicatorDate);
+            entity.setStockId(stockId);
+            entity.setIndicatorDate(indicatorDate);
+            entity.setKpj(map.get("o"));
+            entity.setZgj(map.get("h"));
+            entity.setZdj(map.get("l"));
+            entity.setSpj(map.get("c"));
+            entity.setCjl(map.get("v"));
+            entity.setCje(map.get("e"));
+            entity.setZf(map.get("zf"));
+            entity.setHsl(map.get("hs"));
+            entity.setZdf(map.get("zd"));
+            entity.setZde(map.get("zde"));
+            priceList.add(entity);
+        }
+
+        tradingDataMapper.priceAdd(priceList);
+        LOG.info("获取" + stockId + "的历史价格成功");
+        return 1;
+    }
+
+    /**
+     * 获取历史每日价格
+     */
+    public void getHistoryPrice() {
+        List<String> syncStockIdList = getSyncStockIdList();
+        for (String stockId : syncStockIdList) {
+            getHistoryPrice(stockId);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * 获取今日价格
+     * @param stockId
+     */
+    public void getPrice(String stockId) {
+        MairuiApi api = new MairuiApi(stockId);
+        Map<String, String> priceMap = api.getPrice("dn");
+        PriceEntity entity = new PriceEntity();
+        String indicatorDate = priceMap.get("d").replaceAll("-", "");
+        entity.setId(stockId + indicatorDate);
+        entity.setStockId(stockId);
+        entity.setIndicatorDate(indicatorDate);
+        entity.setKpj(priceMap.get("o"));
+        entity.setZgj(priceMap.get("h"));
+        entity.setZdj(priceMap.get("l"));
+        entity.setSpj(priceMap.get("c"));
+        entity.setCjl(priceMap.get("v"));
+        entity.setCje(priceMap.get("e"));
+        entity.setZf(priceMap.get("zf"));
+        entity.setHsl(priceMap.get("hs"));
+        entity.setZdf(priceMap.get("zd"));
+        entity.setZde(priceMap.get("zde"));
+        List<PriceEntity> priceList = new ArrayList<>();
+        priceList.add(entity);
+        tradingDataMapper.priceAdd(priceList);
+    }
+
+    public void getPrice() {
+        List<String> syncStockIdList = getSyncStockIdList();
+        for (String stockId : syncStockIdList) {
+            getPrice(stockId);
+        }
     }
 }

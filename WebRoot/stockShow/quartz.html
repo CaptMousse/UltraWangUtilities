@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定时任务控制台</title>
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <script src="../resource/js/jquery-3.6.3.min.js"></script>
+    <script src="/resource/js/bootstrap.min.js"></script>
+    <script src="/resource/js/baseFunction.js"></script>
+    <script>
+        // 初始化方法
+        $(function () {
+            loadJobList();
+        });
+
+
+
+        function loadJobList() {
+
+            // 检查登录
+            if (!checkIfLogin()) {
+                commonUtil.message('需要登录! ', 'danger', 2000);
+                setTimeout(function () {
+                    var url = window.location.pathname;
+                    window.location = "../blog/UserLogin.html?from=.." + url;
+                }, 3000);
+                return;
+            }
+
+            var controller = "common/scheduler/quartz/getAllList";
+            var jobResult = ajax("get", controller, false);
+
+            var tbody = document.getElementById("quartzTableHead").parentNode;
+            var tableTr = document.getElementsByClassName("quartzTableBody");
+
+            for (let i = 1; i <= jobResult.length; i++) {
+                var job = jobResult[i - 1];
+                var jobName = job.JobName;
+                var jobClass = job.JobClass;
+                var cronExpression = job.CronExpression;
+                var jobNote = job.JobNote;
+                var jobStatus = job.JobStatus == "1" ? "已启动" : "已停止";
+                var btnValue = job.JobStatus == "1" ? "停止" : "启动";
+                var btnCtrl = job.JobStatus == "1" ? "op" : "art";
+                var btnClass = job.JobStatus == "1" ? "danger" : "success";
+
+
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement("tr");
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = "quartzTableBody";
+                var inner = "<td>" + i +
+                    "</td><td>" + jobName +
+                    // "</td><td>" + jobClass +
+                    "</td><td>" + cronExpression +
+                    "</td><td>" + jobNote +
+                    "</td><td id='status_" + jobName + "'>" + jobStatus +
+                    "</td><td>" + 
+                        "<input type='button' value='执行一次' class='btn btn-primary btn-xs' onclick='manualStart(\"" + jobName + "\")'>" +
+                        "&nbsp;&nbsp;" + 
+                        "<input type='button' id='btn_" + jobName + "' value='" + btnValue + "' class='btn btn-" + btnClass + " btn-xs' onclick='st" + btnCtrl + "Task(\"" + jobName + "\")'>" +
+                    "</td>";
+                tbody.children[tableTrNum].innerHTML = inner;
+            }
+        }
+
+        function manualStart(jobName) {
+            var controller = "common/scheduler/quartz/manualStart?jobName=" + jobName;
+            var result = ajax("get", controller, false);
+        }
+
+        function startTask(jobName) {
+            document.getElementById("btn_" + jobName).disabled = true;
+            document.getElementById("status_" + jobName).innerHTML = "停止中";
+            var controller = "common/scheduler/quartz/start?jobName=" + jobName;
+            var result = ajax("get", controller, false);
+            if (result == 1) {
+                document.getElementById("status_" + jobName).innerHTML = "启动中";
+                setTimeout(function () { location.reload(); }, 2000);
+            }
+        }
+
+        function stopTask(jobName) {
+            document.getElementById("btn_" + jobName).disabled = true;
+            document.getElementById("status_" + jobName).innerHTML = "启动中";
+            var controller = "common/scheduler/quartz/stop?jobName=" + jobName;
+            var result = ajax("get", controller, false);
+            if (result == 1) {
+                document.getElementById("status_" + jobName).innerHTML = "停止中";
+                setTimeout(function () { location.reload(); }, 2000);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="divHeader">
+        <script>
+            $('#divHeader').load('../resource/header.html');
+            var activeHeader = "stockShow";
+        </script>
+    </div>
+    <div id="divBody">
+        <div class="jumbotron">
+            <div class="container">
+                <h1 title="暂不支持新增和修改" style="text-align: center;">定时任务控制台<br><small>股票收集数据的定时任务列表</small></h1>
+            </div>
+        </div>
+        <div><br></div>
+        <div>
+            <table id="quartzTable" class="table" style="text-align: center;">
+                <tbody>
+                    <tr id="quartzTableHead">
+                        <th style="text-align: center;">序号</th>
+                        <th style="text-align: center;">名称</th>
+                        <!-- <th style="text-align: center;">地址</th> -->
+                        <th style="text-align: center;">Cron表达式</th>
+                        <th style="text-align: center;">备注</th>
+                        <th style="text-align: center;">状态</th>
+                        <th style="text-align: center;">操作</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="divFooter">
+        <script>
+            $('#divFooter').load('../resource/footer.html');
+        </script>
+    </div>
+</body>
+
+</html>

@@ -76,3 +76,6 @@ FileFolder = FileFolder
 
 # 用户登陆过期时间(秒)
 SessionInactiveInterval = 3600
+
+# 股票麦蕊API的Licence
+MairuiApiLicence = 63245b556da38dd039

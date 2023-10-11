@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import wang.ultra.my_utilities.blog.scheduler.BlogImageCleanScheduler;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.scheduler.CommonScheduler;
+import wang.ultra.my_utilities.common.scheduler.controller.ResumeQuartzController;
 
 @SpringBootApplication
 @ServletComponentScan
@@ -24,6 +25,9 @@ public class UtilitiesApplication {
 		// 博客图片清理的定时任务
 		BlogImageCleanScheduler blogImageCleanScheduler = new BlogImageCleanScheduler();
 		blogImageCleanScheduler.imageCleaner();
-	}
 
+		// 定时任务恢复
+		ResumeQuartzController resumeQuartzController = new ResumeQuartzController();
+		resumeQuartzController.resume();
+	}
 }

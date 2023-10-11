@@ -1,5 +1,5 @@
 server:
-  port: 8125
+  port: 8124
 
 spring:
   servlet:
@@ -48,6 +48,9 @@ spring:
 
 
 logging:
+  file:
+    name:
+      Logs/PrintLog.log
   level:
     wang.ultra.my_utilities.zbhd_scheduler.mapper: trace
     wang.ultra.my_utilities.idiompedia.mapper: trace
@@ -55,7 +58,6 @@ logging:
     # wang.ultra.my_utilities.common.download.mapper: trace
     # wang.ultra.my_utilities.blog.mapper: trace
     wang.ultra.my_utilities.stock_exchange.mapper: trace
-
 
   # mybatis:
   # mapper-locations: classpath:wang.ultra.utilities.zbhd_scheduler.mapper/*Mapper.xml

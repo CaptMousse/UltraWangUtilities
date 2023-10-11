@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.common.scheduler.mapper.SchedulerMapper">
+
+    <insert id="add" parameterType="list">
+        insert ignore into sync_scheduler (id, job_name, trigger_name, cron_expression, job_class, status, is_running) values
+        <foreach collection="list" separator="," item="SchedulerEntity">
+            (
+            '${SchedulerEntity.id}',
+            '${SchedulerEntity.jobName}',
+            '${SchedulerEntity.triggerName}',
+            '${SchedulerEntity.cronExpression}',
+            '${SchedulerEntity.jobClass}',
+            '${SchedulerEntity.status}',
+            '${SchedulerEntity.isRunning}'
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateRunningStatus">
+        update sync_scheduler set is_running = #{runningStatus} where job_name = #{jobName}
+    </update>
+
+    <select id="getAllJob" resultType="map">
+        select * from sync_scheduler ORDER BY job_note
+    </select>
+
+    <select id="getRunningJob" resultType="map">
+        select * from sync_scheduler WHERE is_running = '1' ORDER BY job_note
+    </select>
+
+    <select id="getJob" resultType="map">
+        select * from sync_scheduler where job_name = #{jobName}
+    </select>
+</mapper>

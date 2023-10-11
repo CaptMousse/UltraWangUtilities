@@ -96,6 +96,9 @@ public class ConstantFromFile {
     // 用户登陆过期时间(秒)
     private static Integer SessionInactiveInterval;
 
+    // 股票麦蕊API的Licence
+    private static String MairuiApiLicence;
+
     private static Map<String, String> constMap = new HashMap<>();
 
     /**
@@ -150,6 +153,8 @@ public class ConstantFromFile {
             ConstantFromFile.FileFolder = constMap.get("FileFolder");
 
             ConstantFromFile.SessionInactiveInterval = Integer.parseInt(constMap.get("SessionInactiveInterval"));
+
+            ConstantFromFile.MairuiApiLicence = constMap.get("MairuiApiLicence");
 
             LOG.info("配置文件加载成功!");
             return 1;
@@ -305,5 +310,9 @@ public class ConstantFromFile {
 
     public static Integer getSessionInactiveInterval() {
         return SessionInactiveInterval;
+    }
+
+    public static String getMairuiApiLicence() {
+        return MairuiApiLicence;
     }
 }

@@ -17,6 +17,16 @@ public class DateConverter {
         return format.format(new Date(time));
     }
 
+    public static String getWeekDay() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEEE"));
+    }
+
+    public static int getWeekDayNum() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
     /**
      * @return 例如20230610193932
      */

@@ -1,13 +1,11 @@
 package wang.ultra.my_utilities.stock_exchange.apis;
 
+import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.JsonConverter;
 import wang.ultra.my_utilities.stock_exchange.utils.UrlConnectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 麦蕊的股票API
@@ -17,7 +15,18 @@ import java.util.Map;
 public class MairuiApi {
 
     private String stockId;
-    private String licence = "63245b556da38dd039";
+    private String licence = ConstantFromFile.getMairuiApiLicence();
+
+    public String getLicence() {
+        return licence;
+    }
+
+    public void setLicence(String licence) {
+        this.licence = licence;
+    }
+
+    public MairuiApi() {
+    }
 
     public MairuiApi(String stockId) {
         this.stockId = stockId;
@@ -28,6 +37,11 @@ public class MairuiApi {
         this.licence = licence;
     }
 
+    /**
+     * 获取历史均线
+     * @param level
+     * @return
+     */
     public Map<String, Object> getHistoryMA(String level) {
 
 //        level = "dn";
@@ -63,6 +77,11 @@ public class MairuiApi {
         return responseMap;
     }
 
+    /**
+     * 获取昨日均线
+     * @param level
+     * @return
+     */
     public Map<String, Object> getMA(String level) {
 
 //        level = "dn";
@@ -98,9 +117,93 @@ public class MairuiApi {
         return responseMap;
     }
 
+    /**
+     * 获取最新价格
+     * @param level
+     * @return
+     */
+    public Map<String, String> getPrice(String level) {
+        String url = "https://api.mairui.club/hszb/fsjy/" + stockId + "/" + level + "/" + licence;
+
+        String responsePrice;
+        try {
+            responsePrice = UrlConnectionUtils.getConnection(url, "GET", "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return JsonConverter.JsonStringToMap(responsePrice);
+    }
+
+    /**
+     * 获取历史价格
+     * @param level
+     * @return
+     */
+    public List<Map<String, String>> getHistoryPrice(String level) {
+        String url = "https://api.mairui.club/hszbl/fsjy/" + stockId + "/" + level + "/" + licence;
+
+        String responsePrice;
+        try {
+            responsePrice = UrlConnectionUtils.getConnection(url, "GET", "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("responsePrice = " + responsePrice);
+
+        if ("[]".equals(responsePrice)) {
+            return null;
+        }
+
+        List<Object> responseList;
+        try {
+            responseList = JsonConverter.JsonStringToListObject(responsePrice);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        List<Map<String, String>> returnList = new ArrayList<>();
+        for (Object o : responseList) {
+            Map<String, String> returnMap = (Map<String, String>) o;
+            returnList.add(returnMap);
+        }
+        return returnList;
+    }
+
+    /**
+     * 获取沪深股票列表
+     */
+    public List<Map<String, String>> getHSList() {
+        String url = "https://api.mairui.club/hslt/list/" + licence;
+
+        System.out.println("url = " + url);
+
+        String responseListStr;
+        try {
+            responseListStr = UrlConnectionUtils.getConnection(url, "GET", "UTF-8");
+        } catch (IOException e) {
+            return null;
+        }
+
+        List<Object> responseList;
+        try {
+            responseList = JsonConverter.JsonStringToListObject(responseListStr);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        List<Map<String, String>> returnList = new ArrayList<>();
+        for (Object o : responseList) {
+            Map<String, String> returnMap = (Map<String, String>) o;
+            returnList.add(returnMap);
+        }
+        return returnList;
+    }
+
     public static void main(String[] args) {
         MairuiApi mairui = new MairuiApi("600919");
-        Map<String, Object> responseMap = mairui.getMA("dn");
-        System.out.println(responseMap);
+        mairui.setLicence("63245b556da38dd039");
+        List<Map<String, String>> responseList = mairui.getHistoryPrice("dn");
+        System.out.println(responseList);
     }
 }

@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.scheduler.quartz;
+package wang.ultra.my_utilities.common.scheduler.service;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wang.ultra.my_utilities.common.utils.ListConverter;
 import wang.ultra.my_utilities.common.utils.StringUtils;
-import wang.ultra.my_utilities.stock_exchange.entity.SchedulerEntity;
-import wang.ultra.my_utilities.stock_exchange.mapper.SchedulerMapper;
+import wang.ultra.my_utilities.common.scheduler.entity.SchedulerEntity;
+import wang.ultra.my_utilities.common.scheduler.mapper.SchedulerMapper;
 
 import java.util.*;
 
@@ -102,7 +102,15 @@ public class QuartzService {
      * @return
      */
     public List<Map<String, String>> getAllJob() {
-        return ListConverter.mapValueToString(schedulerMapper.getAll());
+        return ListConverter.mapValueToString(schedulerMapper.getAllJob());
+    }
+
+    /**
+     * 获取正在运行的任务
+     * @return
+     */
+    public List<Map<String, String>> getRunningJob() {
+        return ListConverter.mapValueToString(schedulerMapper.getRunningJob());
     }
 
     /**
@@ -129,6 +137,9 @@ public class QuartzService {
                 return 0;
             }
             launchTask(jobMap);
+
+            updateRunningStatus(jobName, "1");
+
             return 1;
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -152,6 +163,9 @@ public class QuartzService {
                 Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
                 TriggerKey triggerKey = new TriggerKey(triggerName);
                 scheduler.unscheduleJob(triggerKey);
+
+                updateRunningStatus(jobName, "0");
+
                 return 1;
             }
             return 0;
@@ -162,7 +176,12 @@ public class QuartzService {
 
     }
 
-    private void launchTask(Map<String, String> quartzMap) throws SchedulerException {
+    /**
+     * 运行定时任务
+     * @param quartzMap
+     * @throws SchedulerException
+     */
+    public void launchTask(Map<String, String> quartzMap) throws SchedulerException {
         Class<Job> clazz;
         try {
             clazz = (Class<Job>) Class.forName(quartzMap.get("job_class"));
@@ -179,5 +198,9 @@ public class QuartzService {
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.scheduleJob(jobDetail, trigger);
         scheduler.start();
+    }
+
+    private void updateRunningStatus(String jobName, String runningStatus) {
+        schedulerMapper.updateRunningStatus(jobName, runningStatus);
     }
 }

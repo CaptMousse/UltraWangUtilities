@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.stock_exchange.quartz;
+package wang.ultra.my_utilities.stock_exchange.SchedulerTasks;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

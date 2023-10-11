@@ -44,4 +44,10 @@ public class DataSourceConfiguration {
     public DataSource dataSource6() {
         return DataSourceBuilder.create().build();
     }
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource.stockexchange")
+    public DataSource dataSource7() {
+        return DataSourceBuilder.create().build();
+    }
 }

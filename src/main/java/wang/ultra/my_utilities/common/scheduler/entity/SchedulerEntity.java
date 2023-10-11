@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.stock_exchange.entity;
+package wang.ultra.my_utilities.common.scheduler.entity;
 
 import lombok.Data;
 
@@ -10,4 +10,5 @@ public class SchedulerEntity {
     private String cronExpression;
     private String jobClass;
     private String status;
+    private String isRunning;
 }

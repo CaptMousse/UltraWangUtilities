@@ -1,0 +1,33 @@
+package wang.ultra.my_utilities.common.scheduler.controller;
+
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import wang.ultra.my_utilities.common.scheduler.service.QuartzService;
+import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
+
+import java.util.List;
+import java.util.Map;
+
+public class ResumeQuartzController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ResumeQuartzController.class);
+
+    QuartzService quartzService = SpringBeanUtils.getBean(QuartzService.class);
+    public void resume() {
+
+        LOG.info("定时任务恢复中... ");
+
+        List<Map<String, String>> isRunningList = quartzService.getRunningJob();
+
+        for (Map<String, String> schedulerMap : isRunningList) {
+            LOG.info("定时任务 " + schedulerMap.get("job_name") + " 正在恢复中... ");
+            try {
+                quartzService.launchTask(schedulerMap);
+                LOG.info("定时任务 " + schedulerMap.get("job_name") + " 恢复成功! ");
+            } catch (SchedulerException e) {
+                LOG.info("定时任务 " + schedulerMap.get("job_name") + " 恢复失败, 原因是: " + e);
+            }
+        }
+    }
+}
