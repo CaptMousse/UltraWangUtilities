@@ -62,6 +62,11 @@ function ajax(method, controller, async, formData) {
     return result;
 }
 
+function getUltraWangUtilitiesVersion() {
+    var version = ajax("GET", "UltraWangUtilities/getVersion", false);
+    return version;
+}
+
 function getUuid() {
     var temp_url = URL.createObjectURL(new Blob());
     var uuid = temp_url.toString();

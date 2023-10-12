@@ -89,7 +89,7 @@ public class QuartzController {
         thread.setName("手动执行 " + jobName + " 的多线程入口");
         thread.start();
 
-        return AjaxUtils.success("手动执行" + jobName + " 已开始... ");
+        return AjaxUtils.success("手动执行 " + jobName + " 已开始... ");
     }
 
     @GetMapping("start")

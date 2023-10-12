@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>wang.ultra</groupId>
 	<artifactId>UltraWangUtilities</artifactId>
-	<version>1.3.5</version>
+	<version>1.3.7</version>
 	<name>MyUtilities</name>
 	<description>Utilities of Ultra Wang Website</description>
 	<properties>

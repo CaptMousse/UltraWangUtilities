@@ -90,8 +90,7 @@ public class StockController {
         if (stockNowMap == null) {
             return AjaxUtils.failed("数据错误, 请检查! ");
         }
-        String spj = stockNowMap.get("收盘价");
-        stockMaService.calMa(stockId, spj);
+        stockMaService.calMa(stockId, stockNowMap);
 
         return AjaxUtils.success();
     }

@@ -48,8 +48,7 @@ public class StockNowTask implements BaseJobService {
                 LOG.info("获取" + stockId + "的实时数据结束...");
 
                 String stockIdSubstring = stockId.substring(2);
-                String spj = stockNowMap.get("收盘价");
-                maService.calMa(stockIdSubstring, spj);
+                maService.calMa(stockIdSubstring, stockNowMap);
             });
             t.setName("获取" + stockId + "实时数据的多线程");
             t.start();

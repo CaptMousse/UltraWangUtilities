@@ -3,9 +3,12 @@
         <script>
             var date = new Date();
             var year = date.getFullYear();
+            var version = getUltraWangUtilitiesVersion();
             document.getElementById('footerId').innerText = "© 2018-" + year + " | ";
+            document.getElementById('footerVersion').innerText = " | Ver" + version;
         </script>
-        <span id="footerId">© 2018-" + year + " | </span>
+        <span id="footerId"></span>
         <a href='http://ultra.wang/' target='_blank'>ultra.wang</a>
+        <span id="footerVersion"></span>
     </p>
 </div>
