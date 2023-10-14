@@ -1,6 +1,5 @@
 package wang.ultra.my_utilities.stock_exchange.tasks;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -11,8 +10,6 @@ import wang.ultra.my_utilities.stock_exchange.service.StockTradingDataService;
 import wang.ultra.my_utilities.stock_exchange.utils.TradingDaysUtils;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class Stock10DaysMACDTask implements BaseJobService {
 

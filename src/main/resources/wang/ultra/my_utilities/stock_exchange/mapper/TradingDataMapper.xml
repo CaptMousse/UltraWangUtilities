@@ -15,7 +15,7 @@
     </insert>
 
     <insert id="priceAdd" parameterType="list">
-        insert ignore into indicator_price(id, stock_id, indicator_date, kpj, zgj, zdj, spj, cjl, cje, zf, hsl, zdf, zde) values
+        insert ignore into stock_indicator_price(id, stock_id, indicator_date, kpj, zgj, zdj, spj, cjl, cje, zf, hsl, zdf, zde) values
         <foreach collection="list" separator="," item="PriceEntity">
             (
             '${PriceEntity.id}',
@@ -36,7 +36,7 @@
     </insert>
 
     <insert id="macdAdd" parameterType="list">
-        insert ignore into indicator_macd (id, stock_id, indicator_date, dea, diff, macd ) values
+        insert ignore into stock_indicator_macd (id, stock_id, indicator_date, dea, diff, macd ) values
         <foreach collection="list" separator="," item="MacdEntity">
             (
             '${MacdEntity.id}',
@@ -50,7 +50,7 @@
     </insert>
 
     <insert id="maAdd" parameterType="list">
-        insert ignore into indicator_ma (id, stock_id, indicator_date, ma3, ma5, ma10, ma15, ma20, ma30, ma60, ma120,
+        insert ignore into stock_indicator_ma (id, stock_id, indicator_date, ma3, ma5, ma10, ma15, ma20, ma30, ma60, ma120,
         ma200, ma250) values
         <foreach collection="list" separator="," item="MaEntity">
             (
@@ -77,13 +77,13 @@
 
     <select id="getAbstractMa" resultType="map">
         SELECT indicator_date, spj
-        FROM indicator_price
+        FROM stock_indicator_price
         WHERE stock_id = #{stockId}
         AND indicator_date &lt; #{today}
         ORDER BY indicator_date DESC LIMIT 9
     </select>
     <select id="getYesterdayMa" resultType="map">
-        SELECT ma5, ma10 FROM indicator_ma
+        SELECT ma5, ma10 FROM stock_indicator_ma
         WHERE stock_id = #{stockId}
         AND indicator_date &lt; #{today}
         ORDER BY indicator_date DESC

@@ -63,7 +63,7 @@ public class StockMaService {
         String indicatorDate = indicatorTime.substring(0, 8);
 
         String contentStockName = "股票: " + stockName;
-        String contentIndicatorTime = "时间: " + indicatorTime;
+        String contentIndicatorTime = "时间: " + DateConverter.getTime(indicatorTime);
         String contentSpj = "最新价: " + spj;
         String contentMa5 = "MA5: " + ma5;
         String contentMa10 = "MA10: " + ma10;

@@ -3,7 +3,7 @@
 <mapper namespace="wang.ultra.my_utilities.stock_exchange.mapper.NotifyLogMapper">
 
     <insert id="notifyAdd" parameterType="list">
-        insert ignore into notify_log(id, stock_id, indicator_date, indicator_time, notify_type, notify_id, record_time, msg) values
+        insert ignore into stock_notify_log(id, stock_id, indicator_date, indicator_time, notify_type, notify_id, record_time, msg) values
         <foreach collection="list" separator="," item="NotifyEntity">
             (
             '${NotifyEntity.id}',
@@ -19,7 +19,7 @@
     </insert>
 
     <insert id="notifyMaAdd" parameterType="list">
-        insert ignore into notify_ma_log(id, brief, price, ma5, ma10) values
+        insert ignore into stock_notify_ma_log(id, brief, price, ma5, ma10) values
         <foreach collection="list" separator="," item="NotifyMaEntity">
             (
             '${NotifyMaEntity.id}',
@@ -32,8 +32,8 @@
     </insert>
 
     <select id="getTodayNotifyMaRecordByStockId" resultType="map">
-        SELECT lg.stock_id, lg.indicator_time, lg.msg, ma.price, ma.ma5, ma.ma10 FROM notify_log lg
-        LEFT JOIN notify_ma_log ma ON ma.id = lg.notify_id
+        SELECT lg.stock_id, lg.indicator_time, lg.msg, ma.price, ma.ma5, ma.ma10 FROM stock_notify_log lg
+        LEFT JOIN stock_notify_ma_log ma ON ma.id = lg.notify_id
         WHERE 1 = 1
         AND lg.stock_id = #{stockId}
         AND lg.indicator_date = #{indicatorDate}

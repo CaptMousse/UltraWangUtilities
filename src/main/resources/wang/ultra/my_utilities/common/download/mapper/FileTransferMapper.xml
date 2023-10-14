@@ -3,7 +3,7 @@
 <mapper namespace="wang.ultra.my_utilities.common.download.mapper.FileTransferMapper">
 
     <insert id="fileAdd" parameterType="list">
-        insert into file_info (id, real_name, show_name, create_time, creator, status) values
+        insert into file_transfer_info (id, real_name, show_name, create_time, creator, status) values
         <foreach collection="list" separator="," item="FileTransferEntity">
             (
             '${FileTransferEntity.id}',
@@ -17,15 +17,15 @@
     </insert>
 
     <update id="fileAmountCount">
-        update file_info set amount = amount + 1 where id = #{id}
+        update file_transfer_info set amount = amount + 1 where id = #{id}
     </update>
 
     <delete id="fileDeleteById">
-        delete from file_info where id = #{id}
+        delete from file_transfer_info where id = #{id}
     </delete>
 
     <select id="fileSelectByShowName" resultType="map">
-        SELECT id, real_name, amount FROM file_info
+        SELECT id, real_name, amount FROM file_transfer_info
         WHERE  1 = 1
         AND show_name = #{showName}
         AND status = 1
@@ -33,7 +33,7 @@
     </select>
 
     <select id="fileSelectByRealName" resultType="map">
-        SELECT id, real_name, amount FROM file_info
+        SELECT id, real_name, amount FROM file_transfer_info
         WHERE  1 = 1
         AND real_name = #{realName}
         AND status = 1
@@ -42,7 +42,7 @@
 
     <select id="getFileByCleaner" resultType="map">
         SELECT id, real_name, create_time, amount, status
-        FROM file_info
+        FROM file_transfer_info
         WHERE 1 = 1
         AND status = 1
         AND amount &lt;= 1

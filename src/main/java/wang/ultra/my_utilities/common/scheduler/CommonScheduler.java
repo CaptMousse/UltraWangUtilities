@@ -31,7 +31,5 @@ public class CommonScheduler {
         if ("s".equals(hardwareMonitorUnit)) {
             ses.scheduleAtFixedRate(new HardwareMonitorRunnable(), 0, monitorRate, TimeUnit.SECONDS);
         }
-
-
     }
 }

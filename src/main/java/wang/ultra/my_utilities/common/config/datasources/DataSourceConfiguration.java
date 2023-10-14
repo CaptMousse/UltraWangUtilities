@@ -22,32 +22,8 @@ public class DataSourceConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.monitor")
-    public DataSource dataSource3() {
-        return DataSourceBuilder.create().build();
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.filetransfer")
-    public DataSource dataSource4() {
-        return DataSourceBuilder.create().build();
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.blog")
-    public DataSource dataSource5() {
-        return DataSourceBuilder.create().build();
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.stockexchange")
-    public DataSource dataSource6() {
-        return DataSourceBuilder.create().build();
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.stockexchange")
-    public DataSource dataSource7() {
+    @ConfigurationProperties(prefix = "spring.datasource.ultra-wang-utilities")
+    public DataSource dataSource8() {
         return DataSourceBuilder.create().build();
     }
 }

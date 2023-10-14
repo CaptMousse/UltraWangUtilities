@@ -18,8 +18,8 @@ import javax.sql.DataSource;
 public class DataSource4Configuration {
     private final DataSource dataSource4;
 
-    public DataSource4Configuration(@Qualifier("dataSource4") DataSource dataSource4) {
-        this.dataSource4 = dataSource4;
+    public DataSource4Configuration(@Qualifier("dataSource8") DataSource dataSource8) {
+        this.dataSource4 = dataSource8;
     }
 
     @Bean

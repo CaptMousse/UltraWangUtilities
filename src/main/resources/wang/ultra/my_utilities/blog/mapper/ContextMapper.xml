@@ -3,14 +3,14 @@
 <mapper namespace="wang.ultra.my_utilities.blog.mapper.ContextMapper">
 
     <insert id="contextAdd" parameterType="list">
-        insert into context_files (uuid, title, cover_img_location, brief, context_priority, if_private, user, create_time, update_time, status) values
+        insert into blog_context_files (uuid, title, cover_img_location, brief, context_priority, if_private, user, create_time, update_time, status) values
         <foreach collection="list" separator="," item="ContextEntity">
             ('${ContextEntity.uuid}', '${ContextEntity.title}', '${ContextEntity.coverImgLocation}', '${ContextEntity.brief}', '${ContextEntity.contextPriority}', '${ContextEntity.ifPrivate}', '${ContextEntity.user}', '${ContextEntity.create_time}', '${ContextEntity.update_time}', '${ContextEntity.status}')
         </foreach>
     </insert>
 
     <update id="contextUpgrade" parameterType="wang.ultra.my_utilities.blog.entity.ContextEntity">
-        update context_files set
+        update blog_context_files set
         title = '${title}',
         cover_img_location = '${coverImgLocation}',
         brief = '${brief}',
@@ -22,53 +22,53 @@
     </update>
 
     <delete id="contextDelete">
-        delete from context_files where uuid = #{uuid}
+        delete from blog_context_files where uuid = #{uuid}
     </delete>
 
     <update id="contextAmountCount">
-        update context_files set amount = #{amount} where 1 = 1 and uuid = #{uuid}
+        update blog_context_files set amount = #{amount} where 1 = 1 and uuid = #{uuid}
     </update>
 
     <update id="contextTitleUpdate">
-        update context_files set title = #{title}, update_time = #{update_time} where uuid = #{id}
+        update blog_context_files set title = #{title}, update_time = #{update_time} where uuid = #{id}
     </update>
 
     <update id="contextUpdate">
-        update context_files set update_time = #{update_time} where uuid = #{id}
+        update blog_context_files set update_time = #{update_time} where uuid = #{id}
     </update>
     <update id="contextAmount">
-        update context_files set amount = amount + 1 where uuid = #{id}
+        update blog_context_files set amount = amount + 1 where uuid = #{id}
     </update>
 
 
     <sql id="contextSelectSql">
-        select * from context_files
+        select * from blog_context_files
     </sql>
 
     <sql id="contextCountSelectSql">
-        select count(*) from context_files
+        select count(*) from blog_context_files
     </sql>
 
     <select id="contextList" resultType="map">
-        select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time from context_files where status = 0 order by context_priority desc, update_time desc
+        select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time from blog_context_files where status = 0 order by context_priority desc, update_time desc
     </select>
 
     <select id="contextSearchByUser" resultType="map">
-        select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time from context_files where status = 0 and user = #{username} order by context_priority desc, update_time desc
+        select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time from blog_context_files where status = 0 and user = #{username} order by context_priority desc, update_time desc
     </select>
 
     <select id="contextSearchByUuid" resultType="map">
-        select * from context_files where status = 0 and uuid = #{uuid}
+        select * from blog_context_files where status = 0 and uuid = #{uuid}
     </select>
     <select id="contextListRecommendIn3" resultType="map">
         select uuid, title, cover_img_location, brief, context_priority, if_private, user, update_time
-        from context_files
+        from blog_context_files
         where status = 0
         order by context_priority desc, update_time desc
         limit 3
     </select>
     <select id="getUserContexts" resultType="String">
-        select count(*) from context_files where status = 0 and user = #{username}
+        select count(*) from blog_context_files where status = 0 and user = #{username}
     </select>
 
 </mapper>

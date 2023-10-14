@@ -17,6 +17,17 @@ public class DateConverter {
         return format.format(new Date(time));
     }
 
+    public static String getTime(String time) {
+        String a = "20231012140512";
+        StringBuffer sb = new StringBuffer(time);
+        sb.insert(12, ":");
+        sb.insert(10, ":");
+        sb.insert(8, " ");
+        sb.insert(6, "-");
+        sb.insert(4, "-");
+        return sb.toString();
+    }
+
     public static String getWeekDay() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEEE"));
     }

@@ -3,13 +3,10 @@ package wang.ultra.my_utilities.stock_exchange.apis;
 import wang.ultra.my_utilities.common.utils.JsonConverter;
 import wang.ultra.my_utilities.stock_exchange.utils.UrlConnectionUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 这个接口没有名字, 只有个网页上面写着 "善猎者,必善狩，交易纪律"
@@ -33,6 +30,9 @@ public class SlzBssJyjlApi {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("url = " + url);
+        System.out.println("responseMACD = " + responseMACD);
 
         Map<String, Object> responseMap = new LinkedHashMap<>();
         responseMap.put("stockId", stockId);
