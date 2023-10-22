@@ -2,11 +2,8 @@ package wang.ultra.my_utilities.common.conrtoller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +43,7 @@ public class BaseController {
                 }
             }
         } catch (IOException e) {
-            return AjaxUtils.success("当前模式不提供版本号支持");
+            return AjaxUtils.success("当前模式不提供版本号支持", "0");
         }
         Object version = stringMap.get("version");
         return AjaxUtils.success(version);
@@ -60,7 +57,6 @@ public class BaseController {
         String sql = "SELECT * FROM stock_data WHERE stock_id = :stockId";
         MapSqlParameterSource stockMSPS = new MapSqlParameterSource();
         stockMSPS.addValue("stockId", "600919");
-
 
         List<Map<String, Object>> list = namedParameterJdbcTemplate.queryForList(sql, stockMSPS);
         return AjaxUtils.success(list);

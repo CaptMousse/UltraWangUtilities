@@ -1,7 +1,7 @@
 package wang.ultra.my_utilities.common.scheduler.controller;
 
+
 import org.quartz.Job;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

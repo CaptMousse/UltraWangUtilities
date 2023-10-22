@@ -34,7 +34,6 @@ public class StockNowTask implements BaseJobService {
     public void runJob() {
         // AutoWired注解引入sercvice不管用, 要用bean来创建才行
         StockTradingDataService tradingDataService = SpringBeanUtils.getBean(StockTradingDataService.class);
-        StockMaService maService = SpringBeanUtils.getBean(StockMaService.class);
         List<Map<String, String>> stockSyncList = tradingDataService.getStockSyncList();
         for (Map<String, String> stockMap : stockSyncList) {
             String stockId = stockMap.get("exchange_id") + stockMap.get("stock_id");
@@ -47,6 +46,7 @@ public class StockNowTask implements BaseJobService {
                 }
                 LOG.info("获取" + stockId + "的实时数据结束...");
 
+                StockMaService maService = SpringBeanUtils.getBean(StockMaService.class);
                 String stockIdSubstring = stockId.substring(2);
                 maService.calMa(stockIdSubstring, stockNowMap);
             });

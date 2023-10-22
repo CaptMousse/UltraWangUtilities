@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048</title>
+    <style>
+        table td {
+            width: 100px;
+            height: 100px;
+        }
+
+        table,
+        table td,
+        table th {
+            border: 1px solid #000000;
+        }
+    </style>
+    <script src="../resource/js/jquery-3.6.3.min.js"></script>
+    <script src="/resource/js/baseFunction.js"></script>
+    <script>
+        $(function () {
+            getDashboard();
+        });
+
+        document.onkeydown = function (e) {
+            var e = window.event || e;
+            switch (e.keyCode) {
+                case 38:   // 上
+                    up();
+                    break;
+                case 40:   // 下
+                    down();
+                    break;
+                case 37:   // 左
+                    left();
+                    break;
+                case 39:   // 右
+                    right();
+                    break;
+            }
+        }
+
+        function getDashboard() {
+            ajax("GET", "game2048/init", false);
+            var result = ajax("GET", "game2048/start", false);
+            fillTable(result);
+        }
+
+        function up() {
+            var result = ajax("GET", "game2048/up", false);
+            fillTable(result);
+        }
+
+        function down() {
+            var result = ajax("GET", "game2048/down", false);
+            fillTable(result);
+        }
+
+        function left() {
+            var result = ajax("GET", "game2048/left", false);
+            fillTable(result);
+        }
+
+        function right() {
+            var result = ajax("GET", "game2048/right", false);
+            fillTable(result);
+        }
+
+        function fillTable(result) {
+
+            var resultArr = new Array();
+
+            resultArr[0] = result[11];
+            resultArr[1] = result[12];
+            resultArr[2] = result[13];
+            resultArr[3] = result[14];
+            resultArr[4] = result[21];
+            resultArr[5] = result[22];
+            resultArr[6] = result[23];
+            resultArr[7] = result[24];
+            resultArr[8] = result[31];
+            resultArr[9] = result[32];
+            resultArr[10] = result[33];
+            resultArr[11] = result[34];
+            resultArr[12] = result[41];
+            resultArr[13] = result[42];
+            resultArr[14] = result[43];
+            resultArr[15] = result[44];
+
+            const colorMap = new Map([
+                ["num2", "#F9F871"],
+                ["num4", "#FFC75F"],
+                ["num8", "#FF9671"],
+                ["num16", "#FF6F91"],
+                ["num32", "#D65DB1"],
+                ["num64", "#845EC2"],
+                ["num128", "#2C73D2"],
+                ["num256", "#0081CF"],
+                ["num512", "#0089BA"],
+                ["num1024", "#008E9B"],
+                ["num2048", "#008F7A"]
+            ])
+
+            for (let i = 0; i < resultArr.length; i++) {
+                if (resultArr[i] == 0) {
+                    resultArr[i] = '';
+                }
+            }
+
+
+            document.getElementById("td11").innerText = resultArr[0];
+            document.getElementById("td12").innerText = resultArr[1];
+            document.getElementById("td13").innerText = resultArr[2];
+            document.getElementById("td14").innerText = resultArr[3];
+            document.getElementById("td21").innerText = resultArr[4];
+            document.getElementById("td22").innerText = resultArr[5];
+            document.getElementById("td23").innerText = resultArr[6];
+            document.getElementById("td24").innerText = resultArr[7];
+            document.getElementById("td31").innerText = resultArr[8];
+            document.getElementById("td32").innerText = resultArr[9];
+            document.getElementById("td33").innerText = resultArr[10];
+            document.getElementById("td34").innerText = resultArr[11];
+            document.getElementById("td41").innerText = resultArr[12];
+            document.getElementById("td42").innerText = resultArr[13];
+            document.getElementById("td43").innerText = resultArr[14];
+            document.getElementById("td44").innerText = resultArr[15];
+
+            var tdElements = document.getElementsByClassName("tableTd");
+            for (var i = 0; i < tdElements.length; i++) {
+
+                var color;
+                switch (tdElements[i].innerText) {
+                    case '2':
+                        color = '#F9F871';
+                        break;
+                    case '4':
+                        color = '#FFC75F';
+                        break;
+                    case '8':
+                        color = '#FF9671';
+                        break;
+                    case '16':
+                        color = '#FF6F91';
+                        break;
+                    case '32':
+                        color = '#D65DB1';
+                        break;
+                    case '64':
+                        color = '#845EC2';
+                        break;
+                    case '128':
+                        color = '#2C73D2';
+                        break;
+                    case '256':
+                        color = '#0081CF';
+                        break;
+                    case '512':
+                        color = '#0089BA';
+                        break;
+                    case '1024':
+                        color = '#008E9B';
+                        break;
+                    case '2048':
+                        color = '#008F7A';
+                        break;
+                    default:
+                        color = 'white';
+                        break;
+                }
+
+                // console.log(tdElements[i].id + "\t" + color);
+                tdElements[i].style.setProperty("background-color", color);
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <fieldset>
+        <legend>2048</legend>
+        <table id="table" style="font-size: x-large; text-align: center; border: 1px solid;">
+            <tr>
+                <td id="td11" class="tableTd"></td>
+                <td id="td12" class="tableTd"></td>
+                <td id="td13" class="tableTd"></td>
+                <td id="td14" class="tableTd"></td>
+            </tr>
+            <tr>
+                <td id="td21" class="tableTd"></td>
+                <td id="td22" class="tableTd"></td>
+                <td id="td23" class="tableTd"></td>
+                <td id="td24" class="tableTd"></td>
+            </tr>
+            <tr>
+                <td id="td31" class="tableTd"></td>
+                <td id="td32" class="tableTd"></td>
+                <td id="td33" class="tableTd"></td>
+                <td id="td34" class="tableTd"></td>
+            </tr>
+            <tr>
+                <td id="td41" class="tableTd"></td>
+                <td id="td42" class="tableTd"></td>
+                <td id="td43" class="tableTd"></td>
+                <td id="td44" class="tableTd"></td>
+            </tr>
+        </table>
+    </fieldset>
+</body>
+
+</html>

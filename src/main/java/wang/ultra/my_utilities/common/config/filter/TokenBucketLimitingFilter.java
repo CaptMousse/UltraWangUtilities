@@ -48,9 +48,10 @@ public class TokenBucketLimitingFilter implements Filter {
 
         List<String> excludedUriList = new ArrayList<>();
         excludedUriList.add("/blog/context/downloadImage");
+        excludedUriList.add("/game2048/");
         for (String excludedUri : excludedUriList) {
             if (request.getRequestURI().contains(excludedUri)) {
-                System.out.println("URI过滤排除 = " + request.getRequestURI());
+//                System.out.println("URI过滤排除 = " + request.getRequestURI());
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }

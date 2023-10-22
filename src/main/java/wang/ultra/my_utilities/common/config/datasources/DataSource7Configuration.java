@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(
-        basePackages = "wang.ultra.my_utilities.common.scheduler.mapper",
+        basePackages = "wang.ultra.my_utilities.vehicle_info.mapper",
         sqlSessionFactoryRef = "sqlSessionFactory7",
         sqlSessionTemplateRef = "sqlSessionTemplate7")
 public class DataSource7Configuration {

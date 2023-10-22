@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.vehicle_info.mapper.VehicleMapper">
+    <resultMap id="brandMap" type="wang.ultra.my_utilities.vehicle_info.entity.BrandEntity">
+        <result column="id" property="id"/>
+        <result column="brand_name" property="brandName"/>
+        <result column="update_date" property="updateDate"/>
+    </resultMap>
+
+    <insert id="addBrand" parameterType="list">
+        insert into vehicle_info_brand (id, brand_name, update_date) values
+        <foreach collection="list" separator="," item="BrandEntity">
+            ('${BrandEntity.id}', '${BrandEntity.brandName}', '${BrandEntity.updateDate}')
+        </foreach>
+    </insert>
+
+    <insert id="addYear" parameterType="list">
+        insert into vehicle_info_year (id, brand_name, year, update_date) values
+        <foreach collection="list" separator="," item="YearEntity">
+            ('${YearEntity.id}', '${YearEntity.brandName}', '${YearEntity.year}', '${YearEntity.updateDate}')
+        </foreach>
+    </insert>
+
+    <insert id="addModel" parameterType="list">
+        insert into vehicle_info_model (id, brand_name, year, model_name, update_date) values
+        <foreach collection="list" separator="," item="ModelEntity">
+            ('${ModelEntity.id}', '${ModelEntity.brandName}', '${ModelEntity.year}', '${ModelEntity.modelName}', '${ModelEntity.updateDate}')
+        </foreach>
+    </insert>
+
+<!--    <insert id="addSpec" parameterType="list">-->
+<!--        insert into vehicle_info_model (id, brand_name, year, model_name, update_date) values-->
+<!--        <foreach collection="list" separator="," item="SpecEntity">-->
+<!--            ('${SpecEntity.id}', '${SpecEntity.modelId}',-->
+<!--            -->
+<!--            '${SpecEntity.updateDate}')-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+</mapper>
