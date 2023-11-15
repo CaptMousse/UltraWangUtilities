@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wang.ultra.my_utilities.common.cache.stockData.StockNowPriceCacheList;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.ListConverter;
-import wang.ultra.my_utilities.common.utils.StringUtils;
 import wang.ultra.my_utilities.stock_exchange.apis.MairuiApi;
 import wang.ultra.my_utilities.stock_exchange.apis.QtGtimgApi;
 import wang.ultra.my_utilities.stock_exchange.apis.SlzBssJyjlApi;
@@ -15,11 +15,9 @@ import wang.ultra.my_utilities.stock_exchange.entity.MacdEntity;
 import wang.ultra.my_utilities.stock_exchange.entity.PriceEntity;
 import wang.ultra.my_utilities.stock_exchange.entity.StockEntity;
 import wang.ultra.my_utilities.stock_exchange.mapper.TradingDataMapper;
+import wang.ultra.my_utilities.stock_exchange.tasks.StockNowTask;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("stockTradingDataService")
 public class StockTradingDataService {
@@ -74,6 +72,7 @@ public class StockTradingDataService {
         // yn (年线未复权) , yq (年线前复权) , yh (年线后复权)
         Map<String, Object> dayMAMap = mairui.getHistoryMA("dn");
         String maStatus = String.valueOf(dayMAMap.get("status"));
+        String maMsg = String.valueOf(dayMAMap.get("msg"));
         if ("1".equals(maStatus)) {
             List<Map<String, Object>> dayMADataList = (List<Map<String, Object>>) dayMAMap.get("data");
             List<MaEntity> daoList = new ArrayList<>();
@@ -97,6 +96,8 @@ public class StockTradingDataService {
             }
             tradingDataMapper.maAdd(daoList);
             LOG.info("获取" + stockId + "的历史均线成功");
+        } else if ("0".equals(maStatus)) {
+            LOG.info("获取" + stockId + "的历史均线失败, 原因是: " + maMsg);
         }
     }
 
@@ -135,6 +136,25 @@ public class StockTradingDataService {
         }
     }
 
+    /**
+     * 把股票代码加上交易所代码再调用腾讯股票API
+     *
+     * @param stockId
+     * @return
+     */
+    public Map<String, String> getExchangeIdPrefixStockNow(String stockId) {
+        Map<String, Object> stockData = tradingDataMapper.getStock(stockId).get(0);
+        stockId = stockData.get("exchange_id") + stockId;
+        return getStockNow(stockId);
+    }
+
+    /**
+     * 调用腾讯股票API获取最新的股票价格
+     * 需要加上交易所前缀例如sh600104
+     *
+     * @param stockId
+     * @return
+     */
     public Map<String, String> getStockNow(String stockId) {
         QtGtimgApi qtApi = new QtGtimgApi(stockId);
         String stockNow = qtApi.getStockNow();
@@ -147,54 +167,54 @@ public class StockTradingDataService {
         stockNow = stockNow.substring(stockNow.lastIndexOf("\"") + 1);
         String[] stockNowArr = stockNow.split("~");
         String key = """
-            交易所
-            股票名字
-            股票代码
-            收盘价
-            昨收
-            开盘价
-            成交量
-            外盘
-            内盘
-            买1
-            买1量
-            买2
-            买2量
-            买3
-            买3量
-            买4
-            买4量
-            买5
-            买5量
-            卖1
-            卖1量
-            卖2
-            卖2量
-            卖3
-            卖3量
-            卖4
-            卖4量
-            卖5
-            卖5量
-            -
-            请求时间
-            涨跌
-            涨跌%
-            最高价
-            最低价
-            最新价/成交量(手)/成交额
-            成交量
-            成交额
-            换手率
-            TTM市盈率
-            -
-            均价
-            动态市盈率
-            静态市盈率
-            -
-            -
-            -
-            成交额""";
+                交易所
+                股票名字
+                股票代码
+                收盘价
+                昨收
+                开盘价
+                成交量
+                外盘
+                内盘
+                买1
+                买1量
+                买2
+                买2量
+                买3
+                买3量
+                买4
+                买4量
+                买5
+                买5量
+                卖1
+                卖1量
+                卖2
+                卖2量
+                卖3
+                卖3量
+                卖4
+                卖4量
+                卖5
+                卖5量
+                -
+                请求时间
+                涨跌
+                涨跌%
+                最高价
+                最低价
+                最新价/成交量(手)/成交额
+                成交量
+                成交额
+                换手率
+                TTM市盈率
+                -
+                均价
+                动态市盈率
+                静态市盈率
+                -
+                -
+                -
+                成交额2""";
 
         String[] keyArr = key.split("\n");
 
@@ -218,8 +238,69 @@ public class StockTradingDataService {
     }
 
     /**
+     * 从缓存中获取股票价格
+     *
+     * @return
+     */
+    public List<Map<String, String>> getSyncStockPrice() {
+        StockNowPriceCacheList cacheList = new StockNowPriceCacheList();
+        List<Map<String, String>> syncNowPriceList = cacheList.getAll();
+        if (syncNowPriceList == null || syncNowPriceList.isEmpty()) {
+            //需要重建缓存
+            StockNowTask stockNowTask = new StockNowTask();
+            stockNowTask.runJob();
+        }
+        List<Map<String, String>> returnList = new ArrayList<>();
+        for (Map<String, String> map : syncNowPriceList) {
+            Map<String, String> returnMap = new HashMap<>();
+            returnMap.put("stockId", map.get("股票代码"));
+            returnMap.put("stockName", map.get("股票名字"));
+//            returnMap.put("zs", map.get("昨收"));
+            returnMap.put("zxj", map.get("收盘价"));
+            returnMap.put("zf", map.get("涨跌%"));
+            returnMap.put("cjl", map.get("成交量"));
+            returnMap.put("cje", map.get("成交额"));
+            returnMap.put("sj", map.get("请求时间"));
+            returnList.add(returnMap);
+        }
+        return returnList;
+    }
+
+    /**
+     * 更新监控状态
+     *
+     * @param stockId
+     * @return 1=已关闭 2=已开启
+     */
+    public int updateSyncStatus(String stockId) {
+        StockNowPriceCacheList cacheList = new StockNowPriceCacheList();
+
+        // 先查有没有
+        List<Map<String, String>> stockSyncList = getStockSyncList();
+        for (Map<String, String> syncStockMap : stockSyncList) {
+            String syncStockId = syncStockMap.get("stock_id");
+            if (syncStockId.equals(stockId)) {
+                // 有的话就关掉, 然后删缓存
+                tradingDataMapper.updateSyncOff(stockId);
+                cacheList.remove(stockId);
+                return 1;
+            }
+        }
+
+        // 没有的话就更新状态, 再调用接口更新缓存
+        tradingDataMapper.updateSyncOn(stockId);
+        getStockRecentDayMA(stockId);   // 持久化最新的均线数据
+        getStockMacdInTenDays(stockId); // 持久化最近十天的MACD
+        getPrice(stockId);              // 持久化最新价格
+        Map<String, String> stockNowMap = getExchangeIdPrefixStockNow(stockId);
+        cacheList.add(stockNowMap);
+        return 2;
+    }
+
+    /**
      * 获取需要同步的股票的列表
      * 只包含股票代码
+     *
      * @return
      */
     public List<String> getSyncStockIdList() {
@@ -262,8 +343,21 @@ public class StockTradingDataService {
         return syncList;
     }
 
+    public int getStockFromCache(String stockId) {
+        List<Map<String, Object>> stockList = tradingDataMapper.getStock(stockId);
+        if (stockList == null || stockList.isEmpty()) {
+            return -1;
+        }
+        Map<String, String> stockNowMap = getStockNow(stockId);
+        StockNowPriceCacheList cacheList = new StockNowPriceCacheList();
+        cacheList.add(stockNowMap);
+
+        return 1;
+    }
+
     /**
      * 获取历史每日价格
+     *
      * @param stockId
      */
     public int getHistoryPrice(String stockId) {
@@ -318,11 +412,18 @@ public class StockTradingDataService {
 
     /**
      * 获取今日价格
+     *
      * @param stockId
      */
     public void getPrice(String stockId) {
         MairuiApi api = new MairuiApi(stockId);
         Map<String, String> priceMap = api.getPrice("dn");
+
+        if (priceMap == null || priceMap.isEmpty()) {
+            LOG.info("获取价格出错, 可能是licence已经失效");
+            return;
+        }
+
         PriceEntity entity = new PriceEntity();
         String indicatorDate = priceMap.get("d").replaceAll("-", "");
         entity.setId(stockId + indicatorDate);

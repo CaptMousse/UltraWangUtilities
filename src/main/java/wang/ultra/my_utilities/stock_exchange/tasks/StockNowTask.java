@@ -6,6 +6,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import wang.ultra.my_utilities.common.cache.stockData.StockNowPriceCacheList;
 import wang.ultra.my_utilities.common.scheduler.service.BaseJobService;
 import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
@@ -43,12 +44,17 @@ public class StockNowTask implements BaseJobService {
                 Map<String, String> stockNowMap = tradingDataService.getStockNow(stockId);
                 if (stockNowMap == null) {
                     LOG.info("获取" + stockId + "的实时数据失败...");
+                    return;
                 }
                 LOG.info("获取" + stockId + "的实时数据结束...");
 
                 StockMaService maService = SpringBeanUtils.getBean(StockMaService.class);
                 String stockIdSubstring = stockId.substring(2);
                 maService.calMa(stockIdSubstring, stockNowMap);
+
+                // 把实时数据更新到缓存
+                StockNowPriceCacheList cacheList = new StockNowPriceCacheList();
+                cacheList.add(stockNowMap);
             });
             t.setName("获取" + stockId + "实时数据的多线程");
             t.start();

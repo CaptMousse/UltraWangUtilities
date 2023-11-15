@@ -75,6 +75,31 @@
         select * from stock_data where if_sync = '1'
     </select>
 
+    <select id="getStock" resultType="map">
+        select * from stock_data where stock_id = #{stockId}
+    </select>
+
+    <update id="updateSyncStatus">
+        UPDATE stock_data SET
+        if_sync = case if_sync
+        when '0' then '1'
+        when '1' then '0'
+        end
+        WHERE stock_id = #{stockId}
+    </update>
+
+    <update id="updateSyncOn">
+        UPDATE stock_data SET
+        if_sync = '1'
+        WHERE stock_id = #{stockId}
+    </update>
+
+    <update id="updateSyncOff">
+        UPDATE stock_data SET
+        if_sync = '0'
+        WHERE stock_id = #{stockId}
+    </update>
+
     <select id="getAbstractMa" resultType="map">
         SELECT indicator_date, spj
         FROM stock_indicator_price

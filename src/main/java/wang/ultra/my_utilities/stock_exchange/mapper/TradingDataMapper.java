@@ -20,7 +20,11 @@ public interface TradingDataMapper {
     void maAdd(List<MaEntity> list);
 
     List<Map<String, Object>> getStockSyncList();
+    List<Map<String, Object>> getStock(String stockId);
 
+    void updateSyncStatus(String stockId);
+    void updateSyncOn(String stockId);
+    void updateSyncOff(String stockId);
     List<Map<String, Object>> getAbstractMa(String stockId, String today);
     List<Map<String, Object>> getYesterdayMa(String stockId, String today);
 }

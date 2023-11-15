@@ -3,6 +3,7 @@ package wang.ultra.my_utilities.common.scheduler.controller;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.scheduler.service.QuartzService;
 import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
 
@@ -14,7 +15,14 @@ public class ResumeQuartzController {
     private static final Logger LOG = LoggerFactory.getLogger(ResumeQuartzController.class);
 
     QuartzService quartzService = SpringBeanUtils.getBean(QuartzService.class);
+
     public void resume() {
+
+        String schedulerSwitcher = ConstantFromFile.getSchedulerSwitcher();
+        if (!"1".equals(schedulerSwitcher)) {
+            LOG.info("定时任务自动启动已关闭");
+            return;
+        }
 
         LOG.info("定时任务恢复中... ");
 

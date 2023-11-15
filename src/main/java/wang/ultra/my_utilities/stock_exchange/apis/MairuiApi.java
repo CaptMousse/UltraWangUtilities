@@ -5,6 +5,7 @@ import wang.ultra.my_utilities.common.utils.JsonConverter;
 import wang.ultra.my_utilities.stock_exchange.utils.UrlConnectionUtils;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.*;
 
 /**
@@ -63,16 +64,22 @@ public class MairuiApi {
 
         Map<String, Object> responseMap = new LinkedHashMap<>();
         responseMap.put("stockId", stockId);
-        List<Object> responseList = new ArrayList<>();
-        try {
-            responseList = JsonConverter.JsonStringToListObject(responseHistoryMA);
-            responseMap.put("status", "1");
-            responseMap.put("msg", "success");
-            responseMap.put("data", responseList);
-        } catch (Exception e) {
-            responseMap.put("status", "1");
-            responseMap.put("msg", "failed");
+
+        if ("102".equals(responseHistoryMA)) {
+            responseMap.put("status", "0");
+            responseMap.put("msg", "licence已经失效! ");
+        } else {
+            try {
+                responseMap.put("status", "1");
+                responseMap.put("msg", "success");
+                responseMap.put("data", JsonConverter.JsonStringToListObject(responseHistoryMA));
+            } catch (Exception e) {
+                responseMap.put("status", "0");
+                responseMap.put("msg", "格式转换失败! ");
+            }
         }
+
+
 
         return responseMap;
     }
@@ -105,13 +112,19 @@ public class MairuiApi {
 
         Map<String, Object> responseMap = new LinkedHashMap<>();
         responseMap.put("stockId", stockId);
-        try {
-            responseMap.put("status", "1");
-            responseMap.put("msg", "success");
-            responseMap.put("data", JsonConverter.JsonStringToMap(responseMA));
-        } catch (Exception e) {
-            responseMap.put("status", "1");
-            responseMap.put("msg", "failed");
+
+        if ("102".equals(responseMA)) {
+            responseMap.put("status", "0");
+            responseMap.put("msg", "licence已经失效! ");
+        } else {
+            try {
+                responseMap.put("status", "1");
+                responseMap.put("msg", "success");
+                responseMap.put("data", JsonConverter.JsonStringToMap(responseMA));
+            } catch (Exception e) {
+                responseMap.put("status", "0");
+                responseMap.put("msg", "格式转换失败! ");
+            }
         }
 
         return responseMap;
@@ -131,6 +144,11 @@ public class MairuiApi {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        if ("102".equals(responsePrice)) {
+            return null;
+        }
+
         return JsonConverter.JsonStringToMap(responsePrice);
     }
 
@@ -149,9 +167,7 @@ public class MairuiApi {
             throw new RuntimeException(e);
         }
 
-        System.out.println("responsePrice = " + responsePrice);
-
-        if ("[]".equals(responsePrice)) {
+        if ("[]".equals(responsePrice) || "102".equals(responsePrice)) {
             return null;
         }
 
