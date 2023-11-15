@@ -1,9 +1,7 @@
 package wang.ultra.my_utilities.vehicle_info.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import wang.ultra.my_utilities.vehicle_info.entity.BrandEntity;
-import wang.ultra.my_utilities.vehicle_info.entity.ModelEntity;
-import wang.ultra.my_utilities.vehicle_info.entity.YearEntity;
+import wang.ultra.my_utilities.vehicle_info.entity.*;
 
 import java.util.List;
 
@@ -15,4 +13,10 @@ public interface VehicleMapper {
     void addYear(List<YearEntity> entityList);
 
     void addModel(List<ModelEntity> entityList);
+
+    void addSpec(List<SpecEntity> entityList);
+
+    void addSpecBodies(List<SpecBodiesEntity> entityList);
+
+    void addSpecWheels(List<SpecWheelsEntity> entityList);
 }

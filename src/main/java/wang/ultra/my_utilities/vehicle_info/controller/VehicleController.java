@@ -38,12 +38,11 @@ public class VehicleController {
         return AjaxUtils.success(modelList);
     }
 
-    @GetMapping("/getInfo")
-    public AjaxUtils getVehicleInfo(String brand, String year, String model) {
+    @GetMapping("/getSpec")
+    public AjaxUtils getVehicleSpec(String brand, String year, String model) {
 
-        WheelSizeApi wheelSizeApi = new WheelSizeApi();
-        List<Object> resultList = wheelSizeApi.getInfo(brand, year, model);
+        List<Map<String, Object>> modelSpec = vehicleService.getModelSpec(brand, year, model);
 
-        return AjaxUtils.success(resultList);
+        return AjaxUtils.success(modelSpec);
     }
 }

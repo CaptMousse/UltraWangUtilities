@@ -73,7 +73,7 @@ public class WheelSizeApi {
         return null;
     }
 
-    public List<Object> getInfo(String brand, String year, String model) {
+    public List<Object> getSpec(String brand, String year, String model) {
         String url = "https://services.wheel-size.com/widget/173807dd5d3b45d6ae52fc1453d7258e/api/sm?make=" + brand + "&year=" + year + "&model=" + model;
 
         String responseString = getConnection(url);

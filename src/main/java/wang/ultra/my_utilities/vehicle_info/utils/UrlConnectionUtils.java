@@ -6,13 +6,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UrlConnectionUtils {
+
     /**
      * 带着header的Http请求
      * @param urlString     URL
      * @param requestMethod 请求方法(GET, POST)
+     * @param headerMap     表头
      * @param charsets      字符集(UTF-8, GB2312)
      * @return
      */
@@ -38,6 +41,21 @@ public class UrlConnectionUtils {
         while ((strRead = bufferedReader.readLine()) != null) {
             responseStr.append(strRead);
         }
-        return responseStr.toString();
+        String returnStr = responseStr.toString().replaceAll("'", "");
+
+//        System.out.println("returnStr = " + returnStr);
+        return returnStr;
+    }
+
+    /**
+     * Http请求
+     * @param urlString     URL
+     * @param requestMethod 请求方法(GET, POST)
+     * @param charsets      字符集(UTF-8, GB2312)
+     * @return
+     */
+    public static String getHeaderConnection(String urlString, String requestMethod, String charsets) throws IOException {
+        Map<String, String> headerMap = new HashMap<>();
+        return getHeaderConnection(urlString, requestMethod, headerMap, charsets);
     }
 }
