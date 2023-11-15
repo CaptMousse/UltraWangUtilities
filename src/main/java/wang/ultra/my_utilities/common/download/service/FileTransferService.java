@@ -20,7 +20,7 @@ public class FileTransferService {
     @Autowired
     FileTransferMapper fileTransferMapper;
 
-    public void fileAdd(MultipartFile file, String fileName) {
+    public int fileAdd(MultipartFile file, String fileName) {
 
         FileTransferEntity entity = new FileTransferEntity();
         String uuid = StringUtils.getMyUUID();
@@ -37,7 +37,7 @@ public class FileTransferService {
         fileTransferMapper.fileAdd(entityList);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
-        fileIOUtils.uploadFile("transferFiles", realName, file);
+        return fileIOUtils.uploadFile("transferFiles", realName, file);
     }
 
     public void fileSelectByShowName(String showName, HttpServletResponse response) {
@@ -45,6 +45,8 @@ public class FileTransferService {
         Map<String, String> resultMap = ListConverter.mapValueToString(resultList).get(0);
         String id = resultMap.get("id");
         String realName = resultMap.get("real_name");
+
+        response.addHeader("Content-Disposition", "attachment; filename=" + showName);
         
         // 更新访问量
         fileTransferMapper.fileAmountCount(id);

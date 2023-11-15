@@ -93,11 +93,16 @@ public class ConstantFromFile {
     // 文件上传下载文件夹
     private static String FileFolder;
 
+    // 下载限速(kb/s)
+    private static int FileDownloadSpeedLimit;
+
     // 用户登陆过期时间(秒)
     private static Integer SessionInactiveInterval;
 
     // 股票麦蕊API的Licence
     private static String MairuiApiLicence;
+
+    private static String SchedulerSwitcher;
 
     private static Map<String, String> constMap = new HashMap<>();
 
@@ -151,10 +156,13 @@ public class ConstantFromFile {
             ConstantFromFile.LimitingQPS = Long.valueOf(constMap.get("LimitingQPS"));
 
             ConstantFromFile.FileFolder = constMap.get("FileFolder");
+            ConstantFromFile.FileDownloadSpeedLimit = Integer.parseInt(constMap.get("FileDownloadSpeedLimit"));
 
             ConstantFromFile.SessionInactiveInterval = Integer.parseInt(constMap.get("SessionInactiveInterval"));
 
             ConstantFromFile.MairuiApiLicence = constMap.get("MairuiApiLicence");
+
+            ConstantFromFile.SchedulerSwitcher = constMap.get("SchedulerSwitcher");
 
             LOG.info("配置文件加载成功!");
             return 1;
@@ -308,11 +316,19 @@ public class ConstantFromFile {
         return FileFolder;
     }
 
+    public static Integer getFileDownloadSpeedLimit() {
+        return FileDownloadSpeedLimit;
+    }
+
     public static Integer getSessionInactiveInterval() {
         return SessionInactiveInterval;
     }
 
     public static String getMairuiApiLicence() {
         return MairuiApiLicence;
+    }
+
+    public static String getSchedulerSwitcher() {
+        return SchedulerSwitcher;
     }
 }

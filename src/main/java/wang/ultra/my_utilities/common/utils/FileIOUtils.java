@@ -1,6 +1,8 @@
 package wang.ultra.my_utilities.common.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 
@@ -11,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class FileIOUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FileIOUtils.class);
 
     /**
      * 构建目录
@@ -200,6 +204,8 @@ public class FileIOUtils {
 
         if (file.exists() && file.isFile()) {
             InputStream in = null;
+            int fileLength = (int) file.length();
+            long initTimeStamp = 0;
             try {
                 String type = StringUtils.getFileType(fileName);
                 List<String> imageTypeList = new ArrayList<>();
@@ -213,19 +219,46 @@ public class FileIOUtils {
                 } else {
                     response.setContentType("application/x-msdownload"); // 下载
                 }
+                response.setContentLength(fileLength);
 
-                response.setContentLength((int) file.length());
 
-                System.out.println("文件开始下载, 文件名: " + file.getName());
+                LOG.info("文件开始下载");
+                LOG.info("文件名 = " + file.getName());
+                LOG.info("文件大小 = " + fileLength + "字节");
 
                 in = new FileInputStream(file);
 
-                int b = 0;
-                byte[] buffer = new byte[1024];
-                while (b != -1) {
-                    b = in.read(buffer);
-                    if (b != -1) {
-                        response.getOutputStream().write(buffer, 0, b);
+                int hasNext = 0;
+                int speedCount = 0;
+                initTimeStamp = System.currentTimeMillis();
+                long speedTimeStamp = initTimeStamp;
+                int speedLimit = ConstantFromFile.getFileDownloadSpeedLimit();  // 获取下载限速
+                if (speedLimit != 0) {
+                    LOG.info("限速已开启, 限速" + speedLimit + "kb/s");
+                }
+                byte[] kb = new byte[1024];
+                while (hasNext != -1) {
+
+                    if (speedLimit != 0) {
+                        speedCount++;
+                        if (speedCount == speedLimit) {
+                            // 限速原理
+                            // 如果字节数组计数 = 限速, 例如1024kb, 就比对时间戳
+                            // 如果间隔时间 >= 1000ms, 就只初始化计数和原始时间戳
+                            // 如果间隔时间 < 1000ms, 就用Thread.sleep限速剩余时间, 然后再初始化计数和时间戳
+                            long currTimeStamp = System.currentTimeMillis() - speedTimeStamp;
+                            long sleepTimeStamp = 1000 - currTimeStamp;
+                            if (sleepTimeStamp > 0) {
+                                Thread.sleep(sleepTimeStamp);
+                            }
+                            speedCount = 0;
+                            speedTimeStamp = System.currentTimeMillis();
+                        }
+                    }
+
+                    hasNext = in.read(kb);
+                    if (hasNext != -1) {
+                        response.getOutputStream().write(kb, 0, hasNext);
                     }
                 }
             } catch (Exception ignored) {
@@ -235,7 +268,9 @@ public class FileIOUtils {
                         in.close();
                     }
                     response.getOutputStream().flush();
-                    System.out.println("文件下载完成! ");
+                    float finishTimeStamp = ((float) (System.currentTimeMillis() - initTimeStamp)) / 1000;
+                    LOG.info("文件下载完成!");
+                    LOG.info("下载用时 = " + finishTimeStamp + "秒");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -245,6 +280,7 @@ public class FileIOUtils {
 
     /**
      * 获取图片文件
+     *
      * @param subFileFolder
      * @param fileName
      * @return
@@ -264,11 +300,12 @@ public class FileIOUtils {
 
     /**
      * 上传文件
+     *
      * @param subFileFolder
      * @param fileName
      * @param file
      */
-    public void uploadFile(String subFileFolder, String fileName, File file) {
+    public int uploadFile(String subFileFolder, String fileName, File file) {
         String folder = System.getProperty("user.dir") + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
 
@@ -286,6 +323,7 @@ public class FileIOUtils {
                 fileOutputStream.write(bytes, 0, length);
             }
         } catch (Exception ignored) {
+            return -1;
         } finally {
             try {
                 if (inputStream != null) {
@@ -295,20 +333,22 @@ public class FileIOUtils {
                     fileOutputStream.close();
                 }
                 System.out.println("文件上传完成! ");
+                return 0;
             } catch (IOException e) {
                 e.printStackTrace();
+                return -1;
             }
         }
     }
 
     /**
      * 上传MultipartFile文件
-     * 
+     *
      * @param subFileFolder
      * @param fileName
      * @param multipartFile
      */
-    public void uploadFile(String subFileFolder, String fileName, MultipartFile multipartFile) {
+    public int uploadFile(String subFileFolder, String fileName, MultipartFile multipartFile) {
         String folder = System.getProperty("user.dir") + File.separator + ConstantFromFile.getFileFolder()
                 + File.separator + subFileFolder + File.separator;
         String filePath = folder + fileName;
@@ -327,6 +367,7 @@ public class FileIOUtils {
                 fileOutputStream.write(bytes, 0, length);
             }
         } catch (Exception ignored) {
+            return -1;
         } finally {
             try {
                 if (inputStream != null) {
@@ -336,19 +377,22 @@ public class FileIOUtils {
                     fileOutputStream.close();
                 }
                 System.out.println("文件上传完成! ");
+                return 0;
             } catch (IOException e) {
                 e.printStackTrace();
+                return -1;
             }
         }
     }
 
     /**
      * MultipartFile 2 File
+     *
      * @param multipartFile
      * @return
      */
     public File multipartFile2File(MultipartFile multipartFile) {
-        
+
         String fileName = multipartFile.getOriginalFilename();
         File file = new File(fileName);
         OutputStream outputStream = null;

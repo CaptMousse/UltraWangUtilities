@@ -73,9 +73,14 @@ LimitingQPS = 1
 
 # 文件上传下载文件夹
 FileFolder = FileFolder
+# 下载限速(kb/s)
+FileDownloadSpeedLimit = 1024
 
 # 用户登陆过期时间(秒)
 SessionInactiveInterval = 3600
 
 # 股票麦蕊API的Licence
-MairuiApiLicence = 63245b556da38dd039
+MairuiApiLicence = 79574b851af7210c47
+
+# 定时任务开关(0=关, 1=开)
+SchedulerSwitcher = 0

@@ -21,7 +21,11 @@ public class FileTransferController {
 
     @PostMapping("upload")
     public AjaxUtils uploadFile(MultipartFile file, String fileName) {
-        fileTransferService.fileAdd(file, fileName);
-        return AjaxUtils.success("上传成功!");
+        int result = fileTransferService.fileAdd(file, fileName);
+        if (result == 0) {
+            return AjaxUtils.success("上传成功!", "上传成功!");
+        } else {
+            return AjaxUtils.failed("上传失败!", "上传失败!");
+        }
     }
 }
