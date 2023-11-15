@@ -27,7 +27,8 @@
                 var formData = new FormData();
                 formData.append('file', files[0]);
                 formData.append('fileName', fileName);
-                ajax("POST", "fileTransfer/upload", false, formData);
+                var result = ajax("POST", "fileTransfer/upload", false, formData);
+                alert(result);
             }
         }
     </script>

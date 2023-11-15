@@ -13,13 +13,12 @@
     <script>
         // 初始化方法
         $(function () {
+            checkLogin();
             loadJobList();
+            loadSyncStockList();
         });
 
-
-
-        function loadJobList() {
-
+        function checkLogin() {
             // 检查登录
             if (!checkIfLogin()) {
                 commonUtil.message('需要登录! ', 'danger', 2000);
@@ -29,7 +28,9 @@
                 }, 3000);
                 return;
             }
+        }
 
+        function loadJobList() {
             var controller = "common/scheduler/quartz/getAllList";
             var jobResult = ajax("get", controller, false);
 
@@ -47,7 +48,6 @@
                 var btnCtrl = job.JobStatus == "1" ? "op" : "art";
                 var btnClass = job.JobStatus == "1" ? "danger" : "success";
 
-
                 var tableTrNum = tableTr.length + 1;
                 var createNewTr = document.createElement("tr");
                 tbody.appendChild(createNewTr);
@@ -58,14 +58,16 @@
                     "</td><td>" + cronExpression +
                     "</td><td>" + jobNote +
                     "</td><td id='status_" + jobName + "'>" + jobStatus +
-                    "</td><td>" + 
-                        "<input type='button' value='执行一次' class='btn btn-primary btn-xs' onclick='manualStart(\"" + jobName + "\")'>" +
-                        "&nbsp;&nbsp;" + 
-                        "<input type='button' id='btn_" + jobName + "' value='" + btnValue + "' class='btn btn-" + btnClass + " btn-xs' onclick='st" + btnCtrl + "Task(\"" + jobName + "\")'>" +
+                    "</td><td>" +
+                    "<input type='button' value='RunOnce' class='btn btn-primary btn-xs' onclick='manualStart(\"" + jobName + "\")'>" +
+                    "&nbsp;&nbsp;" +
+                    "<input type='button' id='btn_" + jobName + "' value='" + btnValue + "' class='btn btn-" + btnClass + " btn-xs' onclick='st" + btnCtrl + "Task(\"" + jobName + "\")'>" +
                     "</td>";
                 tbody.children[tableTrNum].innerHTML = inner;
             }
         }
+
+
 
         function manualStart(jobName) {
             var controller = "common/scheduler/quartz/manualStart?jobName=" + jobName;
@@ -93,6 +95,54 @@
                 setTimeout(function () { location.reload(); }, 2000);
             }
         }
+
+        function loadSyncStockList() {
+            var controller = "stockExchange/getSyncStockPrice";
+            var stockResult = ajax("get", controller, false);
+
+            var tbody = document.getElementById("monitorTableHead").parentNode;
+            var tableTr = document.getElementsByClassName("monitorTableBody");
+
+            for (let i = 1; i <= stockResult.length; i++) {
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement("tr");
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = "monitorTableBody";
+
+                var stock = stockResult[i - 1];
+                var stockId = stock.stockId;
+                var stockName = stock.stockName;
+                var zxj = stock.zxj;    // 最新价
+                var zf = stock.zf;      // 涨幅
+                var cjl = stock.cjl;    // 成交量
+                var cje = stock.cje;    // 成交额
+                var sj = stock.sj;      // 更新时间
+                var color = "black";
+                if (zf > 0) {
+                    color = "red";
+                } else if (zf < 0) {
+                    color = "green";
+                }
+                var inner = "<td>" + i +
+                    "</td><td style='color: " + color + ";'>" + stockId +
+                    "</td><td style='color: " + color + ";'>" + stockName +
+                    "</td><td style='color: " + color + ";'>" + zxj +
+                    "</td><td style='color: " + color + ";'>" + zf + "%" +
+                    "</td><td style='color: " + color + ";'>" + cjl +
+                    "</td><td style='color: " + color + ";'>" + cje +
+                    "</td><td>" + sj +
+                    "</td><td id='monitor" + stockId + "'>" + "监控中" +
+                    "</td><td>" + "<input type='button'></input>" +
+                    "</td>";
+                tbody.children[tableTrNum].innerHTML = inner;
+            }
+        }
+
+        function updateSyncStatus(stockId) {
+            var controller = "stockExchange/updateSyncStatus?stockId=" + stockId;
+            var result = ajax("get", controller, false);
+
+        }
     </script>
 </head>
 
@@ -111,16 +161,36 @@
         </div>
         <div><br></div>
         <div>
+            <!-- 定时任务列表 -->
+            <h1 style="text-align: center;">定时任务列表</h1>
             <table id="quartzTable" class="table" style="text-align: center;">
                 <tbody>
                     <tr id="quartzTableHead">
                         <th style="text-align: center;">序号</th>
                         <th style="text-align: center;">名称</th>
-                        <!-- <th style="text-align: center;">地址</th> -->
                         <th style="text-align: center;">Cron表达式</th>
                         <th style="text-align: center;">备注</th>
                         <th style="text-align: center;">状态</th>
                         <th style="text-align: center;">操作</th>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 股票监控列表 -->
+            <h1 style="text-align: center;">股票监控列表</h1>
+            <table id="monitorTable" class="table" style="text-align: center;">
+                <tbody>
+                    <tr id="monitorTableHead">
+                        <th style="text-align: center;">序号</th>
+                        <th style="text-align: center;">股票代码</th>
+                        <th style="text-align: center;">股票名称</th>
+                        <th style="text-align: center;">最新价</th>
+                        <th style="text-align: center;">涨跌幅</th>
+                        <th style="text-align: center;">成交量</th>
+                        <th style="text-align: center;">成交额</th>
+                        <th style="text-align: center;">更新时间</th>
+                        <th style="text-align: center;">监控状态</th>
+                        <th style="text-align: center;">监控开关</th>
                     </tr>
                 </tbody>
             </table>
