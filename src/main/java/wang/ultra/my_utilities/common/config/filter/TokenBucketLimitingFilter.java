@@ -47,8 +47,10 @@ public class TokenBucketLimitingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         List<String> excludedUriList = new ArrayList<>();
-        excludedUriList.add("/blog/context/downloadImage");
-        excludedUriList.add("/game2048/");
+        excludedUriList.add(("/UltraWangUtilities/"));      // 基础信息, 例如版本号
+        excludedUriList.add(("/captcha/"));                 // 登录验证码
+        excludedUriList.add("/blog/context/downloadImage"); // 下载图片
+        excludedUriList.add("/game2048/");                  // 游戏2048
         for (String excludedUri : excludedUriList) {
             if (request.getRequestURI().contains(excludedUri)) {
 //                System.out.println("URI过滤排除 = " + request.getRequestURI());
@@ -66,15 +68,25 @@ public class TokenBucketLimitingFilter implements Filter {
             }
         }
 
+        // 获取请求URL
+        String requestAddress = String.valueOf(request.getRequestURL());
+        System.out.println("request.getQueryString() = " + request.getQueryString());
+        if (request.getQueryString() != null && !request.getQueryString().isEmpty() && !"".equals(request.getQueryString()) && !"null".equals(request.getQueryString())) {
+            requestAddress += "?" + request.getQueryString();
+        }
+        System.out.println("requestAddress = " + requestAddress);
+
         if (tokenBucketCore()) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String returnStr = AjaxUtils.failedJsonString("当前访问过多, 请稍后再试! ");
             response.getWriter().write(returnStr);
 
+
             String mailTo = ConstantFromFile.getMailTo();
             String mailSubject = "【UltraWang监控提醒】在" + DateConverter.getSimpleTime() + "过滤器限流已启动";
             String mailContent = "<h1 style=\"text-align: center;\">歪比巴卜</h1>";
+            mailContent += "请求URL = " + requestAddress;
             SendMailUtils sendMailUtils = new SendMailUtils();
             sendMailUtils.sendMail(mailTo, mailSubject, mailContent);
         }
