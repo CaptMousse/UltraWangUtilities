@@ -41,7 +41,7 @@ public class ImageUploadService {
         fileTransferMapper.fileAdd(entityList);
 
         FileIOUtils fileIOUtils = new FileIOUtils();
-        fileIOUtils.uploadFile(subFileFolder, realName, image);
+        int result = fileIOUtils.uploadFile(subFileFolder, realName, image);
 
 //        File imageFile = fileIOUtils.multipartFile2File(image);
 
