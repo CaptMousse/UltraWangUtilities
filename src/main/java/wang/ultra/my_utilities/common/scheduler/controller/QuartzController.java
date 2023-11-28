@@ -1,9 +1,9 @@
 package wang.ultra.my_utilities.common.scheduler.controller;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,14 +14,17 @@ import wang.ultra.my_utilities.common.utils.AjaxUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/common/scheduler/quartz")
 public class QuartzController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(QuartzController.class);
+    private static final Log LOG = LogFactory.getLog(QuartzController.class);
 
     @Autowired
     QuartzService quartzService;

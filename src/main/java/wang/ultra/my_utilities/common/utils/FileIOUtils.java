@@ -1,8 +1,8 @@
 package wang.ultra.my_utilities.common.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.multipart.MultipartFile;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 
@@ -10,11 +10,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FileIOUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileIOUtils.class);
+    private static final Log LOG = LogFactory.getLog(FileIOUtils.class);
 
     /**
      * 构建目录

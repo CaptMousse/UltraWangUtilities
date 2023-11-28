@@ -69,12 +69,11 @@ public class TokenBucketLimitingFilter implements Filter {
         }
 
         // 获取请求URL
-        String requestAddress = String.valueOf(request.getRequestURL());
-        System.out.println("request.getQueryString() = " + request.getQueryString());
+        String requestFullAddress = String.valueOf(request.getRequestURL());
         if (request.getQueryString() != null && !request.getQueryString().isEmpty() && !"".equals(request.getQueryString()) && !"null".equals(request.getQueryString())) {
-            requestAddress += "?" + request.getQueryString();
+            requestFullAddress += "?" + request.getQueryString();
         }
-        System.out.println("requestAddress = " + requestAddress);
+        System.out.println("requestFullAddress = " + request.getMethod() + ": " + requestFullAddress);
 
         if (tokenBucketCore()) {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -83,10 +82,11 @@ public class TokenBucketLimitingFilter implements Filter {
             response.getWriter().write(returnStr);
 
 
+
             String mailTo = ConstantFromFile.getMailTo();
             String mailSubject = "【UltraWang监控提醒】在" + DateConverter.getSimpleTime() + "过滤器限流已启动";
             String mailContent = "<h1 style=\"text-align: center;\">歪比巴卜</h1>";
-            mailContent += "请求URL = " + requestAddress;
+            mailContent += "请求URL = " + requestFullAddress;
             SendMailUtils sendMailUtils = new SendMailUtils();
             sendMailUtils.sendMail(mailTo, mailSubject, mailContent);
         }

@@ -1,7 +1,7 @@
 package wang.ultra.my_utilities.blog.scheduler.runnable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import wang.ultra.my_utilities.blog.service.ImageUploadService;
 import wang.ultra.my_utilities.common.download.mapper.FileTransferMapper;
 import wang.ultra.my_utilities.common.utils.DateConverter;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class BlogImageCleanRunnable implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BlogImageCleanRunnable.class);
+    private static final Log LOG = LogFactory.getLog(BlogImageCleanRunnable.class);
 
     @Override
     public void run() {

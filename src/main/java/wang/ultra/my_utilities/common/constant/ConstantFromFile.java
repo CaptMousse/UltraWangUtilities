@@ -1,7 +1,7 @@
 package wang.ultra.my_utilities.common.constant;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import wang.ultra.my_utilities.common.utils.FileIOUtils;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConstantFromFile {
-    private static final Logger LOG = LoggerFactory.getLogger(ConstantFromFile.class);
+    private static final Log LOG = LogFactory.getLog(ConstantFromFile.class);
 
     // DDNS监听时间
     private static Long DdnsIntervalTime;

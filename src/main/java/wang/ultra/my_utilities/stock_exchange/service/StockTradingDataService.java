@@ -1,7 +1,7 @@
 package wang.ultra.my_utilities.stock_exchange.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wang.ultra.my_utilities.common.cache.stockData.StockNowPriceCacheList;
@@ -22,7 +22,7 @@ import java.util.*;
 @Service("stockTradingDataService")
 public class StockTradingDataService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StockTradingDataService.class);
+    private static final Log LOG = LogFactory.getLog(StockTradingDataService.class);
 
     @Autowired
     TradingDataMapper tradingDataMapper;

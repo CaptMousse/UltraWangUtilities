@@ -1,7 +1,7 @@
 package wang.ultra.my_utilities.vehicle_info.apis;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import wang.ultra.my_utilities.common.utils.JsonConverter;
 import wang.ultra.my_utilities.vehicle_info.utils.UrlConnectionUtils;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class WheelSizeApi {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WheelSizeApi.class);
+    private static final Log LOG = LogFactory.getLog(WheelSizeApi.class);
 
     public List<Object> getBrand() {
         String url = "https://services.wheel-size.com/widget/173807dd5d3b45d6ae52fc1453d7258e/api/mk";

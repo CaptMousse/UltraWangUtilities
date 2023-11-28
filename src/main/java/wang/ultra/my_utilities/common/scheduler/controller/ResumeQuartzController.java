@@ -1,8 +1,8 @@
 package wang.ultra.my_utilities.common.scheduler.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.SchedulerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.scheduler.service.QuartzService;
 import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ResumeQuartzController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ResumeQuartzController.class);
+    private static final Log LOG = LogFactory.getLog(ResumeQuartzController.class);
 
     QuartzService quartzService = SpringBeanUtils.getBean(QuartzService.class);
 

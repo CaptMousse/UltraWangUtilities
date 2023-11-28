@@ -1,9 +1,9 @@
 package wang.ultra.my_utilities.stock_exchange.tasks;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import wang.ultra.my_utilities.common.scheduler.service.BaseJobService;
 import wang.ultra.my_utilities.common.utils.SpringBeanUtils;
 import wang.ultra.my_utilities.stock_exchange.service.StockTradingDataService;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Stock10DaysMACDTask implements BaseJobService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Stock10DaysMACDTask.class);
+    private static final Log LOG = LogFactory.getLog(Stock10DaysMACDTask.class);
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 

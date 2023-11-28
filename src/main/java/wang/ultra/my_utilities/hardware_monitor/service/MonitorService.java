@@ -1,7 +1,5 @@
 package wang.ultra.my_utilities.hardware_monitor.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.monitor.entity.MonitorEntity;
 import wang.ultra.my_utilities.common.monitor.service.HardwareMonitorService;
@@ -15,7 +13,6 @@ import java.util.Map;
  */
 public class MonitorService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MonitorService.class);
 
     HardwareUsageService hardwareUsageService = new HardwareUsageService();
 

@@ -1,9 +1,9 @@
-package wang.ultra.my_utilities.common.config.intercepor;
+package wang.ultra.my_utilities.common.config.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import wang.ultra.my_utilities.common.cache.username.UserLoginCacheMap;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @Component
 public class BlogLoginInterceptor implements HandlerInterceptor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BlogLoginInterceptor.class);
+    private static final Log LOG = LogFactory.getLog(BlogLoginInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {

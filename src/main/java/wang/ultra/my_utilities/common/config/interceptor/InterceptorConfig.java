@@ -1,4 +1,4 @@
-package wang.ultra.my_utilities.common.config.intercepor;
+package wang.ultra.my_utilities.common.config.interceptor;
 
 import java.util.ArrayList;
 import java.util.List;

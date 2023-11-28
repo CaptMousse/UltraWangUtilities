@@ -2,8 +2,8 @@ package wang.ultra.my_utilities.aliyun_ddns_update.service;
 
 import com.aliyuncs.alidns.model.v20150109.DescribeDomainRecordsResponse;
 import com.aliyuncs.alidns.model.v20150109.UpdateDomainRecordRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import wang.ultra.my_utilities.aliyun_ddns_update.utils.DDNSUtils;
 import wang.ultra.my_utilities.aliyun_ddns_update.utils.GetHostIPv4;
 import wang.ultra.my_utilities.aliyun_ddns_update.utils.GetMyIPv6;
@@ -12,7 +12,7 @@ import wang.ultra.my_utilities.common.utils.DateConverter;
 import wang.ultra.my_utilities.common.utils.FileIOUtils;
 
 public class DdnsMonitorService {
-    private static final Logger LOG = LoggerFactory.getLogger(DdnsMonitorService.class);
+    private static final Log LOG = LogFactory.getLog(DdnsMonitorService.class);
 
     private static Integer statusResult = -1;
 

@@ -1,7 +1,7 @@
 package wang.ultra.my_utilities.stock_exchange.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wang.ultra.my_utilities.common.cache.stockData.StockMaCacheList;
@@ -13,12 +13,14 @@ import wang.ultra.my_utilities.stock_exchange.entity.NotifyEntity;
 import wang.ultra.my_utilities.stock_exchange.entity.NotifyMaEntity;
 import wang.ultra.my_utilities.stock_exchange.mapper.NotifyLogMapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service("stockMaService")
 public class StockMaService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StockMaService.class);
+    private static final Log LOG = LogFactory.getLog(StockMaService.class);
 
     @Autowired
     StockPreparingService stockPreparingService;
