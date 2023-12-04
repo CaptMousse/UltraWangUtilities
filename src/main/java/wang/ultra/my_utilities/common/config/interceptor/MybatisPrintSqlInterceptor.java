@@ -2,6 +2,7 @@ package wang.ultra.my_utilities.common.config.interceptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -19,14 +20,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-/**
- * @author lww
- * @date 2020-09-01 00:13
- */
+
+
 @Intercepts({
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-                RowBounds.class, ResultHandler.class})})
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class})})
 public class MybatisPrintSqlInterceptor implements Interceptor {
 
     private static final Log LOG = LogFactory.getLog(MybatisPrintSqlInterceptor.class);
@@ -34,13 +32,11 @@ public class MybatisPrintSqlInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
-        System.out.println("Mybatis Interceptor is now running!!! \n\n\n");
-
-        MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
         Object parameter = null;
         if (invocation.getArgs().length > 1) {
             parameter = invocation.getArgs()[1];
         }
+        MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
         String sqlId = mappedStatement.getId();
         BoundSql boundSql = mappedStatement.getBoundSql(parameter);
         Configuration configuration = mappedStatement.getConfiguration();
@@ -56,6 +52,14 @@ public class MybatisPrintSqlInterceptor implements Interceptor {
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
         //替换空格、换行、tab缩进等
         String sql = boundSql.getSql().replaceAll("[\\s]+", " ");
+
+        // 如果没有问号就不打印sql了
+        if (!sql.contains("?")) {
+            printLog(time, sqlId, null);
+            return;
+        }
+
+        // 把问号替换成值
         if (!parameterMappings.isEmpty() && parameterObject != null) {
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
             if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
@@ -74,7 +78,7 @@ public class MybatisPrintSqlInterceptor implements Interceptor {
                 }
             }
         }
-        logs(time, sql, sqlId);
+        printLog(time, sqlId, sql);
     }
 
     private static String getParameterValue(Object obj) {
@@ -94,8 +98,11 @@ public class MybatisPrintSqlInterceptor implements Interceptor {
         return value.replace("$", "\\$");
     }
 
-    private static void logs(long time, String sql, String sqlId) {
-        String log = " Time：" + time + " ms - ID：" + sqlId + "\t" + "Execute SQL：" + sql;
+    private static void printLog(long time, String sqlId, String sql) {
+        String log = " 耗时: " + time + "ms\t地址: " + sqlId;
+        if (null != sql) {
+            log += "\n解析sql: " + sql;
+        }
         LOG.info(log);
     }
 

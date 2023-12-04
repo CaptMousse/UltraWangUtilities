@@ -52,6 +52,10 @@ public class BaseController {
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    /**
+     * 测试用的方法
+     * @return
+     */
     @GetMapping("getUser")
     public AjaxUtils getUser() {
         String sql = "SELECT * FROM stock_data WHERE stock_id = :stockId";

@@ -1,7 +1,5 @@
 package wang.ultra.my_utilities.common.aspect;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -15,6 +13,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -29,7 +29,7 @@ import java.util.*;
 @Aspect
 public class PrintMybatisSqlLog {
 
-    private static final Log LOG = LogFactory.getLog(PrintMybatisSqlLog.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrintMybatisSqlLog.class);
 
     @Pointcut("execution(* wang.ultra.my_utilities.common.*.mapper.*.*(..))")
     private void commonPointcut() {
@@ -49,7 +49,7 @@ public class PrintMybatisSqlLog {
         Object proceed = proceedingJoinPoint.proceed();
 
         String sql = getMyBatisSql(proceedingJoinPoint, sqlSessionFactoryList);
-        LOG.info("解析SQL语句: " + sql);
+        System.out.println("解析SQL语句: " + sql);
 
         return proceed;
     }

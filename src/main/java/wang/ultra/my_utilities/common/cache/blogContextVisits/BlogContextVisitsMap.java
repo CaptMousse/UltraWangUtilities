@@ -10,7 +10,7 @@ import java.util.*;
 public class BlogContextVisitsMap {
     private static final Map<String, List<BlogContextVisitsEntity>> cacheMap = new HashMap<>();
 
-    // 清理超时的存储
+    // 构造方法, 清理超时的存储
     public BlogContextVisitsMap() {
         long cleanMillis = System.currentTimeMillis();
         for (Map.Entry<String, List<BlogContextVisitsEntity>> entry : cacheMap.entrySet()) {
