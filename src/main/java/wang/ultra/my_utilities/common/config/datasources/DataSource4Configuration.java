@@ -15,7 +15,8 @@ import javax.sql.DataSource;
         basePackages = {"wang.ultra.my_utilities.common",
                 "wang.ultra.my_utilities.blog.mapper",
                 "wang.ultra.my_utilities.stock_exchange.mapper",
-                "wang.ultra.my_utilities.vehicle_info.mapper"},
+                "wang.ultra.my_utilities.vehicle_info.mapper",
+                "wang.ultra.my_utilities.attached_storage.mapper"},
         sqlSessionFactoryRef = "sqlSessionFactory",
         sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSource4Configuration {
