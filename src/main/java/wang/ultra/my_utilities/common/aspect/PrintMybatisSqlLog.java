@@ -10,13 +10,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -25,8 +23,8 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.*;
 
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class PrintMybatisSqlLog {
 
     private static final Logger LOG = LoggerFactory.getLogger(PrintMybatisSqlLog.class);
