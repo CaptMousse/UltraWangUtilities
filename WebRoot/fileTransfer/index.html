@@ -54,6 +54,27 @@
             var result = ajaxJson("POST", "attachedStorage/getFolderAndFile", false, data);
             console.log("result", result);
         }
+
+        function showFolderAndFile() {
+            document.getElementById('folderAndFile').innerHTML +=
+                    '<div class="media">' +
+                    '<div class="media-left">' +
+                    '<a><img class="media-object img-thumbnail pointerCursor" src="' + getAddress() + thumbnail + '" alt="' + context.title + '" onclick="contextShow(\'' + context.uuid + '\')"></a>' +
+                    '</div>' +
+                    '<div class="media-body">' +
+                    '<h4 class="media-heading"><span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.title + '</span></h4>' +
+                    '<span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.brief + '</span>' +
+                    '<p class="contextInfo">' +
+                    '<span><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;' +
+                    '<span id="popUser' + ran.substring(2) + '" class="popoverShow" tabindex="0" data-toggle="popover" onclick="popUserInfoPreview(this)">' + context.user + '</span>' +
+                    '</span>' +
+                    '&nbsp;&nbsp;' +
+                    '<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>&nbsp;' +
+                    context.update_time +
+                    '</p>' +
+                    '</div>' +
+                    '</div>';
+        }
     </script>
 </head>
 
