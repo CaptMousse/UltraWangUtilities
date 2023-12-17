@@ -6,11 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/resource/js/jstree/themes/default/style.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
     <script src="/resource/js/baseFunction.js"></script>
+    <script src="/resource/js/jquery-3.6.3.min.js"></script>
+    <script src="/resource/js/jstree/jstree.min.js"></script>
+    <script src="/resource/js/bootstrap.min.js"></script>
     <script>
         function init() {
             document.getElementById('btnField').disabled = true;
+
+            // // 目录树初始化
+            // $(function () { $('#jstree_demo_div').jstree(); });
         }
+
 
         function checkFileName(file) {
             if (file.length > 0) {
@@ -20,6 +30,7 @@
         }
 
         function uploadFile() {
+            console.log("WWWWWWW");
             var files = document.getElementById('fileField').files;
             var fileName = document.getElementById('textField').value;
             // console.log("file[0].name = " + files[0].name);
@@ -27,22 +38,111 @@
                 var formData = new FormData();
                 formData.append('file', files[0]);
                 formData.append('fileName', fileName);
-                var result = ajax("POST", "fileTransfer/upload", false, formData);
-                alert(result);
+                formData.append('folderId', "063b69964a4d41b781fed821170c4d36");
+                var result = ajax("POST", "attachedStorage/uploadFile", false, formData);
             }
+        }
+
+        function downloadFile() {
+            var realName = "8dce300dc6df4a65be4b37250be693d4.jpg";
+            window.location.href = getAddress() + "attachedStorage/downloadFile?realName=" + realName;
+        }
+
+        function getFolderAndFile(folderId) {
+            var data = {};
+            data.folderId = "" + folderId;
+            var result = ajaxJson("POST", "attachedStorage/getFolderAndFile", false, data);
+            console.log("result", result);
         }
     </script>
 </head>
 
 <body onload="init()">
-    <fieldset>
-        <legend>文件上传</legend>
-        <div>
-            <input type="text" name="fileName" id="textField" class="txt">
-            <input type="file" name="file" class="file" id="fileField" onchange="checkFileName(files)">
-            <input type="button" id="btnField" class="btn" value="上传" onclick="uploadFile()"/>
-        </div>
-    </fieldset>
+    <div style="max-width: 80%; margin: auto; padding: 5px; border-radius: 10px;">
+
+
+        <fieldset>
+            <legend>文件上传</legend>
+            <div>
+                <input type="text" name="fileName" id="textField" class="txt">
+                <input type="file" name="file" class="file" id="fileField" onchange="checkFileName(files)">
+                <input type="button" id="btnField" class="btn" value="上传" onclick="uploadFile()" />
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>文件下载</legend>
+            <input type="button" onclick="downloadFile()" value="点击下载">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+        </fieldset>
+
+        <fieldset>
+            <legend>jsTree测试</legend>
+            <div id="jstree" class="col-md-2"></div>
+            <div id="internal" class="col-md-10">
+                <div>
+                    <input type="button" value="新建文件夹">
+                    <input type="button" value="上传文件">
+                </div>
+                <div id="folderAndFile">
+
+                </div>
+            </div>
+
+            <script>
+                $(function () {
+
+                    // 6 create an instance when the DOM is ready
+                    $('#jstree').jstree({
+                        "core": {
+                            "themes": {
+                                "variant": "large"
+                            },
+                            "multiple": false,
+                            "animation": 0,
+                            "data": function (obj, callback) {
+                                var jsonArray = eval("([])");
+                                var requestBody = { null: "null" }
+                                $.ajax({
+                                    type: "POST",
+                                    url: getAddress() + "attachedStorage/getFolderInFlat",
+                                    contentType: "application/json; charset=utf-8",
+                                    data: JSON.stringify(requestBody),
+                                    dataType: "json",
+                                    async: false,
+                                    success: function (result) {
+                                        var arrays = result.obj;
+                                        for (var i = 0; i < arrays.length; i++) {
+                                            var arr = {
+                                                "id": arrays[i].folderId,
+                                                "parent": arrays[i].parentId == "root" ? "#" : arrays[i].parentId,
+                                                "text": arrays[i].folderName
+                                            }
+                                            jsonArray.push(arr);
+                                        }
+                                    }
+                                });
+                                callback.call(this, jsonArray);
+                            }
+                        },
+                        // "checkbox": {
+                        //     "keep_selected_style": false
+                        // },
+                        "conditionalselect": function (node, event) {
+                            return false;
+                        },
+                        "plugins": ["wholerow", "dnd", "changed"]
+                    });
+
+                    $('#jstree').on("changed.jstree", function (e, data) {
+                        console.log("data.selected = " + data.selected);
+                        getFolderAndFile(data.selected);
+                    });
+                });
+            </script>
+        </fieldset>
+    </div>
 </body>
 
 </html>

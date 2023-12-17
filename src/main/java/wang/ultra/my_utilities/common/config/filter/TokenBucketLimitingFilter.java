@@ -4,6 +4,8 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import wang.ultra.my_utilities.common.constant.ConstantFromFile;
 import wang.ultra.my_utilities.common.utils.AjaxUtils;
 import wang.ultra.my_utilities.common.utils.DateConverter;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @WebFilter(filterName = "tokenBucketLimitingFilter", urlPatterns = {"/*"})
 public class TokenBucketLimitingFilter implements Filter {
+
+    private static final Log LOG = LogFactory.getLog(TokenBucketLimitingFilter.class);
 
     private static long refreshTime = System.currentTimeMillis();
 
@@ -73,7 +77,7 @@ public class TokenBucketLimitingFilter implements Filter {
         if (request.getQueryString() != null && !request.getQueryString().isEmpty() && !"".equals(request.getQueryString()) && !"null".equals(request.getQueryString())) {
             requestFullAddress += "?" + request.getQueryString();
         }
-        System.out.println("requestFullAddress = " + request.getMethod() + ": " + requestFullAddress);
+        LOG.info("requestFullAddress = " + request.getMethod() + ": " + requestFullAddress);
 
         if (tokenBucketCore()) {
             filterChain.doFilter(servletRequest, servletResponse);

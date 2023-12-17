@@ -7,6 +7,7 @@ public class FileEntity {
     private String realName;
     private String showName;
     private String fileSize;
+    private String fileMd5;
     private String folderId;
     private String creator;
     private String createTime;
@@ -14,4 +15,12 @@ public class FileEntity {
     private String amount;
     private String lastAccessTime;
     private String status;
+
+    public FileEntity(){
+
+    }
+
+    public FileEntity(String realName) {
+        this.realName = realName;
+    }
 }

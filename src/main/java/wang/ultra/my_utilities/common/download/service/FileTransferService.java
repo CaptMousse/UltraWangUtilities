@@ -31,9 +31,9 @@ public class FileTransferService {
         entity.setCreate_time(DateConverter.getNoSymbolTime());
         entity.setCreator("default");
         entity.setStatus(1);
+
         List<FileTransferEntity> entityList = new ArrayList<>();
         entityList.add(entity);
-
         fileTransferMapper.fileAdd(entityList);
 
         FileIOUtils fileIOUtils = new FileIOUtils();

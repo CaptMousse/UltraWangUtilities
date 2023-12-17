@@ -62,6 +62,46 @@ function ajax(method, controller, async, formData) {
     return result;
 }
 
+function ajaxJson(method, address, async, json) {
+    var result;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            result = this.responseText;
+            var jsonResult = JSON.parse(result);
+            if (jsonResult.msg != null && jsonResult.msg != "") {
+                var msg = jsonResult.msg;
+                var status = jsonResult.status;
+                if (status) {
+                    commonUtil.message(msg, 'success', 2000);
+                } else {
+                    commonUtil.message(msg, 'danger', 2000);
+                }
+            }
+            if (jsonResult.obj == null) {
+                result = status;
+            } else {
+                result = jsonResult.obj;
+            }
+        }
+    }
+    address = getAddress() + address;
+    method = method.toUpperCase();
+    xhr.open(method, address, async);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    xhr.withCredentials = true;
+    //带上Cookie里登录token
+    if (docCookies.hasItem("LoginToken")) {
+        xhr.setRequestHeader("LoginToken", docCookies.getItem("LoginToken"));
+    }
+    if (docCookies.hasItem("VisitId")) {
+        xhr.setRequestHeader("VisitId", docCookies.getItem("VisitId"));
+    }
+    xhr.send(JSON.stringify(json));
+    return result;
+}
+
 function getUltraWangUtilitiesVersion() {
     var version = ajax("GET", "UltraWangUtilities/getVersion", false);
     return version;

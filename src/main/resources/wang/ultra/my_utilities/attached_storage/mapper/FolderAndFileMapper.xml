@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wang.ultra.my_utilities.attached_storage.mapper.FolderAndFileMapper">
+    <resultMap id="folderAndFileMap" type="wang.ultra.my_utilities.attached_storage.entity.vo.FolderAndFileVo">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="size" property="size"/>
+        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="lastAccessTime" property="last_access_time"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+
+
+    <select id="getFolderAndFile" resultMap="folderAndFileMap" parameterType="wang.ultra.my_utilities.attached_storage.entity.vo.FolderAndFileVo">
+        SELECT * FROM
+        (
+        SELECT folders.folder_id id, folders.folder_name name, NULL size, folders.creator, folders.create_time, folders.update_time, NULL last_access_time, '0' TYPE
+        FROM attached_storage_folders folders
+        WHERE folders.parent_id = #{folderId}
+        UNION
+        SELECT files.real_name id, files.show_name name, files.file_size size, files.creator, files.create_time, files.update_time, files.last_access_time last_access_time, '1' TYPE
+        FROM attached_storage_files files
+        WHERE files.folder_id = #{folderId}
+        ) result
+    </select>
+
+</mapper>

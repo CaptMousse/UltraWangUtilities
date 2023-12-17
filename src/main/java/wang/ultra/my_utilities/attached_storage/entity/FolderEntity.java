@@ -9,5 +9,6 @@ public class FolderEntity {
     private String parentId;
     private String creator;
     private String createTime;
+    private String updateTime;
     private String status;
 }

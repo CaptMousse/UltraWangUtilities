@@ -7,6 +7,7 @@
         <result column="parent_id" property="parentId"/>
         <result column="creator" property="creator"/>
         <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
         <result column="status" property="status"/>
     </resultMap>
 

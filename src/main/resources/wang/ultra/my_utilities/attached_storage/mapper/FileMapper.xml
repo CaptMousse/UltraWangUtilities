@@ -5,6 +5,7 @@
         <result column="real_name" property="realName"/>
         <result column="show_name" property="showName"/>
         <result column="file_size" property="fileSize"/>
+        <result column="file_md5" property="fileMd5"/>
         <result column="folder_id" property="folderId"/>
         <result column="creator" property="creator"/>
         <result column="create_time" property="createTime"/>
@@ -15,15 +16,15 @@
     </resultMap>
 
     <insert id="addFile" parameterType="list">
-        insert ignore into ATTACHED_STORAGE_FILES (
-        REAL_NAME, SHOW_NAME, FILE_SIZE, FOLDER_ID,
+        insert ignore into attached_storage_files (
+        REAL_NAME, SHOW_NAME, FILE_SIZE, FILE_MD5, FOLDER_ID,
         CREATOR, CREATE_TIME, UPDATE_TIME,
         AMOUNT, LAST_ACCESS_TIME,
         STATUS
         ) values
         <foreach collection="list" separator="," item="FileEntity">
             (
-            '${FileEntity.realName}', '${FileEntity.showName}', '${FileEntity.fileSize}', '${FileEntity.folderId}',
+            '${FileEntity.realName}', '${FileEntity.showName}', '${FileEntity.fileSize}', '${FileEntity.fileMd5}', '${FileEntity.folderId}',
             '${FileEntity.creator}', '${FileEntity.createTime}', '${FileEntity.updateTime}',
             '${FileEntity.amount}', '${FileEntity.lastAccessTime}',
             '${FileEntity.status}'
@@ -33,9 +34,10 @@
 
     <update id="updateFile" parameterType="wang.ultra.my_utilities.attached_storage.entity.FileEntity">
 
-        update ATTACHED_STORAGE_FILES set
+        update attached_storage_files set
         <if test="showName != null and showName.trim() != ''">SHOW_NAME = #{showName}, </if>
         <if test="fileSize != null and fileSize.trim() != ''">FILE_SIZE = #{fileSize}, </if>
+        <if test="fileMd5 != null and fileMd5.trim() != ''">FILE_MD5 = #{fileMd5}, </if>
         <if test="folderId != null and folderId.trim() != ''">FOLDER_ID = #{folderId}, </if>
         <if test="updateTime != null and updateTime.trim() != ''">UPDATE_TIME = #{updateTime}, </if>
         <if test="lastAccessTime != null and lastAccessTime.trim() != ''">LAST_ACCESS_TIME = #{lastAccessTime}, </if>
@@ -45,12 +47,14 @@
     </update>
 
     <select id="getFile" resultMap="fileMap" parameterType="wang.ultra.my_utilities.attached_storage.entity.dto.FileDto">
-        select * from ATTACHED_STORAGE_FILES
+        select * from attached_storage_files
         where 1 = 1
-        <if test="showName != null and showName.trim() != ''">and SHOW_NAME like '%${showName}%'</if>
-        <if test="fileSize != null and fileSize.trim() != ''">and FILE_SIZE = #{fileSize}</if>
-        <if test="folderId != null and folderId.trim() != ''">and FOLDER_ID = #{folderId}</if>
-        <if test="status != null and status.trim() != ''">and STATUS = #{status}</if>
+        <if test="realName != null and realName.trim() != ''">and REAL_NAME = #{realName} </if>
+        <if test="showName != null and showName.trim() != ''">and SHOW_NAME like '%${showName}%' </if>
+        <if test="fileSize != null and fileSize.trim() != ''">and FILE_SIZE = #{fileSize} </if>
+        <if test="fileMd5 != null and fileMd5.trim() != ''">and FILE_MD5 = #{fileMd5} </if>
+        <if test="folderId != null and folderId.trim() != ''">and FOLDER_ID = #{folderId} </if>
+        <if test="status != null and status.trim() != ''">and STATUS = #{status} </if>
         <if test="createStartTime != null and createStartTime.trim() != '' and createEndTime != null and createEndTime.trim() != ''">
             and #{createStartTime} &lt; CREATE_TIME &lt; #{createEndTime}
         </if>
