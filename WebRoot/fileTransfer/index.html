@@ -9,6 +9,17 @@
     <link rel="stylesheet" type="text/css" href="/resource/js/jstree/themes/default/style.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/resource/css/baseCss.css">
+    <style>
+        .media-object {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+        }
+
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+    </style>
     <script src="/resource/js/baseFunction.js"></script>
     <script src="/resource/js/jquery-3.6.3.min.js"></script>
     <script src="/resource/js/jstree/jstree.min.js"></script>
@@ -53,27 +64,63 @@
             data.folderId = "" + folderId;
             var result = ajaxJson("POST", "attachedStorage/getFolderAndFile", false, data);
             console.log("result", result);
+            showFolderAndFile(result);
         }
 
-        function showFolderAndFile() {
-            document.getElementById('folderAndFile').innerHTML +=
-                    '<div class="media">' +
-                    '<div class="media-left">' +
-                    '<a><img class="media-object img-thumbnail pointerCursor" src="' + getAddress() + thumbnail + '" alt="' + context.title + '" onclick="contextShow(\'' + context.uuid + '\')"></a>' +
-                    '</div>' +
-                    '<div class="media-body">' +
-                    '<h4 class="media-heading"><span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.title + '</span></h4>' +
-                    '<span class="pointerCursor" onclick="contextShow(\'' + context.uuid + '\')">' + context.brief + '</span>' +
-                    '<p class="contextInfo">' +
-                    '<span><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;' +
-                    '<span id="popUser' + ran.substring(2) + '" class="popoverShow" tabindex="0" data-toggle="popover" onclick="popUserInfoPreview(this)">' + context.user + '</span>' +
-                    '</span>' +
-                    '&nbsp;&nbsp;' +
-                    '<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>&nbsp;' +
-                    context.update_time +
-                    '</p>' +
-                    '</div>' +
-                    '</div>';
+        function showFolderAndFile(result) {
+
+            var sys = window.navigator.platform;
+            var sizeUnit = 1000;
+            if (sys.includes("win") || sys.includes("Win") || sys.includes("WIN")) {
+                var sizeUnit = 1024;
+                console.log("sizeUnit", sizeUnit);
+            }
+
+
+            // document.getElementById('ffDiv').innerHTML = null;
+
+            var tbody = document.getElementById("ffTableHead").parentNode;
+            var tableTr = document.getElementsByClassName("ffTableBody");
+
+            tbody.innerHTML = '<tr id="ffTableHead">' +
+                '<th style="text-align: center; width: 32px">类型</th>' +
+                '<th style="text-align: center;">名称</th>' +
+                '<th style="text-align: center;">大小</th>' +
+                '<th style="text-align: center;">创建时间</th>' +
+                '<th style="text-align: center;">操作</th>' +
+                '</tr>';
+
+            for (let i = 1; i <= result.length; i++) {
+                let ele = result[i - 1];
+
+                var img = "../resource/icons/file-text2.png";
+                if (ele.type == '0') {
+                    img = "../resource/icons/folder-open.png";
+                }
+                var name = ele.name;
+                var size;
+                if (ele.size == null) {
+                    size = "";
+                } else {
+                    size = fileSizeConver(ele.size, sizeUnit);
+                }
+                var createTime = dateStringConver(ele.createTime);
+
+                var tableTrNum = tableTr.length + 1;
+                var createNewTr = document.createElement("tr");
+                tbody.appendChild(createNewTr);
+                tbody.children[tableTrNum].className = "ffTableBody";
+                var inner =
+                    // "<td>" + i + "</td>" +
+                    "<td>" + '<a><img class="media-object img-thumbnail pointerCursor" src="' + img + '" alt="" onclick=""></a>' +
+                    "</td><td>" + name +
+                    "</td><td>" + size +
+                    "</td><td>" + createTime +
+                    "</td><td>" + "操作" + "</td>";
+                tbody.children[tableTrNum].innerHTML = inner;
+            }
+
+
         }
     </script>
 </head>
@@ -106,8 +153,13 @@
                     <input type="button" value="新建文件夹">
                     <input type="button" value="上传文件">
                 </div>
-                <div id="folderAndFile">
-
+                <div id="ffDiv">
+                    <table id="ffTable" class="table table-condensed" style="text-align: center;">
+                        <tbody>
+                            <tr id="ffTableHead">
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

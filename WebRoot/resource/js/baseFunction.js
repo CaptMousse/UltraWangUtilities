@@ -263,9 +263,47 @@ var commonUtil = {
             });
         }, countdownTime);
     }
-}
+};
 
+/**
+ * 文件大小换算
+ * **/
+function fileSizeConver(limit, i) {
+    if (i != 1000) {
+        i = 1024;
+    }
+    var size = "";
+    if (limit < 0.1 * i) { //如果小于0.1KB转化成B
+        size = limit.toFixed(2) + "B";
+    } else if (limit < 0.1 * i * i) {//如果小于0.1MB转化成KB
+        size = (limit / i).toFixed(2) + "KB";
+    } else if (limit < 0.1 * i * i * i) { //如果小于0.1GB转化成MB
+        size = (limit / (i * i)).toFixed(2) + "MB";
+    } else { //其他转化成GB
+        size = (limit / (i * i * i)).toFixed(2) + "GB";
+    }
+    var sizestr = size + "";
+    var len = sizestr.indexOf("\.");
+    var dec = sizestr.substr(len + 1, 2);
+    if (dec == "00") {//当小数点后为00时 去掉小数部分
+        return sizestr.substring(0, len) + sizestr.substr(len + 3, 2);
+    }
+    return sizestr;
+};
 
+function dateStringConver(dateStr) {
+    dateStr = insertStr(dateStr, 12, ":");
+    dateStr = insertStr(dateStr, 10, ":");
+    dateStr = insertStr(dateStr, 8, " ");
+    dateStr = insertStr(dateStr, 6, "-");
+    dateStr = insertStr(dateStr, 4, "-");
+    return dateStr;
+};
+
+function insertStr(str, index, insertStr) {
+    console.log("str", str);
+    return str.slice(0, index) + insertStr + str.slice(index);
+};
 
 /*\
 |*|
