@@ -9,9 +9,9 @@ DdnsMonitorStatus = 0
 # 阿里云地域ID
 RegionID = cn-hangzhou
 # 阿里云AccessKey
-AccessKeyID = LTAI5tAPzbaceZdp5NdfGuTw
+AccessKeyID = 歪比巴卜
 # 阿里云Access密钥
-AccessKeySecret = 41wmFNOQjaWcYtL3a7DwOmlmpgtjcH
+AccessKeySecret = WabbyWabbo
 # 域名
 Domain = ultra.wang
 # 二级域名 (也是开发环境的判定条件, dev即代表开发环境)
